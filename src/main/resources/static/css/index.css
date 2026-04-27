@@ -1,0 +1,315 @@
+.card{
+    border: 0cap;
+}
+.formulario{
+    text-align: center;
+    
+}
+.txt{
+color: rgb(255, 255, 255);
+}
+label, textarea {
+  display: flexbox;
+}
+
+textarea {
+
+  margin: 15px 0;
+  width: 250px;
+  height: 100px;
+  
+}
+.buttone{
+    text-align: center;
+    margin: 20px;
+}
+
+.card{
+    margin: 50px;
+}
+body{
+    background-color: black;
+}
+
+
+
+/* Reset Básico e Fontes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif; /* Use a fonte que desejar */
+}
+
+body {
+    background-color: #000000; /* Fundo preto */
+    color: #f0f0f0; /* Texto claro */
+    padding: 20px;
+}
+
+/* Header/Navegação */
+header nav {
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+
+header a {
+    color: #ccc; /* Links claros */
+    text-decoration: none;
+}
+
+/* Layout Principal do Produto (Grid) */
+.produto-container {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr; /* Coluna da Galeria e Coluna de Detalhes */
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* === Galeria de Imagens (Carrossel) === */
+.galeria {
+    display: flex;
+    gap: 15px;
+}
+
+/* Miniaturas */
+.miniaturas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.miniatura {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #444; /* Borda mais escura para miniaturas */
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s, border-color 0.3s;
+}
+
+.miniatura.active {
+    border-color: #fff; /* Borda branca para miniatura ativa */
+    opacity: 1;
+}
+
+/* Carrossel Principal */
+.carrossel-principal {
+    position: relative;
+    overflow: hidden; /* Esconde slides que não estão ativos */
+    width: 100%;
+    max-width: 450px; /* Largura da imagem principal */
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slides img {
+    width: 100%;
+    flex-shrink: 0; /* Impede que as imagens encolham */
+}
+
+.prev-btn, .next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.3); /* Fundo dos botões de navegação do carrossel */
+    color: rgb(0, 0, 0); /* Cor dos ícones dos botões */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 1.2em;
+    border-radius: 5px;
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+/* === Detalhes do Produto === */
+.detalhes h1 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: #fff; /* Título branco */
+}
+
+.preco {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff; /* Preço branco */
+}
+
+.parcelamento {
+    font-size: 0.9em;
+    color: #bbb; /* Parcelamento mais claro */
+    margin-bottom: 20px;
+}
+
+/* Opções de Cor */
+.opcoes-cor button {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid #555; /* Borda mais escura para a cor */
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* Opções de Cor */
+.botoes-cor {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.opcoes-cor .cor-opcao {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid #555; /* Borda mais escura para a cor (Modo Escuro) */
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+/* Definição das cores */
+.cor-opcao.preto {
+    background-color: #000;
+}
+
+.cor-opcao.branco {
+    background-color: #fff;
+    border: 2px solid #a9a9a9; /* Borda visível para a cor branca */
+}
+
+.cor-opcao.azul {
+    background-color: #0000FF; /* Azul Vívido */
+}
+
+/* Estilo para a cor ativa */
+.opcoes-cor .cor-opcao.active {
+    border-color: #fff; /* Borda branca para cor ativa */
+    /* Adiciona um efeito de anel externo para maior destaque na cor ativa */
+    box-shadow: 0 0 0 2px #1a1a1a, 0 0 0 4px #fff; 
+}
+
+/* Ajuste específico para a cor branca ativa no fundo escuro */
+.cor-opcao.branco.active {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px #1a1a1a, 0 0 0 4px #fff;
+}
+
+.opcoes-cor button.active {
+    border-color: #fff; /* Borda branca para cor ativa */
+}
+
+/* Opções de Tamanho */
+.opcoes-tamanho {
+    margin: 20px 0;
+}
+
+.tabela-medidas {
+    margin-left: 10px;
+    font-size: 0.9em;
+    color: #8ac0ff; /* Link tabela de medidas azul claro */
+    text-decoration: underline;
+}
+
+.botoes-tamanho .tamanho {
+    padding: 8px 15px;
+    border: 1px solid #777; /* Borda dos botões de tamanho */
+    background-color: #333; /* Fundo dos botões de tamanho */
+    color: #f0f0f0; /* Texto dos botões de tamanho */
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.botoes-tamanho .tamanho.active {
+    background-color: #fff; /* Fundo branco para tamanho ativo */
+    color: #000; /* Texto preto para tamanho ativo */
+    border-color: #fff; /* Borda branca para tamanho ativo */
+}
+
+/* Botões de Ação */
+.adicionar-sacola {
+    width: 80%;
+    background-color: #fff; /* Fundo branco */
+    color: #000; /* Texto preto */
+    padding: 15px 0;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.favoritar {
+    width: 15%;
+    background-color: #333; /* Fundo escuro */
+    border: 1px solid #f0f0f0; /* Borda clara */
+    color: #f0f0f0; /* Texto claro */
+    padding: 15px 0;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+/* Cálculo de Frete */
+.calculo-frete {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.calculo-frete input {
+    padding: 10px;
+    border: 1px solid #555; /* Borda do input */
+    background-color: #333; /* Fundo do input */
+    color: #f0f0f0; /* Texto do input */
+    margin: 0 5px;
+    width: 150px;
+}
+
+.calculo-frete input::placeholder {
+    color: #aaa;
+}
+
+.calculo-frete button {
+    padding: 10px 15px;
+    background-color: #f0f0f0; /* Fundo do botão de frete claro */
+    color: #1a1a1a; /* Texto do botão de frete escuro */
+    border: none;
+    cursor: pointer;
+}
+
+/* Abas de Informação */
+.abas-informacao {
+    border-top: 1px solid #444; /* Borda superior das abas */
+    padding-top: 20px;
+}
+
+.abas-informacao .aba {
+    padding: 10px 15px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-right: 10px;
+    font-weight: bold;
+    color: #bbb; /* Cor do texto das abas inativas */
+}
+
+.abas-informacao .aba.active {
+    color: #fff; /* Cor do texto da aba ativa */
+    border-color: #fff; /* Borda da aba ativa */
+}
+
+.conteudo-aba {
+    padding: 20px 0;
+    line-height: 1.6;
+    display: none;
+}
+
+.conteudo-aba.active {
+    display: block;
+}
