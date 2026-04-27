@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeToWear — Painel de Teste</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0d0d0d;
+            --surface: #161616;
+            --border: #2a2a2a;
+            --accent: #c8f03a;
+            --accent2: #f03a6e;
+            --text: #e8e8e8;
+            --muted: #666;
+            --input-bg: #1e1e1e;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 100;
+        }
+        header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        header h1 span { color: var(--accent); }
+        .badge {
+            background: var(--accent2);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 2px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* ── LAYOUT ── */
+        .layout {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            min-height: calc(100vh - 61px);
+        }
+
+        /* ── SIDEBAR ── */
+        nav {
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            position: sticky;
+            top: 61px;
+            height: calc(100vh - 61px);
+            overflow-y: auto;
+        }
+        .nav-group { margin-bottom: 24px; }
+        .nav-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            padding: 0 20px 8px;
+            text-transform: uppercase;
+        }
+        nav a {
+            display: block;
+            padding: 8px 20px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.15s, background 0.15s;
+            border-left: 2px solid transparent;
+        }
+        nav a:hover, nav a.active {
+            color: var(--accent);
+            background: rgba(200,240,58,0.05);
+            border-left-color: var(--accent);
+        }
+
+        /* ── MAIN CONTENT ── */
+        main {
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* ── SECTIONS ── */
+        .section {
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 32px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title .method {
+            background: var(--border);
+            color: var(--muted);
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+        .card-title .method.post { background: #1a3a1a; color: #6fcf6f; }
+        .card-title .method.get  { background: #1a2a3a; color: #6fa8cf; }
+
+        /* ── FORM ELEMENTS ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            padding: 9px 12px;
+            width: 100%;
+            transition: border-color 0.15s;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: var(--accent);
+        }
+        select option { background: var(--surface); }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            text-decoration: none;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary  { background: var(--accent);  color: #0d0d0d; }
+        .btn-danger   { background: var(--accent2);  color: #fff; }
+        .btn-outline  { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-group    { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* ── ROUTE TAG ── */
+        .route-tag {
+            display: inline-block;
+            background: #111;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 3px 10px;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 16px;
+            font-family: 'Space Mono', monospace;
+        }
+        .route-tag span { color: var(--accent2); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Free<span>To</span>Wear</h1>
+    <div class="badge">TEST PANEL</div>
+</header>
+
+<div class="layout">
+
+    <!-- ── SIDEBAR ── -->
+    <nav>
+        <div class="nav-group">
+            <div class="nav-label">Cliente</div>
+            <a href="#" onclick="show('login')" class="active">Login</a>
+            <a href="#" onclick="show('cadastrar')">Cadastrar</a>
+            <a href="#" onclick="show('atualizar')">Atualizar Cadastro</a>
+            <a href="#" onclick="show('deletar')">Deletar Conta</a>
+        </div>
+        <div class="nav-group">
+            <div class="nav-label">Pedidos</div>
+            <a href="#" onclick="show('pedido')">Fazer Pedido</a>
+            <a href="#" onclick="show('finalizar')">Finalizar Pedido</a>
+        </div>
+        <div class="nav-group">
+            <div class="nav-label">Admin</div>
+            <a href="#" onclick="show('admin-produto')">Produtos</a>
+            <a href="#" onclick="show('admin-categoria')">Categorias</a>
+            <a href="#" onclick="show('admin-cupom')">Cupons</a>
+        </div>
+    </nav>
+
+    <!-- ── MAIN ── -->
+    <main>
+
+        <!-- LOGIN -->
+        <div id="login" class="section active">
+            <div class="section-title">Login</div>
+            <div class="section-subtitle">POST /login</div>
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Autenticar Cliente</div>
+                <div class="route-tag"><span>POST</span> /login</div>
+                <form action="/login" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" placeholder="email@exemplo.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" name="senhaHash" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Entrar</button>
+                        <a href="/cadastrar" class="btn btn-outline">Ir para Cadastro</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CADASTRAR -->
+        <div id="cadastrar" class="section">
+            <div class="section-title">Cadastrar Cliente</div>
+            <div class="section-subtitle">POST /cadastrar</div>
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Novo Cliente</div>
+                <div class="route-tag"><span>POST</span> /cadastrar</div>
+                <form action="/cadastrar" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" name="nome" placeholder="João da Silva">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" placeholder="email@exemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" name="senhaHash" placeholder="••••••••">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ATUALIZAR CADASTRO -->
+        <div id="atualizar" class="section">
+            <div class="section-title">Atualizar Cadastro</div>
+            <div class="section-subtitle">POST /atualizarcadastro · POST /endereco/adicionar</div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Atualizar Dados</div>
+                <div class="route-tag"><span>POST</span> /atualizarcadastro</div>
+                <form action="/atualizarcadastro" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email (autenticação)</label>
+                            <input type="email" name="email" placeholder="email@exemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Senha (autenticação)</label>
+                            <input type="password" name="senhaHash" placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label>Novo Nome</label>
+                            <input type="text" name="nome" placeholder="João da Silva">
+                        </div>
+                        <div class="form-group">
+                            <label>CPF</label>
+                            <input type="text" name="cpf" placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Nascimento</label>
+                            <input type="date" name="data_nascimento">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" name="telefone" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Adicionar Endereço</div>
+                <div class="route-tag"><span>POST</span> /endereco/adicionar</div>
+                <form action="/endereco/adicionar" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Cliente</label>
+                            <input type="number" name="idCliente" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>CEP</label>
+                            <input type="text" name="cep" placeholder="00000-000">
+                        </div>
+                        <div class="form-group">
+                            <label>Logradouro</label>
+                            <input type="text" name="logradouro" placeholder="Rua das Flores">
+                        </div>
+                        <div class="form-group">
+                            <label>Número</label>
+                            <input type="text" name="numero" placeholder="123">
+                        </div>
+                        <div class="form-group">
+                            <label>Complemento</label>
+                            <input type="text" name="complemento" placeholder="Apto 4B">
+                        </div>
+                        <div class="form-group">
+                            <label>Bairro</label>
+                            <input type="text" name="bairro" placeholder="Centro">
+                        </div>
+                        <div class="form-group">
+                            <label>Cidade</label>
+                            <input type="text" name="cidade" placeholder="São Paulo">
+                        </div>
+                        <div class="form-group">
+                            <label>UF</label>
+                            <input type="text" name="uf" placeholder="SP" maxlength="2">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px">
+                        <label style="flex-direction:row;align-items:center;gap:8px;cursor:pointer">
+                            <input type="checkbox" name="padrao" value="true" style="width:auto">
+                            Endereço padrão
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar Endereço</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- DELETAR CONTA -->
+        <div id="deletar" class="section">
+            <div class="section-title">Deletar Conta</div>
+            <div class="section-subtitle">POST /deletarconta</div>
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Excluir Cliente</div>
+                <div class="route-tag"><span>POST</span> /deletarconta</div>
+                <form action="/deletarconta" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" placeholder="email@exemplo.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" name="senhaHash" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Deletar Conta</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- PEDIDO -->
+        <div id="pedido" class="section">
+            <div class="section-title">Pedidos</div>
+            <div class="section-subtitle">POST /pedidos · POST /itens-pedido</div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Criar Pedido</div>
+                <div class="route-tag"><span>POST</span> /pedidos</div>
+                <form action="/pedidos" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Cliente</label>
+                            <input type="number" name="idCliente" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Endereço</label>
+                            <input type="number" name="idEndereco" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Cupom (opcional)</label>
+                            <input type="number" name="idCupom" placeholder="—">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Criar Pedido</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Adicionar Item ao Pedido</div>
+                <div class="route-tag"><span>POST</span> /itens-pedido</div>
+                <form action="/itens-pedido" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Pedido</label>
+                            <input type="number" name="idPedido" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Produto</label>
+                            <input type="number" name="idProduto" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Variação</label>
+                            <input type="number" name="idVariacao" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantidade</label>
+                            <input type="number" name="quantidade" placeholder="1" min="1" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar Item</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FINALIZAR PEDIDO -->
+        <div id="finalizar" class="section">
+            <div class="section-title">Finalizar Pedido</div>
+            <div class="section-subtitle">POST /finalizarpedido</div>
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Pagamento</div>
+                <div class="route-tag"><span>POST</span> /finalizarpedido</div>
+                <form action="/finalizarpedido" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Pedido</label>
+                            <input type="number" name="idPedido" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Método de Pagamento</label>
+                            <select name="metodo" required>
+                                <option value="cartao">Cartão</option>
+                                <option value="pix">Pix</option>
+                                <option value="boleto">Boleto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Parcelas (opcional)</label>
+                            <input type="number" name="parcelas" placeholder="1" min="1">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Finalizar Pedido</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADMIN — PRODUTOS -->
+        <div id="admin-produto" class="section">
+            <div class="section-title">Admin · Produtos</div>
+            <div class="section-subtitle">Gerenciar produtos e variações</div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Criar Produto</div>
+                <div class="route-tag"><span>POST</span> /admin/produto/criar</div>
+                <form action="/admin/produto/criar" method="post" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input type="text" name="nome" placeholder="Camiseta Preta">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <input type="text" name="descricao" placeholder="Descrição do produto">
+                        </div>
+                        <div class="form-group">
+                            <label>Preço</label>
+                            <input type="number" step="0.01" name="preco" placeholder="99.90">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor</label>
+                            <input type="text" name="cor" placeholder="Preto">
+                        </div>
+                        <div class="form-group">
+                            <label>Tamanho</label>
+                            <select name="tamanho">
+                                <option>PP</option><option>P</option><option>M</option>
+                                <option>G</option><option>GG</option><option>XG</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estoque</label>
+                            <input type="number" name="estoque" placeholder="50">
+                        </div>
+                        <div class="form-group">
+                            <label>ID Categoria</label>
+                            <input type="number" name="categoriaId" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Imagem</label>
+                            <input type="file" name="imagem">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Criar Produto</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Editar Produto</div>
+                <div class="route-tag"><span>POST</span> /admin/produto/editar</div>
+                <form action="/admin/produto/editar" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Produto</label>
+                            <input type="number" name="idProduto" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>ID Variação</label>
+                            <input type="number" name="idVariacao" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input type="text" name="nome" placeholder="Novo nome">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <input type="text" name="descricao" placeholder="Nova descrição">
+                        </div>
+                        <div class="form-group">
+                            <label>Preço</label>
+                            <input type="number" step="0.01" name="preco" placeholder="99.90">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor</label>
+                            <input type="text" name="cor" placeholder="Branco">
+                        </div>
+                        <div class="form-group">
+                            <label>Tamanho</label>
+                            <select name="tamanho">
+                                <option>PP</option><option>P</option><option>M</option>
+                                <option>G</option><option>GG</option><option>XG</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estoque</label>
+                            <input type="number" name="estoque" placeholder="50">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Edição</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Alterar Preço</div>
+                <div class="route-tag"><span>POST</span> /admin/produto/alterar-preco</div>
+                <form action="/admin/produto/alterar-preco" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Produto</label>
+                            <input type="number" name="id" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Novo Preço</label>
+                            <input type="number" step="0.01" name="novoPreco" placeholder="79.90">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Alterar Preço</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Alterar Categoria</div>
+                <div class="route-tag"><span>POST</span> /admin/produto/alterar-categoria</div>
+                <form action="/admin/produto/alterar-categoria" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Produto</label>
+                            <input type="number" name="idProduto" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>ID Categoria</label>
+                            <input type="number" name="idCategoria" placeholder="2">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Alterar</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Ativar / Desativar Produto</div>
+                <div class="route-tag"><span>POST</span> /admin/produto/ativar · /admin/produto/desativar</div>
+                <form id="formToggleProduto" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Produto</label>
+                            <input type="number" name="id" placeholder="1">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary"
+                                onclick="document.getElementById('formToggleProduto').action='/admin/produto/ativar'">
+                            Ativar
+                        </button>
+                        <button type="submit" class="btn btn-danger"
+                                onclick="document.getElementById('formToggleProduto').action='/admin/produto/desativar'">
+                            Desativar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADMIN — CATEGORIAS -->
+        <div id="admin-categoria" class="section">
+            <div class="section-title">Admin · Categorias</div>
+            <div class="section-subtitle">Gerenciar categorias de produto</div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Criar Categoria</div>
+                <div class="route-tag"><span>POST</span> /admin/categoria/criar</div>
+                <form action="/category/create" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="nome" placeholder="T-Shirts">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Category</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Editar Categoria</div>
+                <div class="route-tag"><span>POST</span> /admin/categoria/editar</div>
+                <form id="formUpdateCategory" action="/category/1" method="post">
+                    <input type="hidden" name="_method" value="PATCH">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Category ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formUpdateCategory').action='/category/' + this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="nome" placeholder="New name">
+                        </div>
+                        <div class="form-group">
+                            <label>Active</label>
+                            <select name="ativo">
+                                <option value="">— no change —</option>
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Category</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADMIN — CUPONS -->
+        <div id="admin-cupom" class="section">
+            <div class="section-title">Admin · Cupons</div>
+            <div class="section-subtitle">Gerenciar cupons de desconto</div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Criar Cupom</div>
+                <div class="route-tag"><span>POST</span> /coupon/create</div>
+                <form action="/coupon/create" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Code</label>
+                            <input type="text" name="codigo" placeholder="PROMO10">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" name="descricao" placeholder="10% off">
+                        </div>
+                        <div class="form-group">
+                            <label>Discount Type</label>
+                            <select name="tipoDesconto">
+                                <option value="percentual">Percentage (%)</option>
+                                <option value="fixo">Fixed (R$)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Discount Value</label>
+                            <input type="number" step="0.01" name="valorDesconto" placeholder="10.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Order Value</label>
+                            <input type="number" step="0.01" name="valorMinimoPedido" placeholder="50.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" name="dataInicio">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" name="dataFim">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Coupon</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="method post">PATCH</span> Update Cupom</div>
+                <div class="route-tag"><span>PATCH</span> /coupon/{id}</div>
+                <form id="formUpdateCoupon" action="/coupon/1" method="post">
+                    <input type="hidden" name="_method" value="PATCH">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Coupon ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formUpdateCoupon').action='/coupon/' + this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Code</label>
+                            <input type="text" name="codigo" placeholder="PROMO10">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" name="descricao" placeholder="10% off">
+                        </div>
+                        <div class="form-group">
+                            <label>Discount Type</label>
+                            <select name="tipoDesconto">
+                                <option value="">— no change —</option>
+                                <option value="percentual">Percentage (%)</option>
+                                <option value="fixo">Fixed (R$)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Discount Value</label>
+                            <input type="number" step="0.01" name="valorDesconto" placeholder="10.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Order Value</label>
+                            <input type="number" step="0.01" name="valorMinimoPedido" placeholder="50.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" name="dataInicio">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" name="dataFim">
+                        </div>
+                        <div class="form-group">
+                            <label>Active</label>
+                            <select name="ativo">
+                                <option value="">— no change —</option>
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Coupon</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    const links = document.querySelectorAll('nav a');
+
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+
+        links.forEach(a => {
+            a.classList.toggle('active', a.getAttribute('onclick')?.includes(id));
+        });
+    }
+</script>
+
+</body>
+</html>

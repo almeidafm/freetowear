@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+      <link rel="stylesheet" th:href="@{/css/index.css}">
+    <title>Document</title>
+</head>
+<body>
+    
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/}">
+      <img th:src="@{/img/logo.png}" alt="Logo" width="140" height="102" class="d-inline-block align-text-top">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/camisaslisas}">Camisas lisas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/trabalhos}">Trabalho</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/contato}">Contato</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/sobrenos}">Sobre Nós</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra | Thug Boys</title>
+    <style>
+        /* CSS para o tema escuro da página de Checkout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            padding: 20px;
+        }
+
+        /* Título e Navegação de Passos */
+        .checkout-header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .checkout-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .passos {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .passos .ativo {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Layout Principal (Forms e Resumo) */
+        .checkout-main {
+            display: flex;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Seção de Formulários (Endereço e Pagamento) */
+        .checkout-forms {
+            flex: 2; /* Ocupa 2/3 da largura */
+        }
+
+        .secao {
+            background-color: #242424;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .secao h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* Estilo de Formulários */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #f0f0f0;
+            border-radius: 4px;
+            font-size: 1em;
+            appearance: none; /* Remove estilo padrão do select */
+        }
+
+        /* Layout para campos lado a lado */
+        .linha-form {
+            display: flex;
+            gap: 20px;
+        }
+        .linha-form .form-group {
+            flex: 1;
+        }
+
+        /* Seção de Resumo do Pedido */
+        .resumo-pedido {
+            flex: 1; /* Ocupa 1/3 da largura */
+            background-color: #242424;
+            padding: 30px;
+            border-radius: 8px;
+            height: fit-content; /* Se ajusta ao conteúdo */
+        }
+
+        .resumo-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .resumo-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .total {
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Botão de Finalizar Compra */
+        .btn-finalizar {
+            width: 100%;
+            background-color: #fff; /* Fundo branco */
+            color: #1a1a1a; /* Texto preto */
+            padding: 15px 0;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-finalizar:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-header">
+        <h1>Finalizar Compra</h1>
+        <div class="passos">
+            <span>1. Carrinho</span>
+            <span class="ativo">2. Entrega & Pagamento</span>
+            <span>3. Confirmação</span>
+        </div>
+    </div>
+
+    <div class="checkout-main">
+        
+        <div class="checkout-forms">
+            
+            <div class="secao">
+                <h2>1. Endereço de Entrega</h2>
+                <form>
+                    <div class="linha-form">
+                        <div class="form-group">
+                            <label for="cep">CEP</label>
+                            <input type="text" id="cep" placeholder="00000-000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rua">Rua</label>
+                            <input type="text" id="rua" placeholder="Rua de Exemplo" required>
+                        </div>
+                    </div>
+
+                    <div class="linha-form">
+                        <div class="form-group" style="flex: 0.3;">
+                            <label for="numero">Nº</label>
+                            <input type="text" id="numero" placeholder="123" required>
+                        </div>
+                        <div class="form-group" style="flex: 0.7;">
+                            <label for="complemento">Complemento (Opcional)</label>
+                            <input type="text" id="complemento" placeholder="Apto, Bloco, Casa">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" placeholder="Seu Bairro" required>
+                    </div>
+
+                    <div class="linha-form">
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" placeholder="Sua Cidade" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select id="estado" required>
+                                <option value="" disabled selected>Selecione</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="secao">
+                <h2>2. Método de Pagamento</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="cartao_numero">Número do Cartão</label>
+                        <input type="text" id="cartao_numero" placeholder="**** **** **** 1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cartao_nome">Nome Impresso no Cartão</label>
+                        <input type="text" id="cartao_nome" placeholder="Nome Completo" required>
+                    </div>
+
+                    <div class="linha-form">
+                        <div class="form-group">
+                            <label for="cartao_validade">Validade</label>
+                            <input type="text" id="cartao_validade" placeholder="MM/AA" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cartao_cvv">CVV</label>
+                            <input type="text" id="cartao_cvv" placeholder="123" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+
+        <div class="resumo-pedido">
+            <h2>Resumo do Pedido</h2>
+            
+            <div class="resumo-item">
+                <span>Camiseta Thug Boys (Preta, G)</span>
+                <span>R$ 189,99</span>
+            </div>
+            
+            <div class="resumo-item">
+                <span>Camiseta Thug Nine (Branca, M)</span>
+                <span>R$ 179,99</span>
+            </div>
+
+            <div class="resumo-item">
+                <span>Frete</span>
+                <span>R$ 25,00</span>
+            </div>
+
+            <div class="total">
+                <span>TOTAL</span>
+                <span>R$ 394,98</span>
+            </div>
+
+            <A th:href="@{confirmacao}"><button class="btn-finalizar">FINALIZAR COMPRA</button></A>
+                
+            
+        </div>
+
+    </div>
+</body>
+</html>
+
+
+
+
+
+</body>
+</html>
