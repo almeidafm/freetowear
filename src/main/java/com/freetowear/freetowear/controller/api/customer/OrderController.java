@@ -1,11 +1,13 @@
 package com.freetowear.freetowear.controller.api.customer;
 
-import com.freetowear.freetowear.model.*;
+import com.freetowear.freetowear.entity.*;
 import com.freetowear.freetowear.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,21 +15,21 @@ import java.util.Optional;
 
 /*
  * OrderController — manages customer orders.
- * POST   /order
- * POST   /order/item
- * POST   /order/finish
- * POST   /order/cancel
- * GET    /orders
- * GET    /orders/{id}
- * GET    /orders/{id}/tracking
- * PATCH  /orders/{id}/address
- * PATCH  /orders/{id}/payment
- * PATCH  /orders/{id}/item
- * PATCH  /orders/{id}/item/remove
+ * POST   /order ✔
+ * POST   /order/{id}/item ✔
+ * POST   /order/{id}/cancel ⏳
+ * POST   /order/{id}/finish ✔
+ * GET    /order ⏳
+ * GET    /order/{id} ⏳
+ * GET    /order/{id}/tracking ⏳
+ * PATCH  /order/{id} ⏳
+ * PATCH  /order/{id}/item/{idItem} ⏳
+ * DELETE  /order/{id} ⏳
+ * DELETE  /order/{id}/item/{idItem} ⏳
  * */
-
 @Controller
-public class PedidoController {
+@RequestMapping("/order")
+public class OrderController {
 
     @Autowired
     private PedidoRepository pedidoRepository;
@@ -50,8 +52,8 @@ public class PedidoController {
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
-    @PostMapping("/pedidos")
-    public String criarPedido(
+    @PostMapping
+    public String createOrder(
             @RequestParam Integer idCliente,
             @RequestParam Integer idEndereco,
             @RequestParam(required = false) Integer idCupom,
@@ -86,15 +88,15 @@ public class PedidoController {
         return "redirect:/";
     }
 
-    @PostMapping("/itens-pedido")
-    public String adicionarItem(
-            @RequestParam Integer idPedido,
+    @PostMapping("/{id}/item")
+    public String addItem(
+            @PathVariable Integer id,
             @RequestParam Integer idProduto,
             @RequestParam Integer idVariacao,
             @RequestParam Integer quantidade
     ) {
 
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(id);
         Optional<Produto> produtoOpt = produtoRepository.findById(idProduto);
         Optional<Produto> variacaoOpt = produtoRepository.findById(idVariacao);
 
@@ -116,14 +118,14 @@ public class PedidoController {
         return "redirect:/";
     }
 
-    @PostMapping("/finalizarpedido")
-    public String finalizarPedido(
-            @RequestParam Integer idPedido,
+    @PostMapping("/{id}/finish")
+    public String finishOrder(
+            @PathVariable Integer id,
             @RequestParam Pagamento.MetodoPagamento metodo,
             @RequestParam(required = false) Integer parcelas
     ) {
 
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(id);
 
         if (pedidoOpt.isEmpty()) {
             return "erro";
@@ -150,4 +152,3 @@ public class PedidoController {
         return "redirect:/";
     }
 }
-

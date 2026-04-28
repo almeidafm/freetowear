@@ -1,6 +1,6 @@
 package com.freetowear.freetowear.controller.api.admin;
 
-import com.freetowear.freetowear.model.Categoria;
+import com.freetowear.freetowear.entity.Categoria;
 import com.freetowear.freetowear.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
