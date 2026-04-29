@@ -1,7 +1,0 @@
-package com.freetowear.freetowear.repository;
-
-import com.freetowear.freetowear.model.Cupom;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface CupomRepository extends JpaRepository<Cupom, Integer> {
-}
