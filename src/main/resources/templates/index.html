@@ -247,14 +247,14 @@
         </div>
         <div class="nav-group">
             <div class="nav-label">Pedidos</div>
-            <a href="#" onclick="show('pedido')">Fazer Pedido</a>
+            <a href="#" onclick="show('order')">Fazer Pedido</a>
             <a href="#" onclick="show('finalizar')">Finalizar Pedido</a>
         </div>
         <div class="nav-group">
             <div class="nav-label">Admin</div>
-            <a href="#" onclick="show('admin-produto')">Produtos</a>
-            <a href="#" onclick="show('admin-categoria')">Categorias</a>
-            <a href="#" onclick="show('admin-cupom')">Cupons</a>
+            <a href="#" onclick="show('admin-product')">Produtos</a>
+            <a href="#" onclick="show('admin-category')">Categorias</a>
+            <a href="#" onclick="show('admin-coupon')">Cupons</a>
         </div>
     </nav>
 
@@ -317,7 +317,7 @@
         <!-- ATUALIZAR CADASTRO -->
         <div id="atualizar" class="section">
             <div class="section-title">Atualizar Cadastro</div>
-            <div class="section-subtitle">POST /atualizarcadastro · POST /endereco/adicionar</div>
+            <div class="section-subtitle">POST /atualizarcadastro · POST /address/adicionar</div>
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Atualizar Dados</div>
@@ -355,8 +355,8 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Adicionar Endereço</div>
-                <div class="route-tag"><span>POST</span> /endereco/adicionar</div>
-                <form action="/endereco/adicionar" method="post">
+                <div class="route-tag"><span>POST</span> /address/adicionar</div>
+                <form action="/address/adicionar" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>ID Cliente</label>
@@ -426,9 +426,9 @@
         </div>
 
         <!-- PEDIDO -->
-        <div id="pedido" class="section">
+        <div id="order" class="section">
             <div class="section-title">Pedidos</div>
-            <div class="section-subtitle">POST /pedidos · POST /itens-pedido</div>
+            <div class="section-subtitle">POST /pedidos · POST /itens-order</div>
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Criar Pedido</div>
@@ -454,8 +454,8 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Adicionar Item ao Pedido</div>
-                <div class="route-tag"><span>POST</span> /itens-pedido</div>
-                <form action="/itens-pedido" method="post">
+                <div class="route-tag"><span>POST</span> /itens-order</div>
+                <form action="/itens-order" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>ID Pedido</label>
@@ -511,14 +511,14 @@
         </div>
 
         <!-- ADMIN — PRODUTOS -->
-        <div id="admin-produto" class="section">
+        <div id="admin-product" class="section">
             <div class="section-title">Admin · Produtos</div>
             <div class="section-subtitle">Gerenciar produtos e variações</div>
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Criar Produto</div>
-                <div class="route-tag"><span>POST</span> /admin/produto/criar</div>
-                <form action="/admin/produto/criar" method="post" enctype="multipart/form-data">
+                <div class="route-tag"><span>POST</span> /admin/product/criar</div>
+                <form action="/admin/product/criar" method="post" enctype="multipart/form-data">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Nome</label>
@@ -526,7 +526,7 @@
                         </div>
                         <div class="form-group">
                             <label>Descrição</label>
-                            <input type="text" name="descricao" placeholder="Descrição do produto">
+                            <input type="text" name="descricao" placeholder="Descrição do product">
                         </div>
                         <div class="form-group">
                             <label>Preço</label>
@@ -562,8 +562,8 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Editar Produto</div>
-                <div class="route-tag"><span>POST</span> /admin/produto/editar</div>
-                <form action="/admin/produto/editar" method="post">
+                <div class="route-tag"><span>POST</span> /admin/product/editar</div>
+                <form action="/admin/product/editar" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>ID Produto</label>
@@ -607,8 +607,8 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Alterar Preço</div>
-                <div class="route-tag"><span>POST</span> /admin/produto/alterar-preco</div>
-                <form action="/admin/produto/alterar-preco" method="post">
+                <div class="route-tag"><span>POST</span> /admin/product/alterar-preco</div>
+                <form action="/admin/product/alterar-preco" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>ID Produto</label>
@@ -625,8 +625,8 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Alterar Categoria</div>
-                <div class="route-tag"><span>POST</span> /admin/produto/alterar-categoria</div>
-                <form action="/admin/produto/alterar-categoria" method="post">
+                <div class="route-tag"><span>POST</span> /admin/product/alterar-category</div>
+                <form action="/admin/product/alterar-category" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>ID Produto</label>
@@ -643,7 +643,7 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Ativar / Desativar Produto</div>
-                <div class="route-tag"><span>POST</span> /admin/produto/ativar · /admin/produto/desativar</div>
+                <div class="route-tag"><span>POST</span> /admin/product/ativar · /admin/product/desativar</div>
                 <form id="formToggleProduto" method="post">
                     <div class="form-grid">
                         <div class="form-group">
@@ -653,11 +653,11 @@
                     </div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary"
-                                onclick="document.getElementById('formToggleProduto').action='/admin/produto/ativar'">
+                                onclick="document.getElementById('formToggleProduto').action='/admin/product/ativar'">
                             Ativar
                         </button>
                         <button type="submit" class="btn btn-danger"
-                                onclick="document.getElementById('formToggleProduto').action='/admin/produto/desativar'">
+                                onclick="document.getElementById('formToggleProduto').action='/admin/product/desativar'">
                             Desativar
                         </button>
                     </div>
@@ -666,13 +666,13 @@
         </div>
 
         <!-- ADMIN — CATEGORIAS -->
-        <div id="admin-categoria" class="section">
+        <div id="admin-category" class="section">
             <div class="section-title">Admin · Categorias</div>
-            <div class="section-subtitle">Gerenciar categorias de produto</div>
+            <div class="section-subtitle">Gerenciar categorias de product</div>
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Criar Categoria</div>
-                <div class="route-tag"><span>POST</span> /admin/categoria/criar</div>
+                <div class="route-tag"><span>POST</span> /admin/category/criar</div>
                 <form action="/category/create" method="post">
                     <div class="form-grid">
                         <div class="form-group">
@@ -686,7 +686,7 @@
 
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Editar Categoria</div>
-                <div class="route-tag"><span>POST</span> /admin/categoria/editar</div>
+                <div class="route-tag"><span>POST</span> /admin/category/editar</div>
                 <form id="formUpdateCategory" action="/category/1" method="post">
                     <input type="hidden" name="_method" value="PATCH">
                     <div class="form-grid">
@@ -714,7 +714,7 @@
         </div>
 
         <!-- ADMIN — CUPONS -->
-        <div id="admin-cupom" class="section">
+        <div id="admin-coupon" class="section">
             <div class="section-title">Admin · Cupons</div>
             <div class="section-subtitle">Gerenciar cupons de desconto</div>
 

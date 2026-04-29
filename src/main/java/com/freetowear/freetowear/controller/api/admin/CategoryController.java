@@ -1,13 +1,13 @@
 package com.freetowear.freetowear.controller.api.admin;
 
-import com.freetowear.freetowear.entity.Categoria;
-import com.freetowear.freetowear.repository.CategoriaRepository;
+import com.freetowear.freetowear.entity.Category;
+import com.freetowear.freetowear.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /*
- * CategoriaController — manages product categories.
+ * CategoryController — manages product categories.
  * POST   /category/create ✔
  * GET    /category ⏳
  * GET    /category/{id} ⏳
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     @Autowired
-    private CategoriaRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @PostMapping("/create")
-    public String createCategory(@RequestParam String nome) {
-        Categoria categoria = new Categoria();
-        categoria.setNome(nome);
-        categoryRepository.save(categoria);
+    public String createCategory(@RequestParam String name) {
+        Category category = new Category();
+        category.setName(name);
+        categoryRepository.save(category);
 
         return "redirect:/";
     }
@@ -32,14 +32,14 @@ public class CategoryController {
     @PatchMapping("/{id}")
     public String updateCategory(
             @PathVariable Integer id,
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false) Boolean ativo
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Boolean active
     ) {
-        categoryRepository.findById(id).ifPresent(categoria -> {
-            if (nome != null && !nome.isEmpty()) categoria.setNome(nome);
-            if (ativo != null) categoria.setAtivo(ativo);
+        categoryRepository.findById(id).ifPresent(category -> {
+            if (name != null && !name.isEmpty()) category.setName(name);
+            if (active != null) category.setActive(active);
 
-            categoryRepository.save(categoria);
+            categoryRepository.save(category);
         });
 
         return "redirect:/";

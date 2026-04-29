@@ -1,9 +1,9 @@
 package com.freetowear.freetowear.controller.api.customer;
 
-import com.freetowear.freetowear.entity.Cliente;
-import com.freetowear.freetowear.entity.Endereco;
-import com.freetowear.freetowear.repository.ClienteRepository;
-import com.freetowear.freetowear.repository.EnderecoRepository;
+import com.freetowear.freetowear.entity.Customer;
+import com.freetowear.freetowear.entity.Address;
+import com.freetowear.freetowear.repository.CustomerRepository;
+import com.freetowear.freetowear.repository.AddressRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,23 +27,23 @@ import java.time.LocalDate;
 public class AccountController {
 
     @Autowired
-    private ClienteRepository accountRepository;
+    private CustomerRepository accountRepository;
 
     @Autowired
-    private EnderecoRepository addressRepository;
+    private AddressRepository addressRepository;
 
     @PostMapping("/register")
-    public String register(@Valid Cliente cliente, BindingResult result) {
+    public String register(@Valid Customer customer, BindingResult result) {
         if (result.hasErrors()) return "redirect:/register";
-        accountRepository.save(cliente);
+        accountRepository.save(customer);
         return "redirect:/";
     }
 
     @DeleteMapping("/{id}")
     public String deleteAccount(@PathVariable Integer id) {
-        accountRepository.findById(id).ifPresent(cliente -> {
-            cliente.setAtivo(false);
-            accountRepository.save(cliente);
+        accountRepository.findById(id).ifPresent(customer-> {
+            customer.setActive(false);
+            accountRepository.save(customer);
         });
         return "redirect:/";
     }
@@ -51,18 +51,18 @@ public class AccountController {
     @PatchMapping("/{id}")
     public String updateAccount(
             @PathVariable Integer id,
-            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String cpf,
-            @RequestParam(required = false) String dataNascimento,
-            @RequestParam(required = false) String telefone
+            @RequestParam(required = false) String birthDate,
+            @RequestParam(required = false) String phone
     ) {
-        accountRepository.findById(id).ifPresent(cliente -> {
-            if (nome != null && !nome.isEmpty()) cliente.setNome(nome);
-            if (cpf != null && !cpf.isEmpty()) cliente.setCpf(cpf);
-            if (dataNascimento != null && !dataNascimento.isEmpty())
-                cliente.setData_nascimento(LocalDate.parse(dataNascimento));
-            if (telefone != null && !telefone.isEmpty()) cliente.setTelefone(telefone);
-            accountRepository.save(cliente);
+        accountRepository.findById(id).ifPresent(customer -> {
+            if (name != null && !name.isEmpty()) customer.setName(name);
+            if (cpf != null && !cpf.isEmpty()) customer.setCpf(cpf);
+            if (birthDate != null && !birthDate.isEmpty())
+                customer.setBirthDate(LocalDate.parse(birthDate));
+            if (phone != null && !phone.isEmpty()) customer.setPhone(phone);
+            accountRepository.save(customer);
         });
         return "redirect:/account/" + id;
     }
@@ -71,26 +71,26 @@ public class AccountController {
     public String addAddress(
             @PathVariable Integer id,
             @RequestParam String cep,
-            @RequestParam String logradouro,
-            @RequestParam(required = false) String numero,
-            @RequestParam(required = false) String complemento,
-            @RequestParam String bairro,
-            @RequestParam String cidade,
-            @RequestParam String uf,
-            @RequestParam(required = false, defaultValue = "false") Boolean padrao
+            @RequestParam String street,
+            @RequestParam(required = false) String number,
+            @RequestParam(required = false) String complement,
+            @RequestParam String neighborhood,
+            @RequestParam String city,
+            @RequestParam String state,
+            @RequestParam(required = false, defaultValue = "false") Boolean defaultAddress
     ) {
-        accountRepository.findById(id).ifPresent(cliente -> {
-            Endereco endereco = new Endereco();
-            endereco.setCliente(cliente);
-            endereco.setCep(cep);
-            endereco.setLogradouro(logradouro);
-            endereco.setNumero(numero);
-            endereco.setComplemento(complemento);
-            endereco.setBairro(bairro);
-            endereco.setCidade(cidade);
-            endereco.setUf(uf);
-            endereco.setPadrao(padrao);
-            addressRepository.save(endereco);
+        accountRepository.findById(id).ifPresent(customer -> {
+            Address address = new Address();
+            address.setCustomer(customer);
+            address.setCep(cep);
+            address.setStreet(street);
+            address.setNumber(number);
+            address.setComplement(complement);
+            address.setNeighborhood(neighborhood);
+            address.setCity(city);
+            address.setState(state);
+            address.setDefaultAddress(defaultAddress);
+            addressRepository.save(address);
         });
         return "redirect:/account/" + id;
     }

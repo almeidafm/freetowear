@@ -32,58 +32,61 @@ import java.util.Optional;
 public class OrderController {
 
     @Autowired
-    private PedidoRepository pedidoRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private  ProdutoRepository produtoRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    private EnderecoRepository enderecoRepository;
+    private AddressRepository addressRepository;
 
     @Autowired
-    private ItemPedidoRepository itemPedidoRepository;
+    private OrderItemRepository orderItemRepository;
 
     @Autowired
-    private CupomRepository cupomRepository;
+    private CouponRepository couponRepository;
 
     @Autowired
-    private PagamentoRepository pagamentoRepository;
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private ProductVariationRepository variationRepository;
 
     @PostMapping
     public String createOrder(
-            @RequestParam Integer idCliente,
-            @RequestParam Integer idEndereco,
-            @RequestParam(required = false) Integer idCupom,
+            @RequestParam Integer idCustomer,
+            @RequestParam Integer idAddress,
+            @RequestParam(required = false) Integer idCoupon,
             Model model
     ) {
 
-        Optional<Cliente> clienteOpt = clienteRepository.findById(idCliente);
-        Optional<Endereco> enderecoOpt = enderecoRepository.findById(idEndereco);
+        Optional<Customer> customerOpt = customerRepository.findById(idCustomer);
+        Optional<Address> addressOpt = addressRepository.findById(idAddress);
 
-        if (clienteOpt.isEmpty() || enderecoOpt.isEmpty()) {
+        if (customerOpt.isEmpty() || addressOpt.isEmpty()) {
             model.addAttribute("erro", "Cliente ou endereço não encontrado");
             return "erro";
         }
 
-        Pedido pedido = new Pedido();
-        pedido.setCliente(clienteOpt.get());
-        pedido.setEnderecoEntrega(enderecoOpt.get());
+        Order order = new Order();
+        order.setCustomer(customerOpt.get());
+        order.setDeliveryAddress(addressOpt.get());
 
-        if (idCupom != null) {
-            cupomRepository.findById(idCupom).ifPresent(pedido::setCupom);
+        if (idCoupon != null) {
+            couponRepository.findById(idCoupon).ifPresent(order::setCoupon);
         }
 
-        pedido.setValor_produtos(new BigDecimal("100.00"));
-        pedido.setValor_frete(new BigDecimal("20.00"));
+        order.setProductsValue(new BigDecimal("100.00"));
+        order.setShippingPrice(new BigDecimal("20.00"));
 
-        if (pedido.getCupom() != null) {
-            pedido.setValor_desconto(new BigDecimal("10.00"));
+        if (order.getCoupon() != null) {
+            order.setDiscountValue(new BigDecimal("10.00"));
         }
 
-        pedidoRepository.save(pedido);
+        orderRepository.save(order);
 
         return "redirect:/";
     }
@@ -91,29 +94,29 @@ public class OrderController {
     @PostMapping("/{id}/item")
     public String addItem(
             @PathVariable Integer id,
-            @RequestParam Integer idProduto,
-            @RequestParam Integer idVariacao,
-            @RequestParam Integer quantidade
+            @RequestParam Integer idProduct,
+            @RequestParam Integer idVariation,
+            @RequestParam Integer quantity
     ) {
 
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(id);
-        Optional<Produto> produtoOpt = produtoRepository.findById(idProduto);
-        Optional<Produto> variacaoOpt = produtoRepository.findById(idVariacao);
+        Optional<Order> orderOpt = orderRepository.findById(id);
+        Optional<Product> productOpt = productRepository.findById(idProduct);
+        Optional<ProductVariation> variacaoOpt = variationRepository.findById(idVariation);
 
-        if (pedidoOpt.isEmpty() || produtoOpt.isEmpty() || variacaoOpt.isEmpty()) {
+        if (orderOpt.isEmpty() || productOpt.isEmpty() || variacaoOpt.isEmpty()) {
             return "erro";
         }
 
-        ItemPedido item = new ItemPedido();
-        item.setPedido(pedidoOpt.get());
-        item.setProduto(produtoOpt.get());
-        item.setProdutoVariacao(variacaoOpt.get());
-        item.setQuantidade(quantidade);
+        OrderItem item = new OrderItem();
+        item.setOrder(orderOpt.get());
+        item.setProduct(productOpt.get());
+        item.setProductVariation(variacaoOpt.get());
+        item.setQuantity(quantity);
 
-        BigDecimal preco = produtoOpt.get().getPreco();
-        item.setPreco_unitario(preco);
+        BigDecimal price = productOpt.get().getPrice();
+        item.setUnitPrice(price);
 
-        itemPedidoRepository.save(item);
+        orderItemRepository.save(item);
 
         return "redirect:/";
     }
@@ -121,33 +124,33 @@ public class OrderController {
     @PostMapping("/{id}/finish")
     public String finishOrder(
             @PathVariable Integer id,
-            @RequestParam Pagamento.MetodoPagamento metodo,
-            @RequestParam(required = false) Integer parcelas
+            @RequestParam Payment.PaymentMethod method,
+            @RequestParam(required = false) Integer installment
     ) {
 
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(id);
+        Optional<Order> orderOpt = orderRepository.findById(id);
 
-        if (pedidoOpt.isEmpty()) {
+        if (orderOpt.isEmpty()) {
             return "erro";
         }
 
-        Pedido pedido = pedidoOpt.get();
+        Order order = orderOpt.get();
 
-        Pagamento pagamento = new Pagamento();
-        pagamento.setPedido(pedido);
-        pagamento.setMetodo(metodo);
-        pagamento.setValor_pago(pedido.getValor_total());
-        pagamento.setStatus(Pagamento.StatusPagamento.PENDENTE);
-        pagamento.setData_pagamento(LocalDateTime.now());
+        Payment payment = new Payment();
+        payment.setOrder(order);
+        payment.setMethod(method);
+        payment.setAmountPaid(order.getTotalValue());
+        payment.setStatus(Payment.PaymentStatus.PENDING);
+        payment.setPaidAt(LocalDateTime.now());
 
-        if (parcelas != null) {
-            pagamento.setParcelas(parcelas);
+        if (installment != null) {
+            payment.setInstallments(installment);
         }
 
-        pagamentoRepository.save(pagamento);
+        paymentRepository.save(payment);
 
-        pedido.setStatus(Pedido.StatusPedido.pago);
-        pedidoRepository.save(pedido);
+        order.setStatus(Order.OrderStatus.PAID);
+        orderRepository.save(order);
 
         return "redirect:/";
     }

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 /*
  * WebController — maps GET routes to Thymeleaf templates. No business logic.
  * */
-
 @Controller
 public class WebController {
 

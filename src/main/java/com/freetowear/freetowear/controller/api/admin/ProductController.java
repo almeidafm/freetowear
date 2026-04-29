@@ -1,10 +1,10 @@
 package com.freetowear.freetowear.controller.api.admin;
 
-import com.freetowear.freetowear.entity.Categoria;
-import com.freetowear.freetowear.entity.Produto;
-import com.freetowear.freetowear.entity.ProdutoVariacao;
-import com.freetowear.freetowear.repository.CategoriaRepository;
-import com.freetowear.freetowear.repository.ProdutoRepository;
+import com.freetowear.freetowear.entity.Category;
+import com.freetowear.freetowear.entity.Product;
+import com.freetowear.freetowear.entity.ProductVariation;
+import com.freetowear.freetowear.repository.CategoryRepository;
+import com.freetowear.freetowear.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +20,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 /*
- * ProductController — manages products.
- * POST   /produto/create
- * GET    /produto
- * GET    /produto/{id}
- * PATCH  /produto/{id}
+ * ProductController — manages products. (admin only)
+ * POST   /product/create
+ * GET    /product
+ * GET    /product/{id}
+ * PATCH  /product/{id}
  * */
 @Controller
 @RequestMapping("/product")
@@ -33,57 +33,56 @@ public class ProductController {
     private final String UPLOAD_DIR = "src/main/resources/static/uploads/";
 
     @Autowired
-    private ProdutoRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    private CategoriaRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @PostMapping("/create")
     public String createProduct(
-            @RequestParam String nome,
-            @RequestParam(required = false) String descricao,
-            @RequestParam BigDecimal preco,
-            @RequestParam String cor,
-            @RequestParam ProdutoVariacao.Tamanho tamanho,
-            @RequestParam Integer estoque,
-            @RequestParam Integer categoriaId,
-            @RequestParam("imagem") MultipartFile imagem
+            @RequestParam String name,
+            @RequestParam(required = false) String description,
+            @RequestParam BigDecimal price,
+            @RequestParam String color,
+            @RequestParam ProductVariation.Size size,
+            @RequestParam Integer stock,
+            @RequestParam Integer categoryId,
+            @RequestParam("image") MultipartFile image
     ) {
-
         try {
-            String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
-            Path caminho = Paths.get(UPLOAD_DIR + nomeArquivo);
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
 
-            Files.createDirectories(caminho.getParent());
-            Files.write(caminho, imagem.getBytes());
+            Files.createDirectories(path.getParent());
+            Files.write(path, image.getBytes());
 
-            String imagemPath = "uploads/" + nomeArquivo;
+            String imagePath = "uploads/" + fileName;
 
-            Optional<Categoria> categoriaOpt = categoryRepository.findById(categoriaId);
-            if (categoriaOpt.isEmpty()) {
-                return "redirect:/erro";
+            Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
+            if (categoryOpt.isEmpty()) {
+                return "redirect:/error";
             }
 
-            Produto produto = new Produto();
-            produto.setNome(nome);
-            produto.setDescricao(descricao);
-            produto.setPreco(preco);
-            produto.setImagemUrl(imagemPath);
-            produto.setCategoria(categoriaOpt.get());
+            Product product = new Product();
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setImageUrl(imagePath);
+            product.setCategory(categoryOpt.get());
 
-            ProdutoVariacao variacao = new ProdutoVariacao();
-            variacao.setCor(cor);
-            variacao.setTamanho(tamanho);
-            variacao.setEstoque(estoque);
-            variacao.setProduto(produto);
+            ProductVariation variation = new ProductVariation();
+            variation.setColor(color);
+            variation.setSize(size);
+            variation.setStock(stock);
+            variation.setProduct(product);
 
-            produto.setVariacoes(List.of(variacao));
+            product.setVariations(List.of(variation));
 
-            productRepository.save(produto);
+            productRepository.save(product);
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "redirect:/erro";
+            return "redirect:/error";
         }
 
         return "redirect:/";
@@ -91,22 +90,16 @@ public class ProductController {
 
     @GetMapping
     public String listProducts(Model model) {
-
-        List<Produto> produtos = productRepository.findByAtivoTrue();
-
-        model.addAttribute("produtos", produtos);
-
-        return "produtos";
+        List<Product> products = productRepository.findByActiveTrue();
+        model.addAttribute("products", products);
+        return "products";
     }
 
     @GetMapping("/{id}")
     public String showProduct(@PathVariable Integer id, Model model) {
-
-        Produto produto = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-
-        model.addAttribute("produto", produto);
-
-        return "produto";
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        model.addAttribute("product", product);
+        return "product";
     }
 }

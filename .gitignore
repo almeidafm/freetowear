@@ -36,3 +36,6 @@ Thumbs.db
 
 # Local notes
 note.txt
+DataConfiguration.java
+application.properties
+FreeToWearApplicationTests.java
