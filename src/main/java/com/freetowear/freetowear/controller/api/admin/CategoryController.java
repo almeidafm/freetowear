@@ -1,7 +1,8 @@
 package com.freetowear.freetowear.controller.api.admin;
 
-import com.freetowear.freetowear.entity.Category;
-import com.freetowear.freetowear.repository.CategoryRepository;
+import com.freetowear.freetowear.dto.request.category.CreateCategoryRequest;
+import com.freetowear.freetowear.dto.request.category.UpdateCategoryRequest;
+import com.freetowear.freetowear.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     @PostMapping("/create")
     public String createCategory(@RequestParam String name) {
-        Category category = new Category();
-        category.setName(name);
-        categoryRepository.save(category);
-
+        categoryService.createCategory(new CreateCategoryRequest(name));
         return "redirect:/";
     }
 
@@ -35,13 +33,7 @@ public class CategoryController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean active
     ) {
-        categoryRepository.findById(id).ifPresent(category -> {
-            if (name != null && !name.isEmpty()) category.setName(name);
-            if (active != null) category.setActive(active);
-
-            categoryRepository.save(category);
-        });
-
+        categoryService.updateCategory(id, new UpdateCategoryRequest(name, active));
         return "redirect:/";
     }
 }
