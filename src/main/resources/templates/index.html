@@ -156,8 +156,10 @@
             padding: 2px 6px;
             border-radius: 2px;
         }
-        .card-title .method.post { background: #1a3a1a; color: #6fcf6f; }
-        .card-title .method.get  { background: #1a2a3a; color: #6fa8cf; }
+        .card-title .method.post   { background: #1a3a1a; color: #6fcf6f; }
+        .card-title .method.get    { background: #1a2a3a; color: #6fa8cf; }
+        .card-title .method.patch  { background: #3a2a1a; color: #cfa86f; }
+        .card-title .method.delete { background: #3a1a1a; color: #cf6f6f; }
 
         /* ── FORM ELEMENTS ── */
         .form-grid {
@@ -239,445 +241,339 @@
     <!-- ── SIDEBAR ── -->
     <nav>
         <div class="nav-group">
-            <div class="nav-label">Cliente</div>
-            <a href="#" onclick="show('login')" class="active">Login</a>
-            <a href="#" onclick="show('cadastrar')">Cadastrar</a>
-            <a href="#" onclick="show('atualizar')">Atualizar Cadastro</a>
-            <a href="#" onclick="show('deletar')">Deletar Conta</a>
+            <div class="nav-label">Account</div>
+            <a href="#" onclick="show('register')" class="active">Register</a>
+            <a href="#" onclick="show('update-account')">Update Account</a>
+            <a href="#" onclick="show('add-address')">Add Address</a>
+            <a href="#" onclick="show('delete-account')">Delete Account</a>
         </div>
         <div class="nav-group">
-            <div class="nav-label">Pedidos</div>
-            <a href="#" onclick="show('order')">Fazer Pedido</a>
-            <a href="#" onclick="show('finalizar')">Finalizar Pedido</a>
+            <div class="nav-label">Orders</div>
+            <a href="#" onclick="show('create-order')">Create Order</a>
+            <a href="#" onclick="show('add-item')">Add Item</a>
+            <a href="#" onclick="show('finish-order')">Finish Order</a>
         </div>
         <div class="nav-group">
             <div class="nav-label">Admin</div>
-            <a href="#" onclick="show('admin-product')">Produtos</a>
-            <a href="#" onclick="show('admin-category')">Categorias</a>
-            <a href="#" onclick="show('admin-coupon')">Cupons</a>
+            <a href="#" onclick="show('admin-product')">Products</a>
+            <a href="#" onclick="show('admin-category')">Categories</a>
+            <a href="#" onclick="show('admin-coupon')">Coupons</a>
         </div>
     </nav>
 
     <!-- ── MAIN ── -->
     <main>
 
-        <!-- LOGIN -->
-        <div id="login" class="section active">
-            <div class="section-title">Login</div>
-            <div class="section-subtitle">POST /login</div>
+        <!-- REGISTER -->
+        <div id="register" class="section active">
+            <div class="section-title">Register</div>
+            <div class="section-subtitle">POST /account/register</div>
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Autenticar Cliente</div>
-                <div class="route-tag"><span>POST</span> /login</div>
-                <form action="/login" method="post">
+                <div class="card-title"><span class="method post">POST</span> Register Customer</div>
+                <div class="route-tag"><span>POST</span> /account/register</div>
+                <form action="/account/register" method="post">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" placeholder="email@exemplo.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Senha</label>
-                            <input type="password" name="senhaHash" placeholder="••••••••" required>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary">Entrar</button>
-                        <a href="/cadastrar" class="btn btn-outline">Ir para Cadastro</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- CADASTRAR -->
-        <div id="cadastrar" class="section">
-            <div class="section-title">Cadastrar Cliente</div>
-            <div class="section-subtitle">POST /cadastrar</div>
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Novo Cliente</div>
-                <div class="route-tag"><span>POST</span> /cadastrar</div>
-                <form action="/cadastrar" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nome Completo</label>
-                            <input type="text" name="nome" placeholder="João da Silva">
+                            <label>Name</label>
+                            <input type="text" name="name" placeholder="John Doe" required>
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" name="email" placeholder="email@exemplo.com">
+                            <input type="email" name="email" placeholder="email@example.com" required>
                         </div>
                         <div class="form-group">
-                            <label>Senha</label>
-                            <input type="password" name="senhaHash" placeholder="••••••••">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- ATUALIZAR CADASTRO -->
-        <div id="atualizar" class="section">
-            <div class="section-title">Atualizar Cadastro</div>
-            <div class="section-subtitle">POST /atualizarcadastro · POST /address/adicionar</div>
-
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Atualizar Dados</div>
-                <div class="route-tag"><span>POST</span> /atualizarcadastro</div>
-                <form action="/atualizarcadastro" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Email (autenticação)</label>
-                            <input type="email" name="email" placeholder="email@exemplo.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Senha (autenticação)</label>
-                            <input type="password" name="senhaHash" placeholder="••••••••">
-                        </div>
-                        <div class="form-group">
-                            <label>Novo Nome</label>
-                            <input type="text" name="nome" placeholder="João da Silva">
+                            <label>Password</label>
+                            <input type="password" name="password" placeholder="••••••••" required>
                         </div>
                         <div class="form-group">
                             <label>CPF</label>
                             <input type="text" name="cpf" placeholder="000.000.000-00">
                         </div>
                         <div class="form-group">
-                            <label>Data de Nascimento</label>
-                            <input type="date" name="data_nascimento">
+                            <label>Birth Date</label>
+                            <input type="date" name="birthDate">
                         </div>
                         <div class="form-group">
-                            <label>Telefone</label>
-                            <input type="text" name="telefone" placeholder="(11) 99999-9999">
+                            <label>Phone</label>
+                            <input type="text" name="phone" placeholder="(11) 99999-9999">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
                 </form>
             </div>
+        </div>
 
+        <!-- UPDATE ACCOUNT -->
+        <div id="update-account" class="section">
+            <div class="section-title">Update Account</div>
+            <div class="section-subtitle">PATCH /account/{id}</div>
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Adicionar Endereço</div>
-                <div class="route-tag"><span>POST</span> /address/adicionar</div>
-                <form action="/address/adicionar" method="post">
+                <div class="card-title"><span class="method patch">PATCH</span> Update Customer</div>
+                <div class="route-tag"><span>PATCH</span> /account/{id}</div>
+                <form id="formUpdateAccount" action="/account/1" method="post">
+                    <input type="hidden" name="_method" value="PATCH">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ID Cliente</label>
-                            <input type="number" name="idCliente" placeholder="1">
+                            <label>Customer ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formUpdateAccount').action='/account/' + this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="name" placeholder="New name">
+                        </div>
+                        <div class="form-group">
+                            <label>CPF</label>
+                            <input type="text" name="cpf" placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label>Birth Date</label>
+                            <input type="date" name="birthDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" name="phone" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADD ADDRESS -->
+        <div id="add-address" class="section">
+            <div class="section-title">Add Address</div>
+            <div class="section-subtitle">POST /account/{id}/address</div>
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Add Address</div>
+                <div class="route-tag"><span>POST</span> /account/{id}/address</div>
+                <form id="formAddAddress" action="/account/1/address" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Customer ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formAddAddress').action='/account/' + this.value + '/address'">
                         </div>
                         <div class="form-group">
                             <label>CEP</label>
-                            <input type="text" name="cep" placeholder="00000-000">
+                            <input type="text" name="cep" placeholder="00000-000" required>
                         </div>
                         <div class="form-group">
-                            <label>Logradouro</label>
-                            <input type="text" name="logradouro" placeholder="Rua das Flores">
+                            <label>Street</label>
+                            <input type="text" name="street" placeholder="Rua das Flores" required>
                         </div>
                         <div class="form-group">
-                            <label>Número</label>
-                            <input type="text" name="numero" placeholder="123">
+                            <label>Number</label>
+                            <input type="text" name="number" placeholder="123">
                         </div>
                         <div class="form-group">
-                            <label>Complemento</label>
-                            <input type="text" name="complemento" placeholder="Apto 4B">
+                            <label>Complement</label>
+                            <input type="text" name="complement" placeholder="Apto 4B">
                         </div>
                         <div class="form-group">
-                            <label>Bairro</label>
-                            <input type="text" name="bairro" placeholder="Centro">
+                            <label>Neighborhood</label>
+                            <input type="text" name="neighborhood" placeholder="Centro" required>
                         </div>
                         <div class="form-group">
-                            <label>Cidade</label>
-                            <input type="text" name="cidade" placeholder="São Paulo">
+                            <label>City</label>
+                            <input type="text" name="city" placeholder="São Paulo" required>
                         </div>
                         <div class="form-group">
-                            <label>UF</label>
-                            <input type="text" name="uf" placeholder="SP" maxlength="2">
+                            <label>State</label>
+                            <input type="text" name="state" placeholder="SP" maxlength="2" required>
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom:20px">
                         <label style="flex-direction:row;align-items:center;gap:8px;cursor:pointer">
-                            <input type="checkbox" name="padrao" value="true" style="width:auto">
-                            Endereço padrão
+                            <input type="checkbox" name="defaultAddress" value="true" style="width:auto">
+                            Default address
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Adicionar Endereço</button>
+                    <button type="submit" class="btn btn-primary">Add Address</button>
                 </form>
             </div>
         </div>
 
-        <!-- DELETAR CONTA -->
-        <div id="deletar" class="section">
-            <div class="section-title">Deletar Conta</div>
-            <div class="section-subtitle">POST /deletarconta</div>
+        <!-- DELETE ACCOUNT -->
+        <div id="delete-account" class="section">
+            <div class="section-title">Delete Account</div>
+            <div class="section-subtitle">DELETE /account/{id}</div>
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Excluir Cliente</div>
-                <div class="route-tag"><span>POST</span> /deletarconta</div>
-                <form action="/deletarconta" method="post">
+                <div class="card-title"><span class="method delete">DELETE</span> Delete Account</div>
+                <div class="route-tag"><span>DELETE</span> /account/{id}</div>
+                <form id="formDeleteAccount" action="/account/1" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" placeholder="email@exemplo.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Senha</label>
-                            <input type="password" name="senhaHash" placeholder="••••••••" required>
+                            <label>Customer ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formDeleteAccount').action='/account/' + this.value">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-danger">Deletar Conta</button>
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
                 </form>
             </div>
         </div>
 
-        <!-- PEDIDO -->
-        <div id="order" class="section">
-            <div class="section-title">Pedidos</div>
-            <div class="section-subtitle">POST /pedidos · POST /itens-order</div>
-
+        <!-- CREATE ORDER -->
+        <div id="create-order" class="section">
+            <div class="section-title">Create Order</div>
+            <div class="section-subtitle">POST /order</div>
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Criar Pedido</div>
-                <div class="route-tag"><span>POST</span> /pedidos</div>
-                <form action="/pedidos" method="post">
+                <div class="card-title"><span class="method post">POST</span> Create Order</div>
+                <div class="route-tag"><span>POST</span> /order</div>
+                <form action="/order" method="post">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ID Cliente</label>
-                            <input type="number" name="idCliente" placeholder="1" required>
+                            <label>Customer ID</label>
+                            <input type="number" name="idCustomer" placeholder="1" required>
                         </div>
                         <div class="form-group">
-                            <label>ID Endereço</label>
-                            <input type="number" name="idEndereco" placeholder="1" required>
+                            <label>Address ID</label>
+                            <input type="number" name="idAddress" placeholder="1" required>
                         </div>
                         <div class="form-group">
-                            <label>ID Cupom (opcional)</label>
-                            <input type="number" name="idCupom" placeholder="—">
+                            <label>Coupon ID (optional)</label>
+                            <input type="number" name="idCoupon" placeholder="—">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Criar Pedido</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Adicionar Item ao Pedido</div>
-                <div class="route-tag"><span>POST</span> /itens-order</div>
-                <form action="/itens-order" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>ID Pedido</label>
-                            <input type="number" name="idPedido" placeholder="1" required>
-                        </div>
-                        <div class="form-group">
-                            <label>ID Produto</label>
-                            <input type="number" name="idProduto" placeholder="1" required>
-                        </div>
-                        <div class="form-group">
-                            <label>ID Variação</label>
-                            <input type="number" name="idVariacao" placeholder="1" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Quantidade</label>
-                            <input type="number" name="quantidade" placeholder="1" min="1" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Adicionar Item</button>
+                    <button type="submit" class="btn btn-primary">Create Order</button>
                 </form>
             </div>
         </div>
 
-        <!-- FINALIZAR PEDIDO -->
-        <div id="finalizar" class="section">
-            <div class="section-title">Finalizar Pedido</div>
-            <div class="section-subtitle">POST /finalizarpedido</div>
+        <!-- ADD ITEM -->
+        <div id="add-item" class="section">
+            <div class="section-title">Add Item</div>
+            <div class="section-subtitle">POST /order/{id}/item</div>
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Pagamento</div>
-                <div class="route-tag"><span>POST</span> /finalizarpedido</div>
-                <form action="/finalizarpedido" method="post">
+                <div class="card-title"><span class="method post">POST</span> Add Item to Order</div>
+                <div class="route-tag"><span>POST</span> /order/{id}/item</div>
+                <form id="formAddItem" action="/order/1/item" method="post">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ID Pedido</label>
-                            <input type="number" name="idPedido" placeholder="1" required>
+                            <label>Order ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formAddItem').action='/order/' + this.value + '/item'">
                         </div>
                         <div class="form-group">
-                            <label>Método de Pagamento</label>
-                            <select name="metodo" required>
-                                <option value="cartao">Cartão</option>
-                                <option value="pix">Pix</option>
-                                <option value="boleto">Boleto</option>
+                            <label>Product ID</label>
+                            <input type="number" name="idProduct" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Variation ID</label>
+                            <input type="number" name="idVariation" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity" placeholder="1" min="1" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FINISH ORDER -->
+        <div id="finish-order" class="section">
+            <div class="section-title">Finish Order</div>
+            <div class="section-subtitle">POST /order/{id}/finish</div>
+            <div class="card">
+                <div class="card-title"><span class="method post">POST</span> Payment</div>
+                <div class="route-tag"><span>POST</span> /order/{id}/finish</div>
+                <form id="formFinishOrder" action="/order/1/finish" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Order ID</label>
+                            <input type="number" name="id" placeholder="1"
+                                   oninput="document.getElementById('formFinishOrder').action='/order/' + this.value + '/finish'">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <select name="method" required>
+                                <option value="CREDIT_CARD">Credit Card</option>
+                                <option value="PIX">Pix</option>
+                                <option value="BOLETO">Boleto</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Parcelas (opcional)</label>
-                            <input type="number" name="parcelas" placeholder="1" min="1">
+                            <label>Installments (optional)</label>
+                            <input type="number" name="installments" placeholder="1" min="1">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Finalizar Pedido</button>
+                    <button type="submit" class="btn btn-primary">Finish Order</button>
                 </form>
             </div>
         </div>
 
-        <!-- ADMIN — PRODUTOS -->
+        <!-- ADMIN — PRODUCTS -->
         <div id="admin-product" class="section">
-            <div class="section-title">Admin · Produtos</div>
-            <div class="section-subtitle">Gerenciar produtos e variações</div>
+            <div class="section-title">Admin · Products</div>
+            <div class="section-subtitle">POST /product/create</div>
 
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Criar Produto</div>
-                <div class="route-tag"><span>POST</span> /admin/product/criar</div>
-                <form action="/admin/product/criar" method="post" enctype="multipart/form-data">
+                <div class="card-title"><span class="method post">POST</span> Create Product</div>
+                <div class="route-tag"><span>POST</span> /product/create</div>
+                <form action="/product/create" method="post" enctype="multipart/form-data">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Nome</label>
-                            <input type="text" name="nome" placeholder="Camiseta Preta">
+                            <label>Name</label>
+                            <input type="text" name="name" placeholder="Black T-Shirt" required>
                         </div>
                         <div class="form-group">
-                            <label>Descrição</label>
-                            <input type="text" name="descricao" placeholder="Descrição do product">
+                            <label>Description</label>
+                            <input type="text" name="description" placeholder="Product description">
                         </div>
                         <div class="form-group">
-                            <label>Preço</label>
-                            <input type="number" step="0.01" name="preco" placeholder="99.90">
+                            <label>Price</label>
+                            <input type="number" step="0.01" name="price" placeholder="99.90" required>
                         </div>
                         <div class="form-group">
-                            <label>Cor</label>
-                            <input type="text" name="cor" placeholder="Preto">
+                            <label>Color</label>
+                            <input type="text" name="color" placeholder="Black" required>
                         </div>
                         <div class="form-group">
-                            <label>Tamanho</label>
-                            <select name="tamanho">
-                                <option>PP</option><option>P</option><option>M</option>
-                                <option>G</option><option>GG</option><option>XG</option>
+                            <label>Size</label>
+                            <select name="size" required>
+                                <option value="PP">PP</option>
+                                <option value="P">P</option>
+                                <option value="M">M</option>
+                                <option value="G">G</option>
+                                <option value="GG">GG</option>
+                                <option value="XG">XG</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Estoque</label>
-                            <input type="number" name="estoque" placeholder="50">
+                            <label>Stock</label>
+                            <input type="number" name="stock" placeholder="50" required>
                         </div>
                         <div class="form-group">
-                            <label>ID Categoria</label>
-                            <input type="number" name="categoriaId" placeholder="1">
+                            <label>Category ID</label>
+                            <input type="number" name="categoryId" placeholder="1" required>
                         </div>
                         <div class="form-group">
-                            <label>Imagem</label>
-                            <input type="file" name="imagem">
+                            <label>Image</label>
+                            <input type="file" name="image" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Criar Produto</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Editar Produto</div>
-                <div class="route-tag"><span>POST</span> /admin/product/editar</div>
-                <form action="/admin/product/editar" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>ID Produto</label>
-                            <input type="number" name="idProduto" placeholder="1">
-                        </div>
-                        <div class="form-group">
-                            <label>ID Variação</label>
-                            <input type="number" name="idVariacao" placeholder="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Nome</label>
-                            <input type="text" name="nome" placeholder="Novo nome">
-                        </div>
-                        <div class="form-group">
-                            <label>Descrição</label>
-                            <input type="text" name="descricao" placeholder="Nova descrição">
-                        </div>
-                        <div class="form-group">
-                            <label>Preço</label>
-                            <input type="number" step="0.01" name="preco" placeholder="99.90">
-                        </div>
-                        <div class="form-group">
-                            <label>Cor</label>
-                            <input type="text" name="cor" placeholder="Branco">
-                        </div>
-                        <div class="form-group">
-                            <label>Tamanho</label>
-                            <select name="tamanho">
-                                <option>PP</option><option>P</option><option>M</option>
-                                <option>G</option><option>GG</option><option>XG</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Estoque</label>
-                            <input type="number" name="estoque" placeholder="50">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Salvar Edição</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Alterar Preço</div>
-                <div class="route-tag"><span>POST</span> /admin/product/alterar-preco</div>
-                <form action="/admin/product/alterar-preco" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>ID Produto</label>
-                            <input type="number" name="id" placeholder="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Novo Preço</label>
-                            <input type="number" step="0.01" name="novoPreco" placeholder="79.90">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Alterar Preço</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Alterar Categoria</div>
-                <div class="route-tag"><span>POST</span> /admin/product/alterar-category</div>
-                <form action="/admin/product/alterar-category" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>ID Produto</label>
-                            <input type="number" name="idProduto" placeholder="1">
-                        </div>
-                        <div class="form-group">
-                            <label>ID Categoria</label>
-                            <input type="number" name="idCategoria" placeholder="2">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Alterar</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Ativar / Desativar Produto</div>
-                <div class="route-tag"><span>POST</span> /admin/product/ativar · /admin/product/desativar</div>
-                <form id="formToggleProduto" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>ID Produto</label>
-                            <input type="number" name="id" placeholder="1">
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary"
-                                onclick="document.getElementById('formToggleProduto').action='/admin/product/ativar'">
-                            Ativar
-                        </button>
-                        <button type="submit" class="btn btn-danger"
-                                onclick="document.getElementById('formToggleProduto').action='/admin/product/desativar'">
-                            Desativar
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">Create Product</button>
                 </form>
             </div>
         </div>
 
-        <!-- ADMIN — CATEGORIAS -->
+        <!-- ADMIN — CATEGORIES -->
         <div id="admin-category" class="section">
-            <div class="section-title">Admin · Categorias</div>
-            <div class="section-subtitle">Gerenciar categorias de product</div>
+            <div class="section-title">Admin · Categories</div>
+            <div class="section-subtitle">POST /category/create · PATCH /category/{id}</div>
 
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Criar Categoria</div>
-                <div class="route-tag"><span>POST</span> /admin/category/criar</div>
+                <div class="card-title"><span class="method post">POST</span> Create Category</div>
+                <div class="route-tag"><span>POST</span> /category/create</div>
                 <form action="/category/create" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" name="nome" placeholder="T-Shirts">
+                            <input type="text" name="name" placeholder="T-Shirts" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Create Category</button>
@@ -685,23 +581,23 @@
             </div>
 
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Editar Categoria</div>
-                <div class="route-tag"><span>POST</span> /admin/category/editar</div>
+                <div class="card-title"><span class="method patch">PATCH</span> Update Category</div>
+                <div class="route-tag"><span>PATCH</span> /category/{id}</div>
                 <form id="formUpdateCategory" action="/category/1" method="post">
                     <input type="hidden" name="_method" value="PATCH">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Category ID</label>
-                            <input type="number" name="id" placeholder="1"
+                            <input type="number" placeholder="1"
                                    oninput="document.getElementById('formUpdateCategory').action='/category/' + this.value">
                         </div>
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" name="nome" placeholder="New name">
+                            <input type="text" name="name" placeholder="New name">
                         </div>
                         <div class="form-group">
                             <label>Active</label>
-                            <select name="ativo">
+                            <select name="active">
                                 <option value="">— no change —</option>
                                 <option value="true">Active</option>
                                 <option value="false">Inactive</option>
@@ -713,46 +609,46 @@
             </div>
         </div>
 
-        <!-- ADMIN — CUPONS -->
+        <!-- ADMIN — COUPONS -->
         <div id="admin-coupon" class="section">
-            <div class="section-title">Admin · Cupons</div>
-            <div class="section-subtitle">Gerenciar cupons de desconto</div>
+            <div class="section-title">Admin · Coupons</div>
+            <div class="section-subtitle">POST /coupon/create · PATCH /coupon/{id}</div>
 
             <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Criar Cupom</div>
+                <div class="card-title"><span class="method post">POST</span> Create Coupon</div>
                 <div class="route-tag"><span>POST</span> /coupon/create</div>
                 <form action="/coupon/create" method="post">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Code</label>
-                            <input type="text" name="codigo" placeholder="PROMO10">
+                            <input type="text" name="code" placeholder="PROMO10" required>
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" name="descricao" placeholder="10% off">
+                            <input type="text" name="description" placeholder="10% off">
                         </div>
                         <div class="form-group">
                             <label>Discount Type</label>
-                            <select name="tipoDesconto">
-                                <option value="percentual">Percentage (%)</option>
-                                <option value="fixo">Fixed (R$)</option>
+                            <select name="discountType" required>
+                                <option value="PERCENTAGE">Percentage (%)</option>
+                                <option value="FIXED">Fixed (R$)</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Discount Value</label>
-                            <input type="number" step="0.01" name="valorDesconto" placeholder="10.00">
+                            <input type="number" step="0.01" name="discountValue" placeholder="10.00" required>
                         </div>
                         <div class="form-group">
                             <label>Minimum Order Value</label>
-                            <input type="number" step="0.01" name="valorMinimoPedido" placeholder="50.00">
+                            <input type="number" step="0.01" name="minimumOrderValue" placeholder="50.00">
                         </div>
                         <div class="form-group">
                             <label>Start Date</label>
-                            <input type="date" name="dataInicio">
+                            <input type="date" name="startDate" required>
                         </div>
                         <div class="form-group">
                             <label>End Date</label>
-                            <input type="date" name="dataFim">
+                            <input type="date" name="endDate" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Create Coupon</button>
@@ -760,51 +656,51 @@
             </div>
 
             <div class="card">
-                <div class="card-title"><span class="method post">PATCH</span> Update Cupom</div>
+                <div class="card-title"><span class="method patch">PATCH</span> Update Coupon</div>
                 <div class="route-tag"><span>PATCH</span> /coupon/{id}</div>
                 <form id="formUpdateCoupon" action="/coupon/1" method="post">
                     <input type="hidden" name="_method" value="PATCH">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Coupon ID</label>
-                            <input type="number" name="id" placeholder="1"
+                            <input type="number" placeholder="1"
                                    oninput="document.getElementById('formUpdateCoupon').action='/coupon/' + this.value">
                         </div>
                         <div class="form-group">
                             <label>Code</label>
-                            <input type="text" name="codigo" placeholder="PROMO10">
+                            <input type="text" name="code" placeholder="PROMO10">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" name="descricao" placeholder="10% off">
+                            <input type="text" name="description" placeholder="10% off">
                         </div>
                         <div class="form-group">
                             <label>Discount Type</label>
-                            <select name="tipoDesconto">
+                            <select name="discountType">
                                 <option value="">— no change —</option>
-                                <option value="percentual">Percentage (%)</option>
-                                <option value="fixo">Fixed (R$)</option>
+                                <option value="PERCENTAGE">Percentage (%)</option>
+                                <option value="FIXED">Fixed (R$)</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Discount Value</label>
-                            <input type="number" step="0.01" name="valorDesconto" placeholder="10.00">
+                            <input type="number" step="0.01" name="discountValue" placeholder="10.00">
                         </div>
                         <div class="form-group">
                             <label>Minimum Order Value</label>
-                            <input type="number" step="0.01" name="valorMinimoPedido" placeholder="50.00">
+                            <input type="number" step="0.01" name="minimumOrderValue" placeholder="50.00">
                         </div>
                         <div class="form-group">
                             <label>Start Date</label>
-                            <input type="date" name="dataInicio">
+                            <input type="date" name="startDate">
                         </div>
                         <div class="form-group">
                             <label>End Date</label>
-                            <input type="date" name="dataFim">
+                            <input type="date" name="endDate">
                         </div>
                         <div class="form-group">
                             <label>Active</label>
-                            <select name="ativo">
+                            <select name="active">
                                 <option value="">— no change —</option>
                                 <option value="true">Active</option>
                                 <option value="false">Inactive</option>

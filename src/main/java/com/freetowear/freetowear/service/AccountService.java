@@ -10,6 +10,7 @@ import com.freetowear.freetowear.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class AccountService {
@@ -24,18 +25,18 @@ public class AccountService {
         Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
-        customer.setPasswordHash(request.getPassword()); // hash password here later with Spring Security
+        customer.setPasswordHash(request.getPassword());
         customer.setCpf(request.getCpf());
         customer.setPhone(request.getPhone());
         if (request.getBirthDate() != null && !request.getBirthDate().isEmpty())
-            customer.setBirthDate(LocalDate.parse(request.getBirthDate()));
-        customer.setActive(true); // client cannot control this
+            customer.setBirthDate(parseAndValidateAge(request.getBirthDate()));
+        customer.setActive(true);
         customerRepository.save(customer);
     }
 
     public void deleteAccount(Integer id) {
         customerRepository.findById(id).ifPresent(customer -> {
-            customer.setActive(false); // soft delete, keeps data in the database
+            customer.setActive(false);
             customerRepository.save(customer);
         });
     }
@@ -47,7 +48,7 @@ public class AccountService {
             if (request.getCpf() != null && !request.getCpf().isEmpty())
                 customer.setCpf(request.getCpf());
             if (request.getBirthDate() != null && !request.getBirthDate().isEmpty())
-                customer.setBirthDate(LocalDate.parse(request.getBirthDate()));
+                customer.setBirthDate(parseAndValidateAge(request.getBirthDate()));
             if (request.getPhone() != null && !request.getPhone().isEmpty())
                 customer.setPhone(request.getPhone());
             customerRepository.save(customer);
@@ -68,5 +69,17 @@ public class AccountService {
             address.setDefaultAddress(request.getDefaultAddress());
             addressRepository.save(address);
         });
+    }
+
+    private LocalDate parseAndValidateAge(String birthDate) {
+        LocalDate birth = LocalDate.parse(birthDate);
+        if (birth.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Birth date cannot be in the future");
+        long age = ChronoUnit.YEARS.between(birth, LocalDate.now());
+        if (age < 18)
+            throw new IllegalArgumentException("Must be at least 18 years old");
+        if (age > 150)
+            throw new IllegalArgumentException("Invalid birth date");
+        return birth;
     }
 }

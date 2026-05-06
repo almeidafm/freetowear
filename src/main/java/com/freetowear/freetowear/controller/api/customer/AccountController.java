@@ -30,7 +30,7 @@ public class AccountController {
 
     @PostMapping("/register")
     public String register(@Valid RegisterRequest request, BindingResult result) {
-        if (result.hasErrors()) return "redirect:/register";
+        if (result.hasErrors()) return "redirect:/";
         accountService.register(request);
         return "redirect:/";
     }
