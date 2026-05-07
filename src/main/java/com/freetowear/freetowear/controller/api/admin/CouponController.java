@@ -1,5 +1,6 @@
 package com.freetowear.freetowear.controller.api.admin;
 
+import com.freetowear.freetowear.dto.response.coupon.CouponResponse;
 import com.freetowear.freetowear.enums.DiscountType;
 import com.freetowear.freetowear.dto.request.coupon.CreateCouponRequest;
 import com.freetowear.freetowear.dto.request.coupon.UpdateCouponRequest;
@@ -8,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 /*
  * CouponController — manages discount coupons.
  * POST   /coupon/create ✔
- * GET    /coupon ⏳
- * GET    /coupon/{id} ⏳
+ * GET    /coupon ✔
+ * GET    /coupon/{id} ✔
  * PATCH  /coupon/{id} ✔
  * */
 @Controller
@@ -57,5 +59,17 @@ public class CouponController {
                 minimumOrderValue, startDate, endDate, active
         ));
         return "redirect:/";
+    }
+
+    @GetMapping
+    @ResponseBody
+    public List<CouponResponse> getAllCoupons() {
+        return couponService.getAllCoupons();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public CouponResponse getCouponById(@PathVariable Integer id) {
+        return couponService.getCouponById(id);
     }
 }

@@ -2,11 +2,14 @@ package com.freetowear.freetowear.service;
 
 import com.freetowear.freetowear.dto.request.coupon.CreateCouponRequest;
 import com.freetowear.freetowear.dto.request.coupon.UpdateCouponRequest;
+import com.freetowear.freetowear.dto.response.coupon.CouponResponse;
 import com.freetowear.freetowear.entity.Coupon;
 import com.freetowear.freetowear.repository.CouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CouponService {
@@ -39,5 +42,18 @@ public class CouponService {
             if (request.getActive() != null) coupon.setActive(request.getActive());
             couponRepository.save(coupon);
         });
+    }
+
+    public CouponResponse getCouponById(Integer id) {
+        Coupon coupon = couponRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Coupon not found: " + id));
+        return new CouponResponse(coupon);
+    }
+
+    public List<CouponResponse> getAllCoupons() {
+        return couponRepository.findAll()
+                .stream()
+                .map(CouponResponse::new)
+                .collect(Collectors.toList());
     }
 }
