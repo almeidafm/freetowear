@@ -3,10 +3,12 @@ package com.freetowear.freetowear.controller.api.customer;
 import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
+import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * AccountController — manages customer account operations.
  * POST   /account/register ✔
  * POST   /account/{id}/address ✔
- * GET    /account/{id} ⏳
+ * GET    /account/{id} ✔
  * PATCH  /account/{id} ✔
  * PATCH  /account/{id}/email ⏳
  * PATCH  /account/{id}/password ⏳
@@ -27,6 +29,13 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+
+    @GetMapping("/{id}")
+    public String getAccount(@PathVariable Integer id, Model model) {
+        CustomerResponse customer = accountService.getAccount(id);
+        model.addAttribute("customer", customer);
+        return "account/profile";
+    }
 
     @PostMapping("/register")
     public String register(@Valid RegisterRequest request, BindingResult result) {

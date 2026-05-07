@@ -3,6 +3,7 @@ package com.freetowear.freetowear.service;
 import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
+import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.entity.Address;
 import com.freetowear.freetowear.entity.Customer;
 import com.freetowear.freetowear.repository.AddressRepository;
@@ -20,6 +21,12 @@ public class AccountService {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    public CustomerResponse getAccount(Integer id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        return new CustomerResponse(customer);
+    }
 
     public void register(RegisterRequest request) {
         Customer customer = new Customer();
