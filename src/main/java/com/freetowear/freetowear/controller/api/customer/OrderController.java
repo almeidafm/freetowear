@@ -3,23 +3,25 @@ package com.freetowear.freetowear.controller.api.customer;
 import com.freetowear.freetowear.dto.request.order.AddItemToOrderRequest;
 import com.freetowear.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.freetowear.dto.request.order.FinishOrderRequest;
-import com.freetowear.freetowear.entity.Payment;
-import com.freetowear.freetowear.enums.PaymentMethod;
+import com.freetowear.freetowear.dto.response.order.OrderResponse;
+import com.freetowear.freetowear.dto.response.order.OrderTrackingResponse;
 import com.freetowear.freetowear.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /*
  * OrderController — manages customer orders.
  * POST   /order ✔
  * POST   /order/{id}/item ✔
- * POST   /order/{id}/cancel ⏳
+ * POST   /order/{id}/cancel ✔
  * POST   /order/{id}/finish ✔
- * GET    /order ⏳
- * GET    /order/{id} ⏳
- * GET    /order/{id}/tracking ⏳
+ * GET    /order ✔
+ * GET    /order/{id} ✔
+ * GET    /order/{id}/tracking ✔
  * PATCH  /order/{id} ⏳
  * PATCH  /order/{id}/item/{idItem} ⏳
  * DELETE /order/{id} ⏳
@@ -59,6 +61,30 @@ public class OrderController {
             @Valid @ModelAttribute FinishOrderRequest request
     ) {
         orderService.finishOrder(id, request);
+        return "redirect:/";
+    }
+
+    @GetMapping
+    @ResponseBody
+    public List<OrderResponse> getOrders() {
+        return orderService.getOrders();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public OrderResponse getOrderById(@PathVariable Integer id) {
+        return orderService.getOrderById(id);
+    }
+
+    @GetMapping("/{id}/tracking")
+    @ResponseBody
+    public OrderTrackingResponse getOrderTracking(@PathVariable Integer id) {
+        return orderService.getOrderTracking(id);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public String cancelOrder(@PathVariable Integer id) {
+        orderService.cancelOrder(id);
         return "redirect:/";
     }
 }
