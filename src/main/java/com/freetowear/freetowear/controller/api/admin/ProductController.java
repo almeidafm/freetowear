@@ -1,6 +1,7 @@
 package com.freetowear.freetowear.controller.api.admin;
 
 import com.freetowear.freetowear.dto.request.product.CreateProductRequest;
+import com.freetowear.freetowear.dto.request.product.UpdateProductRequest;
 import com.freetowear.freetowear.enums.Size;
 import com.freetowear.freetowear.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
  * POST   /product/create ✔
  * GET    /product ✔
  * GET    /product/{id} ✔
- * PATCH  /product/{id} ⏳
+ * PATCH  /product/{id} ✔
  * */
 @Controller
 @RequestMapping("/product")
@@ -45,6 +46,30 @@ public class ProductController {
             return "redirect:/error";
         }
         return "redirect:/";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateProduct(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) BigDecimal price,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Size size,
+            @RequestParam(required = false) Integer stock,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(required = false) Boolean active
+    ) {
+        try {
+            productService.updateProduct(id, new UpdateProductRequest(
+                    name, description, price, color, size, stock, categoryId, image, active
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "redirect:/error";
+        }
+        return "redirect:/product/" + id;
     }
 
     @GetMapping
