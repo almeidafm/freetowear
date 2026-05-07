@@ -1,5 +1,6 @@
 package com.freetowear.freetowear.entity;
 
+import com.freetowear.freetowear.enums.UF;
 import jakarta.persistence.*;
 
 @Entity
@@ -34,8 +35,9 @@ public class Address {
     @Column(nullable = false, length = 100)
     private String city;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 2)
-    private String state;
+    private UF state;
 
     @Column(nullable = false)
     private Boolean defaultAddress = false;
@@ -108,11 +110,11 @@ public class Address {
         this.city = city;
     }
 
-    public String getState() {
+    public UF getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(UF state) {
         this.state = state;
     }
 

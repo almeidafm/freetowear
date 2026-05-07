@@ -43,6 +43,7 @@ public class AccountController {
 
     @PatchMapping("/{id}")
     public String updateAccount(
+            @Valid
             @PathVariable Integer id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String cpf,
@@ -56,19 +57,9 @@ public class AccountController {
     @PostMapping("/{id}/address")
     public String addAddress(
             @PathVariable Integer id,
-            @RequestParam String cep,
-            @RequestParam String street,
-            @RequestParam(required = false) String number,
-            @RequestParam(required = false) String complement,
-            @RequestParam String neighborhood,
-            @RequestParam String city,
-            @RequestParam String state,
-            @RequestParam(required = false, defaultValue = "false") Boolean defaultAddress
+            @Valid @ModelAttribute AddAddressRequest request
     ) {
-        accountService.addAddress(id, new AddAddressRequest(
-                cep, street, number, complement,
-                neighborhood, city, state, defaultAddress
-        ));
-        return "redirect:/account/" + id;
+        accountService.addAddress(id, request);
+        return "redirect:/";
     }
 }

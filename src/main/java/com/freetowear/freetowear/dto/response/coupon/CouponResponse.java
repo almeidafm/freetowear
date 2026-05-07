@@ -1,6 +1,7 @@
 package com.freetowear.freetowear.dto.response.coupon;
 
 import com.freetowear.freetowear.entity.Coupon;
+import com.freetowear.freetowear.enums.DiscountType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -9,7 +10,7 @@ public class CouponResponse {
     private Integer id;
     private String code;
     private String description;
-    private Coupon.DiscountType discountType;
+    private DiscountType discountType;
     private BigDecimal discountValue;
     private BigDecimal minimumOrderValue;
     private LocalDate startDate;
@@ -42,7 +43,7 @@ public class CouponResponse {
         return description;
     }
 
-    public Coupon.DiscountType getDiscountType() {
+    public DiscountType getDiscountType() {
         return discountType;
     }
 

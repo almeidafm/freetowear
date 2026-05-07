@@ -4,6 +4,8 @@ import com.freetowear.freetowear.dto.request.order.AddItemToOrderRequest;
 import com.freetowear.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.freetowear.entity.*;
+import com.freetowear.freetowear.enums.PaymentStatus;
+import com.freetowear.freetowear.enums.OrderStatus;
 import com.freetowear.freetowear.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,7 +93,7 @@ public class OrderService {
         payment.setOrder(order);
         payment.setMethod(request.getMethod());
         payment.setAmountPaid(order.getTotalValue());
-        payment.setStatus(Payment.PaymentStatus.PENDING);
+        payment.setStatus(PaymentStatus.PENDING);
         payment.setPaidAt(LocalDateTime.now());
 
         if (request.getInstallments() != null) {
@@ -100,7 +102,7 @@ public class OrderService {
 
         paymentRepository.save(payment);
 
-        order.setStatus(Order.OrderStatus.PAID);
+        order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
     }
 }

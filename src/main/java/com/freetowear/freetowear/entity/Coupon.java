@@ -1,5 +1,6 @@
 package com.freetowear.freetowear.entity;
 
+import com.freetowear.freetowear.enums.DiscountType;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -113,14 +114,5 @@ public class Coupon {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    // =====================
-    // ENUM
-    // =====================
-
-    public enum DiscountType {
-        PERCENTAGE,
-        FIXED
     }
 }

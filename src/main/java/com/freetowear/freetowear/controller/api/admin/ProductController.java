@@ -1,7 +1,7 @@
 package com.freetowear.freetowear.controller.api.admin;
 
 import com.freetowear.freetowear.dto.request.product.CreateProductRequest;
-import com.freetowear.freetowear.entity.ProductVariation;
+import com.freetowear.freetowear.enums.Size;
 import com.freetowear.freetowear.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +31,7 @@ public class ProductController {
             @RequestParam(required = false) String description,
             @RequestParam BigDecimal price,
             @RequestParam String color,
-            @RequestParam ProductVariation.Size size,
+            @RequestParam Size size,
             @RequestParam Integer stock,
             @RequestParam Integer categoryId,
             @RequestParam("image") MultipartFile image

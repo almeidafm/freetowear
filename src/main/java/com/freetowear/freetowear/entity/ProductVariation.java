@@ -1,5 +1,6 @@
 package com.freetowear.freetowear.entity;
 
+import com.freetowear.freetowear.enums.Size;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,10 +10,6 @@ import jakarta.persistence.*;
                 @Index(name = "idx_size", columnList = "size")
         })
 public class ProductVariation {
-
-    public enum Size {
-        PP, P, M, G, GG, XG
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

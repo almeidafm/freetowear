@@ -1,6 +1,7 @@
 package com.freetowear.freetowear.dto.response.account;
 
 import com.freetowear.freetowear.entity.Address;
+import com.freetowear.freetowear.enums.UF;
 
 public class AddressResponse {
 
@@ -11,7 +12,7 @@ public class AddressResponse {
     private String complement;
     private String neighborhood;
     private String city;
-    private String state;
+    private UF state;
     private Boolean defaultAddress;
 
     public AddressResponse() {}
@@ -56,7 +57,7 @@ public class AddressResponse {
         return city;
     }
 
-    public String getState() {
+    public UF getState() {
         return state;
     }
 

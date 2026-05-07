@@ -1,6 +1,7 @@
 package com.freetowear.freetowear.dto.response.order;
 
 import com.freetowear.freetowear.entity.Order;
+import com.freetowear.freetowear.enums.OrderStatus;
 import java.math.BigDecimal;
 
 public class OrderResponse {
@@ -12,7 +13,7 @@ public class OrderResponse {
     private BigDecimal shippingPrice;
     private BigDecimal discountValue;
     private BigDecimal totalValue;
-    private Order.OrderStatus status;
+    private OrderStatus status;
 
     public OrderResponse() {}
 
@@ -53,7 +54,7 @@ public class OrderResponse {
         return totalValue;
     }
 
-    public Order.OrderStatus getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 }

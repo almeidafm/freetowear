@@ -4,7 +4,9 @@ import com.freetowear.freetowear.dto.request.order.AddItemToOrderRequest;
 import com.freetowear.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.freetowear.entity.Payment;
+import com.freetowear.freetowear.enums.PaymentMethod;
 import com.freetowear.freetowear.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -54,10 +56,9 @@ public class OrderController {
     @PostMapping("/{id}/finish")
     public String finishOrder(
             @PathVariable Integer id,
-            @RequestParam Payment.PaymentMethod method,
-            @RequestParam(required = false) Integer installments
+            @Valid @ModelAttribute FinishOrderRequest request
     ) {
-        orderService.finishOrder(id, new FinishOrderRequest(method, installments));
+        orderService.finishOrder(id, request);
         return "redirect:/";
     }
 }

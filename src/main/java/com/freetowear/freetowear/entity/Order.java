@@ -1,5 +1,6 @@
 package com.freetowear.freetowear.entity;
 
+import com.freetowear.freetowear.enums.OrderStatus;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -165,18 +166,5 @@ public class Order {
     @PreUpdate
     private void calculateTotalBeforeSave() {
         calculateTotal();
-    }
-
-    // =====================
-    // ENUM
-    // =====================
-    public enum OrderStatus {
-        CART,
-        PENDING,
-        PAID,
-        SHIPPED,
-        DELIVERED,
-        CANCELLED,
-        ABANDONED
     }
 }

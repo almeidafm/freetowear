@@ -1,26 +1,35 @@
 package com.freetowear.freetowear.dto.request.account;
 
+import com.freetowear.freetowear.enums.UF;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class AddAddressRequest {
 
     @NotBlank
+    @Pattern(regexp = "^\\d{8}$", message = "CEP must be 8 digits")
     private String cep;
 
     @NotBlank
+    @Size(min = 2, max = 100)
     private String street;
 
+    @Size(max = 10)
     private String number;
+
+    @Size(max = 50)
     private String complement;
 
     @NotBlank
+    @Size(min = 2, max = 100)
     private String neighborhood;
 
     @NotBlank
+    @Size(min = 2, max = 100)
     private String city;
 
-    @NotBlank
-    private String state;
+    private UF state;
 
     private Boolean defaultAddress = false;
 
@@ -33,7 +42,7 @@ public class AddAddressRequest {
             String complement,
             String neighborhood,
             String city,
-            String state,
+            UF state,
             Boolean defaultAddress
     ) {
         this.cep = cep;
@@ -94,11 +103,11 @@ public class AddAddressRequest {
         this.city = city;
     }
 
-    public String getState() {
+    public UF getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(UF state) {
         this.state = state;
     }
 

@@ -1,8 +1,8 @@
 package com.freetowear.freetowear.controller.api.admin;
 
+import com.freetowear.freetowear.enums.DiscountType;
 import com.freetowear.freetowear.dto.request.coupon.CreateCouponRequest;
 import com.freetowear.freetowear.dto.request.coupon.UpdateCouponRequest;
-import com.freetowear.freetowear.entity.Coupon;
 import com.freetowear.freetowear.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class CouponController {
     public String createCoupon(
             @RequestParam String code,
             @RequestParam(required = false) String description,
-            @RequestParam Coupon.DiscountType discountType,
+            @RequestParam DiscountType discountType,
             @RequestParam BigDecimal discountValue,
             @RequestParam(required = false) BigDecimal minimumOrderValue,
             @RequestParam String startDate,
@@ -45,7 +45,7 @@ public class CouponController {
             @PathVariable Integer id,
             @RequestParam(required = false) String code,
             @RequestParam(required = false) String description,
-            @RequestParam(required = false) Coupon.DiscountType discountType,
+            @RequestParam(required = false) DiscountType discountType,
             @RequestParam(required = false) BigDecimal discountValue,
             @RequestParam(required = false) BigDecimal minimumOrderValue,
             @RequestParam(required = false) String startDate,

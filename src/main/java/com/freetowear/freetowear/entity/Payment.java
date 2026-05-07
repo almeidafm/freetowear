@@ -1,5 +1,7 @@
 package com.freetowear.freetowear.entity;
 
+import com.freetowear.freetowear.enums.PaymentStatus;
+import com.freetowear.freetowear.enums.PaymentMethod;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -99,22 +101,5 @@ public class Payment {
 
     public void setInstallments(Integer installments) {
         this.installments = installments;
-    }
-
-    // =====================
-    // ENUMS
-    // =====================
-
-    public enum PaymentMethod {
-        CREDIT_CARD,
-        PIX,
-        BOLETO
-    }
-
-    public enum PaymentStatus {
-        PENDING,
-        APPROVED,
-        REJECTED,
-        REFUNDED
     }
 }

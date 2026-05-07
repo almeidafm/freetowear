@@ -1,6 +1,6 @@
 package com.freetowear.freetowear.dto.request.coupon;
 
-import com.freetowear.freetowear.entity.Coupon;
+import com.freetowear.freetowear.enums.DiscountType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -12,8 +12,7 @@ public class CreateCouponRequest {
 
     private String description;
 
-    @NotNull
-    private Coupon.DiscountType discountType;
+    private DiscountType discountType;
 
     @NotNull
     private BigDecimal discountValue;
@@ -31,7 +30,7 @@ public class CreateCouponRequest {
     public CreateCouponRequest(
             String code,
             String description,
-            Coupon.DiscountType discountType,
+            DiscountType discountType,
             BigDecimal discountValue,
             BigDecimal minimumOrderValue,
             String startDate,
@@ -62,11 +61,11 @@ public class CreateCouponRequest {
         this.description = description;
     }
 
-    public Coupon.DiscountType getDiscountType() {
+    public DiscountType getDiscountType() {
         return discountType;
     }
 
-    public void setDiscountType(Coupon.DiscountType discountType) {
+    public void setDiscountType(DiscountType discountType) {
         this.discountType = discountType;
     }
 

@@ -1,6 +1,8 @@
 package com.freetowear.freetowear.dto.request.product;
 
-import com.freetowear.freetowear.entity.ProductVariation;
+import com.freetowear.freetowear.enums.Size;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,8 +23,9 @@ public class CreateProductRequest {
     @NotBlank
     private String color;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private ProductVariation.Size size;
+    private Size size;
 
     @NotNull
     @Positive
@@ -41,7 +44,7 @@ public class CreateProductRequest {
             String description,
             BigDecimal price,
             String color,
-            ProductVariation.Size size,
+            Size size,
             Integer stock,
             Integer categoryId,
             MultipartFile image
@@ -88,11 +91,11 @@ public class CreateProductRequest {
         this.color = color;
     }
 
-    public ProductVariation.Size getSize() {
+    public Size getSize() {
         return size;
     }
 
-    public void setSize(ProductVariation.Size size) {
+    public void setSize(Size size) {
         this.size = size;
     }
 

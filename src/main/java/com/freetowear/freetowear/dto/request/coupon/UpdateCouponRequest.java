@@ -1,13 +1,13 @@
 package com.freetowear.freetowear.dto.request.coupon;
 
-import com.freetowear.freetowear.entity.Coupon;
+import com.freetowear.freetowear.enums.DiscountType;
 import java.math.BigDecimal;
 
 public class UpdateCouponRequest {
 
     private String code;
     private String description;
-    private Coupon.DiscountType discountType;
+    private DiscountType discountType;
     private BigDecimal discountValue;
     private BigDecimal minimumOrderValue;
     private String startDate;
@@ -19,7 +19,7 @@ public class UpdateCouponRequest {
     public UpdateCouponRequest(
             String code,
             String description,
-            Coupon.DiscountType discountType,
+            DiscountType discountType,
             BigDecimal discountValue,
             BigDecimal minimumOrderValue,
             String startDate,
@@ -52,11 +52,11 @@ public class UpdateCouponRequest {
         this.description = description;
     }
 
-    public Coupon.DiscountType getDiscountType() {
+    public DiscountType getDiscountType() {
         return discountType;
     }
 
-    public void setDiscountType(Coupon.DiscountType discountType) {
+    public void setDiscountType(DiscountType discountType) {
         this.discountType = discountType;
     }
 
