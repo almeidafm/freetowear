@@ -1,12 +1,14 @@
 package com.freetowear.freetowear.controller.api.customer;
 
 import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
+import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -70,5 +72,17 @@ public class AccountController {
     ) {
         accountService.addAddress(id, request);
         return "redirect:/";
+    }
+
+    @PatchMapping("/{id}/email")
+    @ResponseBody
+    public ResponseEntity<String> changeEmail(
+            @PathVariable Integer id,
+            @Valid @ModelAttribute ChangeEmailRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
+        accountService.changeEmail(id, request);
+        return ResponseEntity.ok("Email changed successfully");
     }
 }

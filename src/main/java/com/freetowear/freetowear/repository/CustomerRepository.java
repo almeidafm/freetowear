@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
+    boolean existsByEmail(String newEmail);
+
     Optional<Customer> findByEmailAndPasswordHash(String email, String senhaHash);
     Optional<Customer> findByEmail(String email);
 }

@@ -1,6 +1,7 @@
 package com.freetowear.freetowear.service;
 
 import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
+import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
@@ -88,5 +89,22 @@ public class AccountService {
         if (age > 150)
             throw new IllegalArgumentException("Invalid birth date");
         return birth;
+    }
+
+    public void changeEmail(Integer id, ChangeEmailRequest request) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        if (!customer.getEmail().equals(request.getCurrentEmail()))
+            throw new IllegalArgumentException("Current email does not match");
+
+        if (!customer.getPasswordHash().equals(request.getPassword()))
+            throw new IllegalArgumentException("Invalid password");
+
+        if (customerRepository.existsByEmail(request.getNewEmail()))
+            throw new IllegalArgumentException("Email already in use");
+
+        customer.setEmail(request.getNewEmail());
+        customerRepository.save(customer);
     }
 }
