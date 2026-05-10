@@ -8,6 +8,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     boolean existsByEmail(String newEmail);
 
+    Optional<Customer> findByEmailOrPhone(String email, String phone);
     Optional<Customer> findByEmailAndPasswordHash(String email, String senhaHash);
     Optional<Customer> findByEmail(String email);
 }

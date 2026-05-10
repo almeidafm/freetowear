@@ -5,6 +5,7 @@ import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
 import com.freetowear.freetowear.dto.request.account.ChangePasswordRequest;
+import com.freetowear.freetowear.dto.request.account.ForgotPasswordRequest;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.service.AccountService;
 import jakarta.validation.Valid;
@@ -97,5 +98,16 @@ public class AccountController {
         if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
         accountService.changePassword(id, request);
         return ResponseEntity.ok("Password changed successfully");
+    }
+
+    @PatchMapping("/password/forgot")
+    @ResponseBody
+    public ResponseEntity<String> resetPassword(
+            @Valid @ModelAttribute ForgotPasswordRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
+        accountService.resetPassword(request);
+        return ResponseEntity.ok("Password reset successfully");
     }
 }
