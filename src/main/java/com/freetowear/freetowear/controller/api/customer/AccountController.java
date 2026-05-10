@@ -4,6 +4,7 @@ import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
 import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
+import com.freetowear.freetowear.dto.request.account.ChangePasswordRequest;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.service.AccountService;
 import jakarta.validation.Valid;
@@ -84,5 +85,17 @@ public class AccountController {
         if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
         accountService.changeEmail(id, request);
         return ResponseEntity.ok("Email changed successfully");
+    }
+
+    @PatchMapping("/{id}/password")
+    @ResponseBody
+    public ResponseEntity<String> changePassword(
+            @PathVariable Integer id,
+            @Valid @ModelAttribute ChangePasswordRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
+        accountService.changePassword(id, request);
+        return ResponseEntity.ok("Password changed successfully");
     }
 }

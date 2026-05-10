@@ -4,6 +4,7 @@ import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
 import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
 import com.freetowear.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
+import com.freetowear.freetowear.dto.request.account.ChangePasswordRequest;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.entity.Address;
 import com.freetowear.freetowear.entity.Customer;
@@ -105,6 +106,17 @@ public class AccountService {
             throw new IllegalArgumentException("Email already in use");
 
         customer.setEmail(request.getNewEmail());
+        customerRepository.save(customer);
+    }
+
+    public void changePassword(Integer id, ChangePasswordRequest request) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        if (!customer.getPasswordHash().equals(request.getCurrentPassword()))
+            throw new IllegalArgumentException("Current password is incorrect");
+
+        customer.setPasswordHash(request.getNewPassword());
         customerRepository.save(customer);
     }
 }
