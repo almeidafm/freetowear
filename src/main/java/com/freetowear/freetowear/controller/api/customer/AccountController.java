@@ -1,11 +1,6 @@
 package com.freetowear.freetowear.controller.api.customer;
 
-import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
-import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
-import com.freetowear.freetowear.dto.request.account.RegisterRequest;
-import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
-import com.freetowear.freetowear.dto.request.account.ChangePasswordRequest;
-import com.freetowear.freetowear.dto.request.account.ForgotPasswordRequest;
+import com.freetowear.freetowear.dto.request.account.*;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.service.AccountService;
 import jakarta.validation.Valid;
@@ -45,12 +40,6 @@ public class AccountController {
     public String register(@Valid RegisterRequest request, BindingResult result) {
         if (result.hasErrors()) return "redirect:/";
         accountService.register(request);
-        return "redirect:/";
-    }
-
-    @DeleteMapping("/{id}")
-    public String deleteAccount(@PathVariable Integer id) {
-        accountService.deleteAccount(id);
         return "redirect:/";
     }
 
@@ -109,5 +98,17 @@ public class AccountController {
         if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
         accountService.resetPassword(request);
         return ResponseEntity.ok("Password reset successfully");
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deleteAccount(
+            @PathVariable Integer id,
+            @Valid @ModelAttribute DeleteAccountRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
+        accountService.deleteAccount(id, request);
+        return ResponseEntity.ok("Account deactivated successfully");
     }
 }

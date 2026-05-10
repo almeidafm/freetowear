@@ -1,11 +1,6 @@
 package com.freetowear.freetowear.service;
 
-import com.freetowear.freetowear.dto.request.account.AddAddressRequest;
-import com.freetowear.freetowear.dto.request.account.ChangeEmailRequest;
-import com.freetowear.freetowear.dto.request.account.RegisterRequest;
-import com.freetowear.freetowear.dto.request.account.UpdateAccountRequest;
-import com.freetowear.freetowear.dto.request.account.ChangePasswordRequest;
-import com.freetowear.freetowear.dto.request.account.ForgotPasswordRequest;
+import com.freetowear.freetowear.dto.request.account.*;
 import com.freetowear.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.freetowear.entity.Address;
 import com.freetowear.freetowear.entity.Customer;
@@ -127,5 +122,14 @@ public class AccountService {
 
         customer.setPasswordHash(request.getNewPassword());
         customerRepository.save(customer);
+    }
+
+    public void deleteAccount(Integer id, DeleteAccountRequest request) {
+        customerRepository.findById(id).ifPresent(customer -> {
+            if (!customer.getPasswordHash().equals(request.getPassword()))
+                throw new IllegalArgumentException("Invalid password");
+            customer.setActive(false);
+            customerRepository.save(customer);
+        });
     }
 }
