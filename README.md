@@ -37,6 +37,7 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 - [spring-boot-starter-thymeleaf](https://www.thymeleaf.org) `3.5.7`
 - [spring-boot-starter-data-jpa](https://spring.io/projects/spring-data-jpa) `3.5.7`
 - [spring-boot-starter-validation](https://hibernate.org/validator) `3.5.7`
+- [spring-boot-starter-security](https://spring.io/projects/spring-security) `3.5.7`
 - [spring-boot-devtools](https://spring.io/projects/spring-boot) `3.5.7`
 - [mysql-connector-j](https://dev.mysql.com/downloads/connector/j) `9.4.0`
 
@@ -48,6 +49,7 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 
 - Cadastro e gerenciamento da conta do cliente
 - Gerenciamento de endereços vinculados à conta
+- Criptografia de senhas com BCrypt
 - Catálogo de produtos organizado por categorias
 - Gerenciamento de produtos, categorias e cupons
 - Carrinho de compras com gerenciamento de itens
@@ -61,7 +63,6 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 As funcionalidades abaixo ainda estão em desenvolvimento e serão adicionadas nas próximas versões:
 
 - Implementação de autenticação e autorização de usuários
-- Criptografia e proteção de credenciais
 - Controle de sessão e persistência de login
 - Validação de acesso aos recursos do sistema
 - Identificadores públicos mais seguros

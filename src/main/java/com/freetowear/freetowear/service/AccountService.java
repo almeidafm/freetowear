@@ -7,6 +7,7 @@ import com.freetowear.freetowear.entity.Customer;
 import com.freetowear.freetowear.repository.AddressRepository;
 import com.freetowear.freetowear.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -20,6 +21,9 @@ public class AccountService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public CustomerResponse getAccount(Integer id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
@@ -30,7 +34,7 @@ public class AccountService {
         Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
-        customer.setPasswordHash(request.getPassword());
+        customer.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         customer.setCpf(request.getCpf());
         customer.setPhone(request.getPhone());
         if (request.getBirthDate() != null && !request.getBirthDate().isEmpty())
@@ -95,7 +99,7 @@ public class AccountService {
         if (!customer.getEmail().equals(request.getCurrentEmail()))
             throw new IllegalArgumentException("Current email does not match");
 
-        if (!customer.getPasswordHash().equals(request.getPassword()))
+        if (!passwordEncoder.matches(request.getPassword(), customer.getPasswordHash()))
             throw new IllegalArgumentException("Invalid password");
 
         if (customerRepository.existsByEmail(request.getNewEmail()))
@@ -109,10 +113,10 @@ public class AccountService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
-        if (!customer.getPasswordHash().equals(request.getCurrentPassword()))
+        if (!passwordEncoder.matches(request.getCurrentPassword(), customer.getPasswordHash()))
             throw new IllegalArgumentException("Current password is incorrect");
 
-        customer.setPasswordHash(request.getNewPassword());
+        customer.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         customerRepository.save(customer);
     }
 
@@ -120,13 +124,13 @@ public class AccountService {
         Customer customer = customerRepository.findByEmailOrPhone(request.getContact(), request.getContact())
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
-        customer.setPasswordHash(request.getNewPassword());
+        customer.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         customerRepository.save(customer);
     }
 
     public void deleteAccount(Integer id, DeleteAccountRequest request) {
         customerRepository.findById(id).ifPresent(customer -> {
-            if (!customer.getPasswordHash().equals(request.getPassword()))
+            if (!passwordEncoder.matches(request.getPassword(), customer.getPasswordHash()))
                 throw new IllegalArgumentException("Invalid password");
             customer.setActive(false);
             customerRepository.save(customer);
