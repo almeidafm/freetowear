@@ -1,10 +1,12 @@
 package com.freetowear.freetowear.dto.response.category;
 
 import com.freetowear.freetowear.entity.Category;
+import lombok.Getter;
 
+@Getter
 public class CategoryResponse {
 
-    private Integer id;
+    private String id;
     private String name;
     private Boolean active;
 
@@ -14,17 +16,5 @@ public class CategoryResponse {
         this.id = category.getId();
         this.name = category.getName();
         this.active = category.getActive();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Boolean getActive() {
-        return active;
     }
 }

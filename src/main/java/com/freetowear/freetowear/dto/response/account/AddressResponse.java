@@ -2,10 +2,12 @@ package com.freetowear.freetowear.dto.response.account;
 
 import com.freetowear.freetowear.entity.Address;
 import com.freetowear.freetowear.enums.UF;
+import lombok.Getter;
 
+@Getter
 public class AddressResponse {
 
-    private Integer id;
+    private String id;
     private String cep;
     private String street;
     private String number;
@@ -27,41 +29,5 @@ public class AddressResponse {
         this.city = address.getCity();
         this.state = address.getState();
         this.defaultAddress = address.getDefaultAddress();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public String getComplement() {
-        return complement;
-    }
-
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public UF getState() {
-        return state;
-    }
-
-    public Boolean getDefaultAddress() {
-        return defaultAddress;
     }
 }

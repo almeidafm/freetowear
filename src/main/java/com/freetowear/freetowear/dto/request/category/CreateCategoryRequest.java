@@ -1,7 +1,11 @@
 package com.freetowear.freetowear.dto.request.category;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CreateCategoryRequest {
 
     @NotBlank
@@ -10,14 +14,6 @@ public class CreateCategoryRequest {
     public CreateCategoryRequest() {}
 
     public CreateCategoryRequest(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

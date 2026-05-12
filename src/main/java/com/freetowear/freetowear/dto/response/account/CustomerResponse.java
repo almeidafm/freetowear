@@ -1,11 +1,13 @@
 package com.freetowear.freetowear.dto.response.account;
 
 import com.freetowear.freetowear.entity.Customer;
+import lombok.Getter;
 import java.time.LocalDate;
 
+@Getter
 public class CustomerResponse {
 
-    private Integer id;
+    private String id;
     private String name;
     private String email;
     private String phone;
@@ -23,33 +25,5 @@ public class CustomerResponse {
         this.cpf = customer.getCpf();
         this.birthDate = customer.getBirthDate();
         this.active = customer.getActive();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public Boolean getActive() {
-        return active;
     }
 }

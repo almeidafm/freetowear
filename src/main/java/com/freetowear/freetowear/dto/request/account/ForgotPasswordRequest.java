@@ -2,7 +2,11 @@ package com.freetowear.freetowear.dto.request.account;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ForgotPasswordRequest {
 
     @NotBlank(message = "Contact is required")
@@ -23,31 +27,6 @@ public class ForgotPasswordRequest {
     public ForgotPasswordRequest(String contact, String code, String newPassword) {
         this.contact = contact;
         this.code = code;
-        this.newPassword = newPassword;
-    }
-
-    // getters and setters
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
     }
 }

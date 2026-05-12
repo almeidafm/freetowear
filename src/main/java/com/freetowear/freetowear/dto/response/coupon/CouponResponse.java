@@ -2,12 +2,14 @@ package com.freetowear.freetowear.dto.response.coupon;
 
 import com.freetowear.freetowear.entity.Coupon;
 import com.freetowear.freetowear.enums.DiscountType;
+import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
 public class CouponResponse {
 
-    private Integer id;
+    private String id;
     private String code;
     private String description;
     private DiscountType discountType;
@@ -29,41 +31,5 @@ public class CouponResponse {
         this.startDate = coupon.getStartDate();
         this.endDate = coupon.getEndDate();
         this.active = coupon.getActive();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public DiscountType getDiscountType() {
-        return discountType;
-    }
-
-    public BigDecimal getDiscountValue() {
-        return discountValue;
-    }
-
-    public BigDecimal getMinimumOrderValue() {
-        return minimumOrderValue;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public Boolean getActive() {
-        return active;
     }
 }

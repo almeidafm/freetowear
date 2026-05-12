@@ -2,11 +2,13 @@ package com.freetowear.freetowear.dto.response.order;
 
 import com.freetowear.freetowear.entity.Order;
 import com.freetowear.freetowear.enums.OrderStatus;
+import lombok.Getter;
 import java.math.BigDecimal;
 
+@Getter
 public class OrderResponse {
 
-    private Integer id;
+    private String id;
     private String customerName;
     private String deliveryAddress;
     private BigDecimal productsValue;
@@ -26,35 +28,5 @@ public class OrderResponse {
         this.discountValue = order.getDiscountValue();
         this.totalValue = order.getTotalValue();
         this.status = order.getStatus();
-    }
-
-    public Integer getId() { return id; }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public BigDecimal getProductsValue() {
-        return productsValue;
-    }
-
-    public BigDecimal getShippingPrice() {
-        return shippingPrice;
-    }
-
-    public BigDecimal getDiscountValue() {
-        return discountValue;
-    }
-
-    public BigDecimal getTotalValue() {
-        return totalValue;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
     }
 }
