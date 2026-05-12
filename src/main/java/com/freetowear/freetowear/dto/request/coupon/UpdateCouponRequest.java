@@ -1,8 +1,13 @@
 package com.freetowear.freetowear.dto.request.coupon;
 
 import com.freetowear.freetowear.enums.DiscountType;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 public class UpdateCouponRequest {
 
     private String code;
@@ -33,70 +38,6 @@ public class UpdateCouponRequest {
         this.minimumOrderValue = minimumOrderValue;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.active = active;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public DiscountType getDiscountType() {
-        return discountType;
-    }
-
-    public void setDiscountType(DiscountType discountType) {
-        this.discountType = discountType;
-    }
-
-    public BigDecimal getDiscountValue() {
-        return discountValue;
-    }
-
-    public void setDiscountValue(BigDecimal discountValue) {
-        this.discountValue = discountValue;
-    }
-
-    public BigDecimal getMinimumOrderValue() {
-        return minimumOrderValue;
-    }
-
-    public void setMinimumOrderValue(BigDecimal minimumOrderValue) {
-        this.minimumOrderValue = minimumOrderValue;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
         this.active = active;
     }
 }

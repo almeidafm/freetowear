@@ -2,7 +2,11 @@ package com.freetowear.freetowear.dto.request.account;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ChangeEmailRequest {
 
     @NotBlank(message = "Current email is required")
@@ -21,31 +25,6 @@ public class ChangeEmailRequest {
     public ChangeEmailRequest(String currentEmail, String password, String newEmail) {
         this.currentEmail = currentEmail;
         this.password = password;
-        this.newEmail = newEmail;
-    }
-
-    // getters and setters
-    public String getCurrentEmail() {
-        return currentEmail;
-    }
-
-    public void setCurrentEmail(String currentEmail) {
-        this.currentEmail = currentEmail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNewEmail() {
-        return newEmail;
-    }
-
-    public void setNewEmail(String newEmail) {
         this.newEmail = newEmail;
     }
 }

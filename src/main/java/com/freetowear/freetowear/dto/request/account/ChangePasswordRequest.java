@@ -2,7 +2,11 @@ package com.freetowear.freetowear.dto.request.account;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ChangePasswordRequest {
 
     @NotBlank(message = "Current password is required")
@@ -21,10 +25,4 @@ public class ChangePasswordRequest {
         this.currentPassword = currentPassword;
         this.newPassword = newPassword;
     }
-
-    public String getCurrentPassword() { return currentPassword; }
-    public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
-
-    public String getNewPassword() { return newPassword; }
-    public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
 }

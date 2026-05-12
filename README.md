@@ -35,11 +35,12 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 
 - [spring-boot-starter-web](https://spring.io/projects/spring-boot) `3.5.7`
 - [spring-boot-starter-thymeleaf](https://www.thymeleaf.org) `3.5.7`
-- [spring-boot-starter-data-jpa](https://spring.io/projects/spring-data-jpa) `3.5.7`
 - [spring-boot-starter-validation](https://hibernate.org/validator) `3.5.7`
-- [spring-boot-starter-security](https://spring.io/projects/spring-security) `3.5.7`
-- [spring-boot-devtools](https://spring.io/projects/spring-boot) `3.5.7`
+- [spring-boot-starter-data-jpa](https://spring.io/projects/spring-data-jpa) `3.5.7`
 - [mysql-connector-j](https://dev.mysql.com/downloads/connector/j) `9.4.0`
+- [spring-boot-starter-security](https://spring.io/projects/spring-security) `3.5.7`
+- [lombok](https://projectlombok.org) `1.18.34`
+- [ulid-creator](https://github.com/f4b6a3/ulid-creator) `5.2.3`
 
 > As versões do Spring Boot são gerenciadas pelo parent `spring-boot-starter-parent:3.5.7`. O projeto utiliza Java 21.
 

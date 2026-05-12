@@ -1,5 +1,10 @@
 package com.freetowear.freetowear.dto.request.category;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UpdateCategoryRequest {
 
     private String name;
@@ -9,22 +14,6 @@ public class UpdateCategoryRequest {
 
     public UpdateCategoryRequest(String name, Boolean active) {
         this.name = name;
-        this.active = active;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
         this.active = active;
     }
 }
