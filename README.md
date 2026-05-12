@@ -49,6 +49,7 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 
 - Cadastro e gerenciamento da conta do cliente
 - Gerenciamento de endereços vinculados à conta
+- Identificadores públicos seguros com ULID
 - Criptografia de senhas com BCrypt
 - Catálogo de produtos organizado por categorias
 - Gerenciamento de produtos, categorias e cupons
@@ -65,7 +66,6 @@ As funcionalidades abaixo ainda estão em desenvolvimento e serão adicionadas n
 - Implementação de autenticação e autorização de usuários
 - Controle de sessão e persistência de login
 - Validação de acesso aos recursos do sistema
-- Identificadores públicos mais seguros
 - Upload e gerenciamento de imagens dos produtos
 - Proteção contra automações e abuso de requisições
 - Limitação de requisições em endpoints sensíveis

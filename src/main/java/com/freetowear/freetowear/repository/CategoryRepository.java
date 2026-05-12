@@ -12,5 +12,4 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> findByNameContainingIgnoreCase(String nome);
 
     List<Category> findByActiveTrue();
-
 }

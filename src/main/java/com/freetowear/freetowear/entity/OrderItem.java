@@ -1,17 +1,18 @@
 package com.freetowear.freetowear.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "order_item", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"order_id", "product_id", "variation_id"})
 })
-public class OrderItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class OrderItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -36,72 +37,6 @@ public class OrderItem {
 
     @Column(nullable = false)
     private Boolean active = true;
-
-    // =====================
-    // GETTERS AND SETTERS
-    // =====================
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public ProductVariation getProductVariation() {
-        return productVariation;
-    }
-
-    public void setProductVariation(ProductVariation productVariation) {
-        this.productVariation = productVariation;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-        updateSubtotal();
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-        updateSubtotal();
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 
     // =====================
     // SUBTOTAL CALCULATION

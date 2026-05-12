@@ -2,21 +2,22 @@ package com.freetowear.freetowear.entity;
 
 import com.freetowear.freetowear.enums.OrderStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "orders", indexes = {
         @Index(columnList = "status"),
         @Index(columnList = "created_at"),
         @Index(columnList = "customer_id")
 })
-public class Order {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -53,105 +54,6 @@ public class Order {
     private String trackingCode;
 
     private LocalDate estimatedDelivery;
-
-    // =====================
-    // GETTERS AND SETTERS
-    // =====================
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Address getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(Address deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public Coupon getCoupon() {
-        return coupon;
-    }
-
-    public void setCoupon(Coupon coupon) {
-        this.coupon = coupon;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public BigDecimal getProductsValue() {
-        return productsValue;
-    }
-
-    public void setProductsValue(BigDecimal productsValue) {
-        this.productsValue = productsValue;
-        calculateTotal();
-    }
-
-    public BigDecimal getDiscountValue() {
-        return discountValue;
-    }
-
-    public void setDiscountValue(BigDecimal discountValue) {
-        this.discountValue = discountValue;
-        calculateTotal();
-    }
-
-    public BigDecimal getShippingPrice() {
-        return shippingPrice;
-    }
-
-    public void setShippingPrice(BigDecimal shippingPrice) {
-        this.shippingPrice = shippingPrice;
-        calculateTotal();
-    }
-
-    public BigDecimal getTotalValue() {
-        return totalValue;
-    }
-
-    public String getTrackingCode() {
-        return trackingCode;
-    }
-
-    public void setTrackingCode(String trackingCode) {
-        this.trackingCode = trackingCode;
-    }
-
-    public LocalDate getEstimatedDelivery() {
-        return estimatedDelivery;
-    }
-
-    public void setEstimatedDelivery(LocalDate estimatedDelivery) {
-        this.estimatedDelivery = estimatedDelivery;
-    }
 
     // =====================
     // TOTAL CALCULATION
