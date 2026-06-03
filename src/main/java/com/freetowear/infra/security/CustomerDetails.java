@@ -31,6 +31,14 @@ public class CustomerDetails implements UserDetails, Serializable {
         return customer.getPassword();
     }
 
+    public String getId() {
+        return customer.getId();
+    }
+
+    public String getName() {
+        return customer.getName();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(customer.getRole().name()));

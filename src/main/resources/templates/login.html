@@ -25,6 +25,9 @@
             <input type="checkbox" name="remember-me" /> Keep me logged in
         </label>
     </form>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
 </div>
 
 </body>

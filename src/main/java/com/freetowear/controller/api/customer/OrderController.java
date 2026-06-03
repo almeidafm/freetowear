@@ -5,9 +5,11 @@ import com.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.dto.response.order.OrderResponse;
 import com.freetowear.dto.response.order.OrderTrackingResponse;
+import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,10 +39,11 @@ public class OrderController {
 
     @PostMapping
     public String createOrder(
-            @RequestParam String idCustomer,
+            @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam String idAddress,
             @RequestParam(required = false) String idCoupon
     ) {
+        String idCustomer = customerDetails.getId();
         orderService.createOrder(new CreateOrderRequest(idCustomer, idAddress, idCoupon));
         return "redirect:/";
     }
