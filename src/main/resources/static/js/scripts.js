@@ -10,3 +10,9 @@ fetch('/account/address')
             select.appendChild(option);
         });
     });
+fetch('/order/cart')
+    .then(res => res.json())
+    .then(order => {
+        console.log('Cart order:', order);
+        document.getElementById('formFinishOrder').action = `/order/${order.id}/finish`;
+    });

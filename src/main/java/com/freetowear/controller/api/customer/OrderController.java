@@ -1,5 +1,6 @@
 package com.freetowear.controller.api.customer;
 
+import com.freetowear.enums.OrderStatus;
 import com.freetowear.dto.request.order.AddItemToOrderRequest;
 import com.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.dto.request.order.FinishOrderRequest;
@@ -48,9 +49,9 @@ public class OrderController {
         return "redirect:/";
     }
 
-    @PostMapping("/{id}/item")
+    @PostMapping("/item")
     public String addItem(
-            @PathVariable String id,
+            @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam String idProduct,
             @RequestParam String idVariation,
             @RequestParam Integer quantity,
@@ -58,13 +59,12 @@ public class OrderController {
             @RequestParam(required = false) String description
     ) {
         try {
-            orderService.addItem(id, new AddItemToOrderRequest(idProduct, idVariation, quantity, customerCustomization, description));
+            orderService.addItem(customerDetails.getId(), new AddItemToOrderRequest(idProduct, idVariation, quantity, customerCustomization, description));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return "redirect:/";
     }
-
     @PostMapping("/{id}/finish")
     public String finishOrder(
             @PathVariable String id,
@@ -72,12 +72,6 @@ public class OrderController {
     ) {
         orderService.finishOrder(id, request);
         return "redirect:/";
-    }
-
-    @GetMapping
-    @ResponseBody
-    public List<OrderResponse> getOrders() {
-        return orderService.getOrders();
     }
 
     @GetMapping("/{id}")
@@ -92,9 +86,27 @@ public class OrderController {
         return orderService.getOrderTracking(id);
     }
 
-    @PostMapping("/{id}/cancel")
-    public String cancelOrder(@PathVariable String id) {
-        orderService.cancelOrder(id);
+    @PostMapping("/cancel")
+    public String cancelOrder(
+            @AuthenticationPrincipal CustomerDetails customerDetails
+    ) {
+        orderService.cancelOrder(customerDetails.getId());
         return "redirect:/";
+    }
+
+    @GetMapping("/cart")
+    @ResponseBody
+    public OrderResponse getCart(
+            @AuthenticationPrincipal CustomerDetails customerDetails
+    ) {
+        return orderService.getCart(customerDetails.getId());
+    }
+
+    @GetMapping
+    @ResponseBody
+    public List<OrderResponse> getOrders(
+            @AuthenticationPrincipal CustomerDetails customerDetails
+    ) {
+        return orderService.getOrders(customerDetails.getId());
     }
 }

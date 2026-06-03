@@ -122,7 +122,6 @@ public class OrderService {
         payment.setMethod(request.getMethod());
         payment.setAmountPaid(order.getTotalValue());
         payment.setStatus(PaymentStatus.PENDING);
-        payment.setPaidAt(LocalDateTime.now());
 
         if (request.getInstallments() != null) {
             payment.setInstallments(request.getInstallments());
@@ -130,12 +129,18 @@ public class OrderService {
 
         paymentRepository.save(payment);
 
-        order.setStatus(OrderStatus.PAID);
+        order.setStatus(OrderStatus.PENDING);
         orderRepository.save(order);
     }
 
-    public List<OrderResponse> getOrders() {
-        return orderRepository.findAll()
+    public OrderResponse getCart(String idCustomer) {
+        return orderRepository.findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
+                .map(OrderResponse::new)
+                .orElseThrow(() -> new RuntimeException("No active cart found"));
+    }
+
+    public List<OrderResponse> getOrders(String idCustomer) {
+        return orderRepository.findAllByCustomerId(idCustomer)
                 .stream()
                 .map(OrderResponse::new)
                 .toList();
