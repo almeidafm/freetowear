@@ -69,12 +69,8 @@ public class OrderService {
                     .ifPresent(order::setCoupon);
         }
 
-        order.setProductsValue(new BigDecimal("100.00"));
+        order.setProductsValue(BigDecimal.ZERO);
         order.setShippingPrice(new BigDecimal("20.00"));
-
-        if (order.getCoupon() != null) {
-            order.setDiscountValue(new BigDecimal("10.00"));
-        }
 
         orderRepository.save(order);
     }
@@ -95,9 +91,7 @@ public class OrderService {
         item.setProductVariation(variation);
         item.setQuantity(request.getQuantity());
         item.setUnitPrice(product.getPrice());
-        item.setQuantity(request.getQuantity());
-        item.setUnitPrice(product.getPrice());
-        item.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))); // 👈
+        item.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
 
         if (request.getDescription() != null)
             item.setDescription(request.getDescription());
@@ -111,6 +105,14 @@ public class OrderService {
         }
 
         orderItemRepository.save(item);
+
+        BigDecimal total = orderItemRepository.findAllByOrderId(order.getId())
+                .stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        order.setProductsValue(total);
+        orderRepository.save(order);
     }
 
     public void finishOrder(String orderId, FinishOrderRequest request) {
