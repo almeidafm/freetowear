@@ -5,229 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreeToWear — Painel de Teste</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg: #0d0d0d;
-            --surface: #161616;
-            --border: #2a2a2a;
-            --accent: #c8f03a;
-            --accent2: #f03a6e;
-            --text: #e8e8e8;
-            --muted: #666;
-            --input-bg: #1e1e1e;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            font-size: 13px;
-            min-height: 100vh;
-        }
-
-        /* ── HEADER ── */
-        header {
-            border-bottom: 1px solid var(--border);
-            padding: 20px 32px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            position: sticky;
-            top: 0;
-            background: var(--bg);
-            z-index: 100;
-        }
-        header h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        header h1 span { color: var(--accent); }
-        .badge {
-            background: var(--accent2);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 2px;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        /* ── LAYOUT ── */
-        .layout {
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            min-height: calc(100vh - 61px);
-        }
-
-        /* ── SIDEBAR ── */
-        nav {
-            border-right: 1px solid var(--border);
-            padding: 24px 0;
-            position: sticky;
-            top: 61px;
-            height: calc(100vh - 61px);
-            overflow-y: auto;
-        }
-        .nav-group { margin-bottom: 24px; }
-        .nav-label {
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: var(--muted);
-            padding: 0 20px 8px;
-            text-transform: uppercase;
-        }
-        nav a {
-            display: block;
-            padding: 8px 20px;
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 12px;
-            transition: color 0.15s, background 0.15s;
-            border-left: 2px solid transparent;
-        }
-        nav a:hover, nav a.active {
-            color: var(--accent);
-            background: rgba(200,240,58,0.05);
-            border-left-color: var(--accent);
-        }
-
-        /* ── MAIN CONTENT ── */
-        main {
-            padding: 32px;
-            overflow-y: auto;
-        }
-
-        /* ── SECTIONS ── */
-        .section {
-            display: none;
-            animation: fadeIn 0.2s ease;
-        }
-        .section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-        .section-subtitle {
-            color: var(--muted);
-            font-size: 11px;
-            margin-bottom: 32px;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── CARDS ── */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .card-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .card-title .method {
-            background: var(--border);
-            color: var(--muted);
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 2px;
-        }
-        .card-title .method.post   { background: #1a3a1a; color: #6fcf6f; }
-        .card-title .method.get    { background: #1a2a3a; color: #6fa8cf; }
-        .card-title .method.patch  { background: #3a2a1a; color: #cfa86f; }
-        .card-title .method.delete { background: #3a1a1a; color: #cf6f6f; }
-
-        /* ── FORM ELEMENTS ── */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-        .form-group label {
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 0.5px;
-        }
-
-        input, select, textarea {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            padding: 9px 12px;
-            width: 100%;
-            transition: border-color 0.15s;
-            outline: none;
-        }
-        input:focus, select:focus {
-            border-color: var(--accent);
-        }
-        select option { background: var(--surface); }
-
-        /* ── BUTTONS ── */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 3px;
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.15s, transform 0.1s;
-            text-decoration: none;
-        }
-        .btn:hover { opacity: 0.85; }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary  { background: var(--accent);  color: #0d0d0d; }
-        .btn-danger   { background: var(--accent2);  color: #fff; }
-        .btn-outline  { background: transparent; border: 1px solid var(--border); color: var(--text); }
-        .btn-group    { display: flex; gap: 8px; flex-wrap: wrap; }
-
-        /* ── ROUTE TAG ── */
-        .route-tag {
-            display: inline-block;
-            background: #111;
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            padding: 3px 10px;
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 16px;
-            font-family: 'Space Mono', monospace;
-        }
-        .route-tag span { color: var(--accent2); }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
 
@@ -272,6 +50,8 @@
                 <div class="card-title"><span class="method post">POST</span> Register Customer</div>
                 <div class="route-tag"><span>POST</span> /account/register</div>
                 <form method="post" th:action="@{/account/register}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Name</label>
@@ -310,8 +90,13 @@
             <div class="card">
                 <div class="card-title"><span class="method patch">PATCH</span> Update Customer</div>
                 <div class="route-tag"><span>PATCH</span> /account/{id}</div>
-                <form id="formUpdateAccount" action="/account/1" method="post">
-                    <input type="hidden" name="_method" value="PATCH">
+                <form id="formUpdateAccount"
+                      th:action="@{/account/{id}(id=${id})}"
+                      method="post">
+
+                    <input type="hidden" name="_method" value="PATCH"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Customer ID</label>
@@ -347,50 +132,39 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Add Address</div>
                 <div class="route-tag"><span>POST</span> /account/{id}/address</div>
-                <form id="formAddAddress" action="/account/1/address" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Customer ID</label>
-                            <input type="text" name="id" placeholder="1"
-                                   oninput="document.getElementById('formAddAddress').action='/account/' + this.value + '/address'">
-                        </div>
-                        <div class="form-group">
-                            <label>CEP</label>
-                            <input type="text" name="cep" placeholder="00000-000" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Street</label>
-                            <input type="text" name="street" placeholder="Rua das Flores" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Number</label>
-                            <input type="text" name="number" placeholder="123">
-                        </div>
-                        <div class="form-group">
-                            <label>Complement</label>
-                            <input type="text" name="complement" placeholder="Apto 4B">
-                        </div>
-                        <div class="form-group">
-                            <label>Neighborhood</label>
-                            <input type="text" name="neighborhood" placeholder="Centro" required>
-                        </div>
-                        <div class="form-group">
-                            <label>City</label>
-                            <input type="text" name="city" placeholder="São Paulo" required>
-                        </div>
-                        <div class="form-group">
-                            <label>State</label>
-                            <input type="text" name="state" placeholder="SP" maxlength="2" required>
-                        </div>
+                <form id="formUpdateAccount"
+                       th:action="@{/account/{id}(id=${id})}"
+                       method="post">
+
+                <input type="hidden" name="_method" value="PATCH"/>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Customer ID</label>
+                        <input type="text" name="id" placeholder="1"
+                               oninput="document.getElementById('formUpdateAccount').action='/account/' + this.value">
                     </div>
-                    <div class="form-group" style="margin-bottom:20px">
-                        <label style="flex-direction:row;align-items:center;gap:8px;cursor:pointer">
-                            <input type="checkbox" name="defaultAddress" value="true" style="width:auto">
-                            Default address
-                        </label>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" name="name" placeholder="New name">
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Address</button>
-                </form>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" name="cpf" placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Birth Date</label>
+                        <input type="date" name="birthDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="phone" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
             </div>
         </div>
 
@@ -401,8 +175,13 @@
             <div class="card">
                 <div class="card-title"><span class="method delete">DELETE</span> Delete Account</div>
                 <div class="route-tag"><span>DELETE</span> /account/{id}</div>
-                <form id="formDeleteAccount" action="/account/1" method="post">
-                    <input type="hidden" name="_method" value="DELETE">
+                <form id="formDeleteAccount"
+                      th:action="@{/account/{id}(id=${id})}"
+                      method="post">
+
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Customer ID</label>
@@ -410,6 +189,7 @@
                                    oninput="document.getElementById('formDeleteAccount').action='/account/' + this.value">
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-danger">Delete Account</button>
                 </form>
             </div>
@@ -422,7 +202,10 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Create Order</div>
                 <div class="route-tag"><span>POST</span> /order</div>
-                <form action="/order" method="post">
+                <form th:action="@{/order}" method="post">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Customer ID</label>
@@ -437,6 +220,7 @@
                             <input type="text" name="idCoupon" placeholder="—">
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Create Order</button>
                 </form>
             </div>
@@ -449,11 +233,17 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Add Item to Order</div>
                 <div class="route-tag"><span>POST</span> /order/{id}/item</div>
-                <form id="formAddItem" action="/order/1/item" method="post" enctype="multipart/form-data">
+                <form id="formAddItem"
+                      th:action="@{/order/{id}/item(id=${id})}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Order ID</label>
-                            <input type="text" name="id" placeholder="1"
+                            <input type="text" name="orderId" placeholder="1"
                                    oninput="document.getElementById('formAddItem').action='/order/' + this.value + '/item'">
                         </div>
                         <div class="form-group">
@@ -477,6 +267,7 @@
                             <input type="file" name="customerCustomization" accept="image/jpeg,image/png,image/webp">
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Add Item</button>
                 </form>
             </div>
@@ -489,7 +280,12 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Payment</div>
                 <div class="route-tag"><span>POST</span> /order/{id}/finish</div>
-                <form id="formFinishOrder" action="/order/1/finish" method="post">
+                <form id="formFinishOrder"
+                      th:action="@{/order/{id}/finish(id=${id})}"
+                      method="post">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Order ID</label>
@@ -509,6 +305,7 @@
                             <input type="number" name="installments" placeholder="1" min="1">
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Finish Order</button>
                 </form>
             </div>
@@ -522,7 +319,12 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Create Product</div>
                 <div class="route-tag"><span>POST</span> /product/create</div>
-                <form action="/product/create" method="post" enctype="multipart/form-data">
+                <form th:action="@{/product/create}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Name</label>
@@ -564,6 +366,7 @@
                             <input type="file" name="image" required>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Create Product</button>
                 </form>
             </div>
@@ -577,13 +380,17 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Create Category</div>
                 <div class="route-tag"><span>POST</span> /category/create</div>
-                <form action="/category/create" method="post">
+                <form th:action="@{/category/create}" method="post">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text" name="name" placeholder="T-Shirts" required>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Create Category</button>
                 </form>
             </div>
@@ -591,12 +398,17 @@
             <div class="card">
                 <div class="card-title"><span class="method patch">PATCH</span> Update Category</div>
                 <div class="route-tag"><span>PATCH</span> /category/{id}</div>
-                <form id="formUpdateCategory" action="/category/1" method="post">
-                    <input type="hidden" name="_method" value="PATCH">
+                <form id="formUpdateCategory"
+                      th:action="@{/category/{id}(id=${id})}"
+                      method="post">
+
+                    <input type="hidden" name="_method" value="PATCH"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Category ID</label>
-                            <input type="text" placeholder="1"
+                            <input type="text" name="id" placeholder="1"
                                    oninput="document.getElementById('formUpdateCategory').action='/category/' + this.value">
                         </div>
                         <div class="form-group">
@@ -612,6 +424,7 @@
                             </select>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Update Category</button>
                 </form>
             </div>
@@ -625,7 +438,10 @@
             <div class="card">
                 <div class="card-title"><span class="method post">POST</span> Create Coupon</div>
                 <div class="route-tag"><span>POST</span> /coupon/create</div>
-                <form action="/coupon/create" method="post">
+                <form th:action="@{/coupon/create}" method="post">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Code</label>
@@ -659,6 +475,7 @@
                             <input type="date" name="endDate" required>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Create Coupon</button>
                 </form>
             </div>
@@ -666,12 +483,17 @@
             <div class="card">
                 <div class="card-title"><span class="method patch">PATCH</span> Update Coupon</div>
                 <div class="route-tag"><span>PATCH</span> /coupon/{id}</div>
-                <form id="formUpdateCoupon" action="/coupon/1" method="post">
-                    <input type="hidden" name="_method" value="PATCH">
+                <form id="formUpdateCoupon"
+                      th:action="@{/coupon/{id}(id=${id})}"
+                      method="post">
+
+                    <input type="hidden" name="_method" value="PATCH"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Coupon ID</label>
-                            <input type="text" placeholder="1"
+                            <input type="text" name="id" placeholder="1"
                                    oninput="document.getElementById('formUpdateCoupon').action='/coupon/' + this.value">
                         </div>
                         <div class="form-group">
@@ -715,6 +537,7 @@
                             </select>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Update Coupon</button>
                 </form>
             </div>
