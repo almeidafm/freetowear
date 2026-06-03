@@ -1,5 +1,6 @@
 package com.freetowear.service;
 
+import com.freetowear.dto.response.account.AddressResponse;
 import com.freetowear.entity.Address;
 import com.freetowear.entity.Customer;
 import com.freetowear.repository.AddressRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class AccountService {
@@ -72,6 +74,13 @@ public class AccountService {
             address.setDefaultAddress(request.getDefaultAddress());
             addressRepository.save(address);
         });
+    }
+
+    public List<AddressResponse> getAddresses(String idCustomer) {
+        return addressRepository.findAllByCustomerId(idCustomer)
+                .stream()
+                .map(AddressResponse::new)
+                .toList();
     }
 
     private LocalDate parseAndValidateAge(String birthDate) {

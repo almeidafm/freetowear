@@ -2,15 +2,20 @@ package com.freetowear.controller.api.customer;
 
 import com.freetowear.dto.request.account.*;
 import com.freetowear.dto.request.account.*;
+import com.freetowear.dto.response.account.AddressResponse;
 import com.freetowear.dto.response.account.CustomerResponse;
+import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /*
  * AccountController — manages customer account operations.
@@ -64,6 +69,14 @@ public class AccountController {
     ) {
         accountService.addAddress(id, request);
         return "redirect:/";
+    }
+
+    @GetMapping("/address")
+    @ResponseBody
+    public List<AddressResponse> getAddresses(
+            @AuthenticationPrincipal CustomerDetails customerDetails
+    ) {
+        return accountService.getAddresses(customerDetails.getId());
     }
 
     @PatchMapping("/{id}/email")
