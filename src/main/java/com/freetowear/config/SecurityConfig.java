@@ -1,5 +1,7 @@
 package com.freetowear.config;
 
+import com.freetowear.infra.security.CustomerDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,10 +10,28 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final CustomerDetailsService customerDetailsService;
+    private final DataSource dataSource;
+
+    @Value("${app.remember-me.key}")
+    private String rememberMeKey;
+
+    @Value("${app.remember-me.validity-seconds}")
+    private int rememberMeValidity;
+
+    public SecurityConfig(CustomerDetailsService customerDetailsService, DataSource dataSource) {
+        this.customerDetailsService = customerDetailsService;
+        this.dataSource = dataSource;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,9 +56,28 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
+                )
+                .rememberMe(remember -> remember
+                        .tokenRepository(persistentTokenRepository())
+                        .tokenValiditySeconds(rememberMeValidity)
+                        .key(rememberMeKey)
+                        .userDetailsService(customerDetailsService)
+                )
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .expiredUrl("/login?expired=true")
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        repo.setCreateTableOnStartup(false);
+        return repo;
     }
 
     @Bean

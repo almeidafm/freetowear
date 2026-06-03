@@ -2,16 +2,13 @@
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.7-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![Spring MVC](https://img.shields.io/badge/Spring_MVC-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
 ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
-![Stars](https://img.shields.io/github/stars/almeidafm/freetowear?style=for-the-badge&color=%23FFD700)
-![Forks](https://img.shields.io/github/forks/almeidafm/freetowear?style=for-the-badge)
-![Issues](https://img.shields.io/github/issues/almeidafm/freetowear?style=for-the-badge&color=%23FF0000)
 
 ## Sumário
 - [Estrutura da Aplicação](#estrutura-da-aplicação)
@@ -42,6 +39,7 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 - [thymeleaf-extras-springsecurity6](https://github.com/thymeleaf/thymeleaf-extras-springsecurity) `3.5.7`
 - [spring-boot-starter-security](https://spring.io/projects/spring-security) `3.5.7`
 - [spring-boot-starter-validation](https://hibernate.org/validator) `3.5.7`
+- [spring-session-jdbc](https://spring.io/projects/spring-session) `3.5.7`
 - [spring-boot-starter-data-jpa](https://spring.io/projects/spring-data-jpa) `3.5.7`
 - [mysql-connector-j](https://dev.mysql.com/downloads/connector/j) `9.4.0`
 - [lombok](https://projectlombok.org) `1.18.34`
@@ -58,7 +56,8 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 - Gerenciamento de endereços vinculados à conta
 - Identificadores públicos seguros com ULID
 - Autenticação de usuários com sessão HTTP e Spring Security
-- Autorização por perfil de acesso (ROLE_USER, ROLE_ADMIN)
+- Autorização por perfil de acesso
+- Controle de sessão e persistência de login
 - Criptografia de senhas com BCrypt
 - Catálogo de produtos organizado por categorias
 - Gerenciamento de produtos, categorias e cupons
@@ -74,7 +73,6 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 ## Próximas Versões
 As funcionalidades abaixo ainda estão em desenvolvimento e serão adicionadas nas próximas versões:
 
-- Controle de sessão e persistência de login
 - Validação de acesso aos recursos do sistema
 - Proteção contra automações e abuso de requisições
 - Limitação de requisições em endpoints sensíveis

@@ -4,6 +4,9 @@ import com.freetowear.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -11,7 +14,10 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "customer")
-public class Customer extends BaseEntity {
+public class Customer extends BaseEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Column(nullable = false, length = 150)
     private String name;
@@ -31,7 +37,8 @@ public class Customer extends BaseEntity {
     @Column
     private LocalDate birthDate;
 
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role = Role.ROLE_USER;
 
     @Column(nullable = false, updatable = false)
