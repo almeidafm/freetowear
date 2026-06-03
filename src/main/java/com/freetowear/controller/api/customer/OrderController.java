@@ -65,6 +65,7 @@ public class OrderController {
         }
         return "redirect:/";
     }
+
     @PostMapping("/{id}/finish")
     public String finishOrder(
             @PathVariable String id,

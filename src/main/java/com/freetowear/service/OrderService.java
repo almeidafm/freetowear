@@ -79,9 +79,9 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public void addItem(String orderId, AddItemToOrderRequest request) throws IOException {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+    public void addItem(String idCustomer, AddItemToOrderRequest request) throws IOException {
+        Order order = orderRepository.findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
+                .orElseThrow(() -> new RuntimeException("No active cart found"));
 
         Product product = productRepository.findById(request.getIdProduct())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
