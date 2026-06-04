@@ -36,16 +36,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/", "/product", "/product/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/product/**").hasRole("ADMIN")
-                        .requestMatchers("/category/**", "/coupon/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/account/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
-                        .requestMatchers("/css/**", "/js/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                       .anyRequest().permitAll()
+                        /*
+                       .requestMatchers(HttpMethod.GET, "/", "/product", "/product/**").permitAll()
+                       .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
+                       .requestMatchers(HttpMethod.PATCH, "/product/**").hasRole("ADMIN")
+                       .requestMatchers("/category/**", "/coupon/**").hasRole("ADMIN")
+                       .requestMatchers(HttpMethod.GET, "/account/register").permitAll()
+                       .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
+                       .requestMatchers("/css/**", "/js/**").permitAll()
+                       .anyRequest().authenticated()
+                        */
+               )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)

@@ -90,7 +90,6 @@ As funcionalidades abaixo ainda estão em desenvolvimento e serão adicionadas n
 
 - Algumas regras de validação ainda não foram aplicadas em todos os endpoints
 - O fluxo de recuperação de senha ainda está em desenvolvimento
-- Funcionalidades de autenticação e autorização ainda não foram finalizadas
 
 >Este projeto está em desenvolvimento e possui finalidade educacional e de portfólio. Não é recomendado para uso em produção no estado atual.
 

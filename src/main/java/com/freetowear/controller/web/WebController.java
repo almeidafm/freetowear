@@ -18,4 +18,9 @@ public class WebController {
     public String login() {
         return "login";
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 }
