@@ -19,6 +19,11 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
     @GetMapping("/test")
     public String test() {
         return "test";
