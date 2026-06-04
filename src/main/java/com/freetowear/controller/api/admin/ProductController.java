@@ -20,7 +20,7 @@ import java.math.BigDecimal;
  * PATCH  /product/{id} ✔
  * */
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired

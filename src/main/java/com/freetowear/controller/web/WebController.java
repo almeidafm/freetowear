@@ -24,6 +24,11 @@ public class WebController {
         return "register";
     }
 
+    @GetMapping("/account")
+    public String account() {
+        return "account";
+    }
+
     @GetMapping("/test")
     public String test() {
         return "test";
