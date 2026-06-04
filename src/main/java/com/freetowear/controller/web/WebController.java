@@ -18,44 +18,4 @@ public class WebController {
     public String login() {
         return "login";
     }
-
-    @GetMapping("/camisaslisas")
-    public String camisasLisas() {
-        return "camisaslisas";
-    }
-
-    @GetMapping("/trabalhos")
-    public String trabalhos() {
-        return "trabalhos";
-    }
-
-    @GetMapping("/carrinho")
-    public String carrinho() {
-        return "carrinho";
-    }
-
-    @GetMapping("/confirmacao")
-    public String confirmacao() {
-        return "confirmacao";
-    }
-
-    @GetMapping("/contato")
-    public String contato() {
-        return "contato";
-    }
-
-    @GetMapping("/comprar")
-    public String comprar() {
-        return "comprar";
-    }
-
-    @GetMapping("/finalizar")
-    public String finalizar() {
-        return "finalizar";
-    }
-
-    @GetMapping("/sobrenos")
-    public String sobreNos() {
-        return "sobrenos";
-    }
 }
