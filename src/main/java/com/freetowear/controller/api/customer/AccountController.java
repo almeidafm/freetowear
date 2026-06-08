@@ -114,15 +114,15 @@ public class AccountController {
         return ResponseEntity.ok("Password reset successfully");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     @ResponseBody
     public ResponseEntity<String> deleteAccount(
-            @PathVariable String id,
+            @AuthenticationPrincipal CustomerDetails customerDetails,
             @Valid @ModelAttribute DeleteAccountRequest request,
             BindingResult result
     ) {
         if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
-        accountService.deleteAccount(id, request);
+        accountService.deleteAccount(customerDetails.getId(), request);
         return ResponseEntity.ok("Account deactivated successfully");
     }
 }

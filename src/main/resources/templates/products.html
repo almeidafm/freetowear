@@ -20,7 +20,9 @@
     <tbody>
     <tr th:each="product : ${products}">
         <td>
-            <img th:src="${product.imageUrl}" th:alt="${product.name}" width="120">
+            <img th:src="${product.imageUrl}"
+                 th:alt="${product.name}"
+                 width="120">
         </td>
         <td th:text="${product.name}"></td>
         <td th:text="'R$' + ${product.price}"></td>
