@@ -11,8 +11,8 @@
     <thead>
     <tr>
         <th>Image</th>
-        <th>ID</th>
         <th>Name</th>
+        <th>Price</th>
         <th>Detalhes</th>
     </tr>
     </thead>
@@ -20,15 +20,10 @@
     <tbody>
     <tr th:each="product : ${products}">
         <td>
-            <img th:src="${product.imageUrl}"
-                 th:alt="${product.name}"
-                 width="120">
+            <img th:src="${product.imageUrl}" th:alt="${product.name}" width="120">
         </td>
-
-        <td th:text="${product.id}">1</td>
-
-        <td th:text="${product.name}">Notebook</td>
-
+        <td th:text="${product.name}"></td>
+        <td th:text="'R$' + ${product.price}"></td>
         <td>
             <a th:href="@{/products/{id}(id=${product.id})}">
                 Ver produto
