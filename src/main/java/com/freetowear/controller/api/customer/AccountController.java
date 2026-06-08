@@ -62,12 +62,12 @@ public class AccountController {
         return "redirect:/account/" + id;
     }
 
-    @PostMapping("/{id}/address")
+    @PostMapping("/address")
     public String addAddress(
-            @PathVariable String id,
+            @AuthenticationPrincipal CustomerDetails customerDetails,
             @Valid @ModelAttribute AddAddressRequest request
     ) {
-        accountService.addAddress(id, request);
+        accountService.addAddress(customerDetails.getId(), request);
         return "redirect:/";
     }
 
