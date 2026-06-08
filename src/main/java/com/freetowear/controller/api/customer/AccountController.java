@@ -39,7 +39,7 @@ public class AccountController {
     public String getAccount(@PathVariable String id, Model model) {
         CustomerResponse customer = accountService.getAccount(id);
         model.addAttribute("customer", customer);
-        return "account/profile";
+        return "account";
     }
 
     @PostMapping("/register")
@@ -49,15 +49,15 @@ public class AccountController {
         return "redirect:/";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     public String updateAccount(
-            @Valid
-            @PathVariable String id,
+            @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String cpf,
             @RequestParam(required = false) String birthDate,
             @RequestParam(required = false) String phone
     ) {
+        String id = customerDetails.getId();
         accountService.updateAccount(id, new UpdateAccountRequest(name, cpf, birthDate, phone));
         return "redirect:/account/" + id;
     }
