@@ -38,10 +38,6 @@ public class AccountService {
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
-        customer.setCpf(request.getCpf());
-        customer.setPhone(request.getPhone());
-        if (request.getBirthDate() != null && !request.getBirthDate().isEmpty())
-            customer.setBirthDate(parseAndValidateAge(request.getBirthDate()));
         customer.setActive(true);
         customerRepository.save(customer);
     }
