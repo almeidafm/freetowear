@@ -14,19 +14,39 @@ public class WebController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
     @GetMapping("/register")
     public String register() {
         return "register";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping("/account")
     public String account() {
         return "account";
+    }
+
+    @GetMapping("/cart")
+    public String cart() {
+        return "cart";
+    }
+
+    @GetMapping("/checkout")
+    public String checkout() {
+        return "checkout";
+    }
+
+    @GetMapping("/products/search")
+    public String search() {
+        return "search";
+    }
+
+    @GetMapping("/categories")
+    public  String categories() {
+        return "categories";
     }
 
     @GetMapping("/test")

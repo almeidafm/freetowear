@@ -36,6 +36,10 @@
     <span th:text="${product.description}"> </span>
 </p>
 
+<button>Adicionar ao carrinho</button>
+
+<input type="number" name="quantity" placeholder="Selecione a quantidade" min="1" required>
+
 <p>
     <a th:href="@{/products}">
         Voltar para a lista
