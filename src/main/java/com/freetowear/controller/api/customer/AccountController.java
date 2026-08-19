@@ -9,6 +9,7 @@ import com.freetowear.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,15 +80,22 @@ public class AccountController {
         return accountService.getAddresses(customerDetails.getId());
     }
 
-    @PatchMapping("/{id}/email")
+    @PatchMapping("/email")
     @ResponseBody
     public ResponseEntity<String> changeEmail(
-            @PathVariable String id,
             @Valid @ModelAttribute ChangeEmailRequest request,
-            BindingResult result
+            BindingResult result,
+            Authentication authentication
     ) {
-        if (result.hasErrors()) return ResponseEntity.badRequest().body("Validation error");
-        accountService.changeEmail(id, request);
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Validation error");
+        }
+
+        CustomerDetails customerDetails =
+                (CustomerDetails) authentication.getPrincipal();
+
+        accountService.changeEmail(customerDetails.getId(), request);
+
         return ResponseEntity.ok("Email changed successfully");
     }
 

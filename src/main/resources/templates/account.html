@@ -35,6 +35,40 @@
         <button type="submit" class="btn btn-primary">Update</button>
     </form><br>
 
+    <form th:action="@{/account/email}" method="post">
+
+        <input type="hidden"
+               name="_method"
+               value="PATCH"/>
+
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"/>
+
+        <div>
+            <label>Email atual</label>
+            <input type="email"
+                   name="currentEmail"
+                   required>
+        </div>
+
+        <div>
+            <label>Senha</label>
+            <input type="password"
+                   name="password"
+                   required>
+        </div>
+
+        <div>
+            <label>Novo email</label>
+            <input type="email"
+                   name="newEmail"
+                   required>
+        </div>
+
+        <button type="submit">Alterar email</button>
+    </form><br>
+
     <form id="formAddAddress"
           th:action="@{/account/address}"
           method="post">

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -95,14 +96,19 @@ public class AccountService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
-        if (!customer.getEmail().equals(request.getCurrentEmail()))
+        if (!customer.getEmail().equals(request.getCurrentEmail())) {
             throw new IllegalArgumentException("Current email does not match");
+        }
 
-        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword()))
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                customer.getPassword())) {
             throw new IllegalArgumentException("Invalid password");
+        }
 
-        if (customerRepository.existsByEmail(request.getNewEmail()))
+        if (customerRepository.existsByEmail(request.getNewEmail())) {
             throw new IllegalArgumentException("Email already in use");
+        }
 
         customer.setEmail(request.getNewEmail());
         customerRepository.save(customer);
