@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +13,12 @@
 
 <div class="register-container">
     <h1><a th:href="@{/}">Home</a><br></h1>
+
+    <div>
+        <span>👤</span>
+        <span sec:authorize="isAnonymous()">Guest</span>
+        <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+    </div><br>
 
     <div class="register-card">
         <form method="post" th:action="@{/account/register}">

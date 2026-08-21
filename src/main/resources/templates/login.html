@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Login — FreetоWear</title>
@@ -9,6 +11,12 @@
 
 <div class="login-container">
     <h1><a th:href="@{/}">Home</a><br></h1>
+
+    <div>
+        <span>👤</span>
+        <span sec:authorize="isAnonymous()">Guest</span>
+        <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+    </div><br>
 
     <div th:if="${param.error}" class="alert error">
         Invalid email or password.

@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
 </head>
 <body>
 <h1>FreeToWear - Home</h1>
+
+<div>
+    <span>👤</span>
+    <span sec:authorize="isAnonymous()">Guest</span>
+    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+</div><br>
+
 <a th:href="@{/register}">Register</a><br>
 <a th:href="@{/login}">Login</a><br>
 <a th:href="@{/account}">Account</a><br>
