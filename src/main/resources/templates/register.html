@@ -20,6 +20,9 @@
         <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
     </div><br>
 
+    <div th:if="${param.registered}" class="alert success">
+        Account created successfully. Please log in.
+    </div>
     <div class="register-card">
         <form method="post" th:action="@{/account/register}">
             <input type="hidden"

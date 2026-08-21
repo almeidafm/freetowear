@@ -44,10 +44,16 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid RegisterRequest request, BindingResult result) {
-        if (result.hasErrors()) return "redirect:/";
+    public String register(
+            @Valid RegisterRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return "redirect:/register?error=true";
+        }
+
         accountService.register(request);
-        return "redirect:/";
+        return "redirect:/register?registered=true";
     }
 
     @PatchMapping
