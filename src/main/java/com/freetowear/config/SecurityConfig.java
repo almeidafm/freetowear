@@ -38,8 +38,6 @@ public class SecurityConfig {
         http
 
                 .authorizeHttpRequests(auth -> auth
-                       .anyRequest().permitAll()
-                        /*
                        .requestMatchers(HttpMethod.GET, "/", "/product", "/product/**").permitAll()
                        .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
                        .requestMatchers(HttpMethod.PATCH, "/product/**").hasRole("ADMIN")
@@ -48,12 +46,11 @@ public class SecurityConfig {
                        .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
                        .requestMatchers("/css/**", "/js/**").permitAll()
                        .anyRequest().authenticated()
-                        */
                )
 
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/login?success=true", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )

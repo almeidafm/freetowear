@@ -18,9 +18,14 @@
         <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
     </div><br>
 
+    <div th:if="${param.success}" class="alert success">
+        Login successful.
+    </div>
+
     <div th:if="${param.error}" class="alert error">
         Invalid email or password.
     </div>
+
     <div th:if="${param.logout}" class="alert success">
         You have been logged out.
     </div>
