@@ -1,6 +1,8 @@
 package com.freetowear.controller.web;
 
+import com.freetowear.dto.request.account.RegisterRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /*
@@ -15,7 +17,8 @@ public class WebController {
     }
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
+        model.addAttribute("request", new RegisterRequest());
         return "register";
     }
 

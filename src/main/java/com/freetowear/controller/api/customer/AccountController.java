@@ -45,15 +45,15 @@ public class AccountController {
 
     @PostMapping("/register")
     public String register(
-            @Valid RegisterRequest request,
+            @Valid @ModelAttribute("request") RegisterRequest request,
             BindingResult result
     ) {
         if (result.hasErrors()) {
-            return "redirect:/register?error=true";
+            return "register";
         }
 
         accountService.register(request);
-        return "redirect:/register?registered=true";
+        return "redirect:/login?registered=true";
     }
 
     @PatchMapping
