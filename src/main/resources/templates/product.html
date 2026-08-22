@@ -52,60 +52,47 @@
            name="idProduct"
            th:value="${product.id}">
 
-    <div>
-        <strong>Cor:</strong>
-        <div id="colors">
-            <button type="button"
-                    th:each="variation : ${product.variations}"
-                    th:attr="data-color=${variation.color}"
-                    th:text="${variation.color}"
-                    class="color-option">
-            </button>
-        </div>
-    </div>
-    <br>
-
-    <div>
-        <strong>Tamanho:</strong>
-        <div id="sizes">
-            <button type="button"
-                    th:each="size : ${#sets.toSet(product.variations.![size])}"
-                    th:text="${size}"
-                    th:attr="data-size=${size}"
-                    class="size-option">
-            </button>
-        </div>
-    </div>
-    <br>
-
-    <input type="hidden"
-           id="idVariation"
-           name="idVariation">
+    <fieldset>
+        <legend>Variação</legend>
+        <label th:each="variation : ${product.variations}">
+            <input type="radio"
+                   name="idVariation"
+                   th:value="${variation.id}"
+                   required>
+            <span th:text="${variation.color + ' / ' + variation.size}">Cor / Tamanho</span>
+        </label>
+    </fieldset>
 
     <label for="quantity">
         Quantidade:
     </label>
+
     <input type="number"
            id="quantity"
            name="quantity"
            min="1"
            value="1"
            required>
+
     <br><br>
 
     <label for="customerCustomization">
         Personalização:
     </label>
+
     <input type="file"
            id="customerCustomization"
            name="customerCustomization">
+
     <br><br>
 
     <label for="description">
         Descrição:
     </label>
+
     <textarea id="description"
               name="description"></textarea>
+
     <br><br>
 
     <button type="submit">

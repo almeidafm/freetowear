@@ -44,9 +44,6 @@ public class OrderService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private ProductVariationRepository variationRepository;
-
-    @Autowired
     private CloudinaryService cloudinaryService;
 
     public void createOrder(CreateOrderRequest request) {
@@ -63,6 +60,7 @@ public class OrderService {
         Order order = new Order();
         order.setCustomer(customer);
         order.setDeliveryAddress(address);
+        order.setStatus(OrderStatus.CART);
 
         if (request.getIdCoupon() != null) {
             couponRepository.findById(request.getIdCoupon())
@@ -82,8 +80,10 @@ public class OrderService {
         Product product = productRepository.findById(request.getIdProduct())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        ProductVariation variation = variationRepository.findById(request.getIdVariation())
-                .orElseThrow(() -> new RuntimeException("Variation not found"));
+        ProductVariation variation = product.getVariations().stream()
+                .filter(productVariation -> productVariation.getId().equals(request.getIdVariation()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Variation not found for this product"));
 
         OrderItem item = new OrderItem();
         item.setOrder(order);
