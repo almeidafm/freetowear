@@ -18,219 +18,25 @@
 <div class="layout">
 
     <!-- ── SIDEBAR ── -->
-    <nav>
-        <div class="nav-group">
-            <div class="nav-label">Account</div>
-            <a href="#" onclick="show('register')" class="active">Register</a>
-            <a href="#" onclick="show('update-account')">Update Account</a>
-            <a href="#" onclick="show('add-address')">Add Address</a>
-            <a href="#" onclick="show('delete-account')">Delete Account</a>
-        </div>
-        <div class="nav-group">
-            <div class="nav-label">Orders</div>
-            <a href="#" onclick="show('create-order')">Create Order</a>
-            <a href="#" onclick="show('add-item')">Add Item</a>
-            <a href="#" onclick="show('finish-order')">Finish Order</a>
-        </div>
-        <div class="nav-group">
-            <div class="nav-label">Admin</div>
-            <a href="#" onclick="show('admin-product')">Products</a>
-            <a href="#" onclick="show('admin-category')">Categories</a>
-            <a href="#" onclick="show('admin-coupon')">Coupons</a>
-        </div>
-    </nav>
+<nav>
+    <div class="nav-group">
+        <div class="nav-label">Orders</div>
+        <a href="#" onclick="show('create-order')">Create Order</a>
+        <a href="#" onclick="show('add-item')">Add Item</a>
+        <a href="#" onclick="show('finish-order')">Finish Order</a>
+    </div>
+
+    <div class="nav-group">
+        <div class="nav-label">Admin</div>
+        <a href="#" onclick="show('admin-product')">Products</a>
+        <a href="#" onclick="show('admin-product-variation')">Product Variations</a>
+        <a href="#" onclick="show('admin-category')">Categories</a>
+        <a href="#" onclick="show('admin-coupon')">Coupons</a>
+    </div>
+</nav>
 
     <!-- ── MAIN ── -->
     <main>
-
-        <!-- REGISTER -->
-        <div id="register" class="section active">
-            <div class="section-title">Register</div>
-            <div class="section-subtitle">POST /account/register</div>
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Register Customer</div>
-                <div class="route-tag"><span>POST</span> /account/register</div>
-                <form method="post" th:action="@{/account/register}">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" name="name" placeholder="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" placeholder="email@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" placeholder="••••••••" required>
-                        </div>
-                        <div class="form-group">
-                            <label>CPF</label>
-                            <input type="text" name="cpf" placeholder="000.000.000-00">
-                        </div>
-                        <div class="form-group">
-                            <label>Birth Date</label>
-                            <input type="date" name="birthDate">
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" name="phone" placeholder="(11) 99999-9999">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Register</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- UPDATE ACCOUNT -->
-        <div id="update-account" class="section">
-            <div class="section-title">Update Account</div>
-            <div class="section-subtitle">PATCH /account/{id}</div>
-            <div class="card">
-                <div class="card-title"><span class="method patch">PATCH</span> Update Customer</div>
-                <div class="route-tag"><span>PATCH</span> /account/{id}</div>
-                <form id="formUpdateAccount"
-                      th:action="@{/account}"
-                      method="post">
-
-                    <input type="hidden" name="_method" value="PATCH"/>
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" name="name" placeholder="New name">
-                        </div>
-                        <div class="form-group">
-                            <label>CPF</label>
-                            <input type="text" name="cpf" placeholder="000.000.000-00">
-                        </div>
-                        <div class="form-group">
-                            <label>Birth Date</label>
-                            <input type="date" name="birthDate">
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" name="phone" placeholder="(11) 99999-9999">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- ADD ADDRESS -->
-        <div id="add-address" class="section">
-            <div class="section-title">Add Address</div>
-            <div class="section-subtitle">POST /account/{id}/address</div>
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Add Address</div>
-                <div class="route-tag"><span>POST</span> /account/{id}/address</div>
-                <form id="formAddAddress"
-                      th:action="@{/account/address}"
-                      method="post">
-
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>CEP</label>
-                            <input type="text" name="cep" placeholder="00000-000" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Street</label>
-                            <input type="text" name="street" placeholder="Rua das Flores" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Number</label>
-                            <input type="text" name="number" placeholder="123">
-                        </div>
-                        <div class="form-group">
-                            <label>Complement</label>
-                            <input type="text" name="complement" placeholder="Apto 4B">
-                        </div>
-                        <div class="form-group">
-                            <label>Neighborhood</label>
-                            <input type="text" name="neighborhood" placeholder="Centro" required>
-                        </div>
-                        <div class="form-group">
-                            <label>City</label>
-                            <input type="text" name="city" placeholder="São Paulo" required>
-                        </div>
-                        <div class="form-group">
-                            <label>State</label>
-                            <input type="text" name="state" placeholder="SP" maxlength="2" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom:20px">
-                        <label style="flex-direction:row;align-items:center;gap:8px;cursor:pointer">
-                            <input type="checkbox" name="defaultAddress" value="true" style="width:auto">
-                            Default address
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Add Address</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- DELETE ACCOUNT -->
-        <div id="delete-account" class="section">
-            <div class="section-title">Delete Account</div>
-            <div class="section-subtitle">DELETE /account/{id}</div>
-            <div class="card">
-                <div class="card-title"><span class="method delete">DELETE</span> Delete Account</div>
-                <div class="route-tag"><span>DELETE</span> /account/{id}</div>
-                <form id="formDeleteAccount"
-                      th:action="@{/account}"
-                      method="post">
-
-                    <input type="hidden" name="_method" value="DELETE"/>
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" placeholder="Enter your password"/>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-danger">Delete Account</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- CREATE ORDER -->
-        <div id="create-order" class="section">
-            <div class="section-title">Create Order</div>
-            <div class="section-subtitle">POST /order</div>
-            <div class="card">
-                <div class="card-title"><span class="method post">POST</span> Create Order</div>
-                <div class="route-tag"><span>POST</span> /order</div>
-                <form th:action="@{/order}" method="post">
-
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Address</label>
-                            <select name="idAddress" required>
-                                <option value="" disabled selected>Select an option</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Coupon ID (optional)</label>
-                            <input type="text" name="idCoupon" placeholder="—">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Create Order</button>
-                </form>
-            </div>
-        </div>
 
         <!-- ADD ITEM -->
         <div id="add-item" class="section">
@@ -364,6 +170,78 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Create Product</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="admin-product-variation" class="section">
+            <div class="section-title">Admin · Product Variations</div>
+            <div class="section-subtitle">POST /products/variation/create</div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="method post">POST</span> Add Product Variation
+                </div>
+
+                <div class="route-tag">
+                    <span>POST</span> /products/variation/create
+                </div>
+
+                <form th:action="@{/products/variation/create}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"/>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Product</label>
+                            <select name="productId" required>
+                                <option value="" disabled selected>Select a product</option>
+                                <option th:each="product : ${products}"
+                                        th:value="${product.id}"
+                                        th:text="${product.name + ' (ID: ' + product.id + ')'}">
+                                    Product name (ID: product-id)
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <input type="text"
+                                   name="color"
+                                   placeholder="Black"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select name="size" required>
+                                <option value="PP">PP</option>
+                                <option value="P">P</option>
+                                <option value="M">M</option>
+                                <option value="G">G</option>
+                                <option value="GG">GG</option>
+                                <option value="XG">XG</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number"
+                                   name="stock"
+                                   placeholder="50"
+                                   min="0"
+                                   required>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Add Variation
+                    </button>
                 </form>
             </div>
         </div>

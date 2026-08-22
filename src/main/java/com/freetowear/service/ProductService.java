@@ -3,8 +3,10 @@ package com.freetowear.service;
 import com.freetowear.entity.Category;
 import com.freetowear.entity.Product;
 import com.freetowear.entity.ProductVariation;
+import com.freetowear.enums.Size;
 import com.freetowear.repository.CategoryRepository;
 import com.freetowear.repository.ProductRepository;
+import com.freetowear.repository.ProductVariationRepository;
 import com.freetowear.dto.request.product.CreateProductRequest;
 import com.freetowear.dto.request.product.UpdateProductRequest;
 import com.freetowear.dto.response.product.ProductResponse;
@@ -20,6 +22,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductVariationRepository productVariationRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -63,6 +68,19 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         String imageUrl = cloudinaryService.buildUrl(product.getImagePublicId());
         return new ProductResponse(product, imageUrl);
+    }
+
+    public void createVariation(String productId, String color, Size size, Integer stock) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        ProductVariation variation = new ProductVariation();
+        variation.setProduct(product);
+        variation.setColor(color);
+        variation.setSize(size);
+        variation.setStock(stock);
+
+        productVariationRepository.save(variation);
     }
 
     public void updateProduct(String id, UpdateProductRequest request) throws IOException {

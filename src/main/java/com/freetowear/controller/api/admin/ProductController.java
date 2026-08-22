@@ -53,6 +53,17 @@ public class ProductController {
         return "redirect:/";
     }
 
+    @PostMapping("/variation/create")
+    public String createVariation(
+            @RequestParam String productId,
+            @RequestParam String color,
+            @RequestParam Size size,
+            @RequestParam Integer stock
+    ) {
+        productService.createVariation(productId, color, size, stock);
+        return "redirect:/test";
+    }
+
     @PatchMapping("/{id}")
     public String updateProduct(
             @PathVariable String id,

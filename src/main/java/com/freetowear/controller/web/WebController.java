@@ -1,6 +1,7 @@
 package com.freetowear.controller.web;
 
 import com.freetowear.dto.request.account.RegisterRequest;
+import com.freetowear.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
  * */
 @Controller
 public class WebController {
+
+    private final ProductService productService;
+
+    public WebController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/")
     public String home() {
@@ -53,7 +60,8 @@ public class WebController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test(Model model) {
+        model.addAttribute("products", productService.listProducts());
         return "test";
     }
 }

@@ -31,3 +31,33 @@ fetch('/order/cart')
         console.log('Cart order:', order);
         document.getElementById('formFinishOrder').action = `/order/${order.id}/finish`;
     });
+document.addEventListener('DOMContentLoaded', () => {
+    loadCategories();
+});
+
+async function loadCategories() {
+    const select = document.querySelector('select[name="categoryId"]');
+
+    if (!select) return;
+
+    try {
+        const response = await fetch('/category');
+
+        if (!response.ok) {
+            throw new Error('Failed to load categories');
+        }
+
+        const categories = await response.json();
+
+        categories.forEach(category => {
+            const option = document.createElement('option');
+
+            option.value = category.id;
+            option.textContent = category.name;
+
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading categories:', error);
+    }
+}
