@@ -244,4 +244,87 @@ public class OrderService {
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
     }
+
+    @Transactional
+    public void updateItemQuantity(
+            String idCustomer,
+            String idProduct,
+            String idVariation,
+            Integer quantity
+    ) {
+        boolean invalidQuantity = quantity == null || quantity < 1;
+
+        if (invalidQuantity) {throw new RuntimeException("Quantity must be at least 1");}
+
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(
+                        idCustomer,
+                        OrderStatus.CART
+                )
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        OrderItem item = orderItemRepository
+                .findAllByOrderId(order.getId())
+                .stream()
+                .filter(orderItem ->
+                        orderItem.getProduct().getId().equals(idProduct)
+                                && orderItem.getProductVariation()
+                                .getId().equals(idVariation)
+                )
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        item.setQuantity(quantity);
+
+        item.setSubtotal(
+                item.getUnitPrice()
+                        .multiply(BigDecimal.valueOf(quantity))
+        );
+
+        orderItemRepository.save(item);
+
+        recalculateProductsValue(order);
+    }
+
+    @Transactional
+    public void removeItem(
+            String idCustomer,
+            String idProduct,
+            String idVariation
+    ) {
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(
+                        idCustomer,
+                        OrderStatus.CART
+                )
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        OrderItem item = orderItemRepository
+                .findAllByOrderId(order.getId())
+                .stream()
+                .filter(orderItem ->
+                        orderItem.getProduct().getId().equals(idProduct)
+                                && orderItem.getProductVariation()
+                                .getId().equals(idVariation)
+                )
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        orderItemRepository.delete(item);
+
+        recalculateProductsValue(order);
+    }
+
+    private void recalculateProductsValue(Order order) {
+
+        BigDecimal productsValue = orderItemRepository
+                .findAllByOrderId(order.getId())
+                .stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        order.setProductsValue(productsValue);
+
+        orderRepository.save(order);
+    }
 }

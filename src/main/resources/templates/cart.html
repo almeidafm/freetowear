@@ -46,6 +46,40 @@
             </span>
             </p>
 
+            <form th:action="@{/order/cart/update}" method="post">
+
+                <input type="hidden"
+                       name="idProduct"
+                       th:value="${item.idProduct}">
+
+                <input type="hidden"
+                       name="idVariation"
+                       th:value="${item.idVariation}">
+
+                <input type="number"
+                       name="quantity"
+                       min="1"
+                       th:value="${item.quantity}">
+
+                <button type="submit">
+                    Change quantity
+                </button>
+            </form>
+
+            <form th:action="@{/order/cart/remove}" method="post">
+
+                <input type="hidden"
+                       name="idProduct"
+                       th:value="${item.idProduct}">
+
+                <input type="hidden"
+                       name="idVariation"
+                       th:value="${item.idVariation}">
+
+                <button type="submit">
+                    Remove product
+                </button>
+            </form>
         </div>
 
         <div class="item-price">
@@ -93,6 +127,5 @@
         </a>
     </div>
 </div>
-
 </body>
 </html>

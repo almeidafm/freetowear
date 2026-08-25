@@ -90,6 +90,38 @@ public class OrderController {
         return "redirect:/cart";
     }
 
+    @PostMapping("/cart/update")
+    public String updateCartItem(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            @RequestParam String idProduct,
+            @RequestParam String idVariation,
+            @RequestParam Integer quantity
+    ) {
+        orderService.updateItemQuantity(
+                customerDetails.getId(),
+                idProduct,
+                idVariation,
+                quantity
+        );
+
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/cart/remove")
+    public String removeCartItem(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            @RequestParam String idProduct,
+            @RequestParam String idVariation
+    ) {
+        orderService.removeItem(
+                customerDetails.getId(),
+                idProduct,
+                idVariation
+        );
+
+        return "redirect:/cart";
+    }
+
     @GetMapping
     @ResponseBody
     public List<OrderResponse> getOrders(

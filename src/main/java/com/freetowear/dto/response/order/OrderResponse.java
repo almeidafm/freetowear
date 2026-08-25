@@ -40,7 +40,8 @@ public class OrderResponse {
 
     @Getter
     public static class OrderItemResponse {
-
+        private final String idProduct;
+        private final String idVariation;
         private final String productName;
         private final String variation;
         private final Integer quantity;
@@ -48,6 +49,8 @@ public class OrderResponse {
         private final BigDecimal subtotal;
 
         public OrderItemResponse(OrderItem item) {
+            this.idProduct = item.getProduct().getId();
+            this.idVariation = item.getProductVariation().getId();
             this.productName = item.getProduct().getName();
             this.variation = item.getProductVariation().getColor() + " / " + item.getProductVariation().getSize().name();
             this.quantity = item.getQuantity();
