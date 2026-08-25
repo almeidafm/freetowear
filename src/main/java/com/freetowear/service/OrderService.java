@@ -1,23 +1,35 @@
 package com.freetowear.service;
 
-import com.freetowear.entity.*;
-import com.freetowear.entity.*;
-import com.freetowear.enums.PaymentStatus;
-import com.freetowear.enums.OrderStatus;
-import com.freetowear.infra.CloudinaryService;
-import com.freetowear.repository.*;
-import com.freetowear.repository.*;
 import com.freetowear.dto.request.order.AddItemToOrderRequest;
 import com.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.dto.response.order.OrderResponse;
 import com.freetowear.dto.response.order.OrderTrackingResponse;
+import com.freetowear.entity.Address;
+import com.freetowear.entity.Customer;
+import com.freetowear.entity.Order;
+import com.freetowear.entity.OrderItem;
+import com.freetowear.entity.Payment;
+import com.freetowear.entity.Product;
+import com.freetowear.entity.ProductVariation;
+import com.freetowear.enums.OrderStatus;
+import com.freetowear.enums.PaymentStatus;
+import com.freetowear.infra.CloudinaryService;
+import com.freetowear.repository.AddressRepository;
+import com.freetowear.repository.CouponRepository;
+import com.freetowear.repository.CustomerRepository;
+import com.freetowear.repository.OrderItemRepository;
+import com.freetowear.repository.OrderRepository;
+import com.freetowear.repository.PaymentRepository;
+import com.freetowear.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -53,79 +65,124 @@ public class OrderService {
         Address address = addressRepository.findById(request.getIdAddress())
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
-        if (!address.getCustomer().getId().equals(customer.getId())) {
+        boolean addressBelongsToCustomer =
+                address.getCustomer().getId().equals(customer.getId());
+
+        if (!addressBelongsToCustomer) {
             throw new RuntimeException("Address does not belong to this customer");
         }
 
-        Order order = new Order();
-        order.setCustomer(customer);
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(
+                        customer.getId(),
+                        OrderStatus.CART
+                )
+                .orElseThrow(() -> new RuntimeException("No active cart found"));
+
         order.setDeliveryAddress(address);
-        order.setStatus(OrderStatus.CART);
 
         if (request.getIdCoupon() != null) {
             couponRepository.findById(request.getIdCoupon())
                     .ifPresent(order::setCoupon);
+        } else {
+            order.setCoupon(null);
         }
-
-        order.setProductsValue(BigDecimal.ZERO);
-        order.setShippingPrice(new BigDecimal("20.00"));
 
         orderRepository.save(order);
     }
 
-    public void addItem(String idCustomer, AddItemToOrderRequest request) throws IOException {
-        Order order = orderRepository.findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
-                .orElseThrow(() -> new RuntimeException("No active cart found"));
+    private Order createCart(Customer customer) {
+        Order order = new Order();
+
+        order.setCustomer(customer);
+        order.setStatus(OrderStatus.CART);
+        order.setProductsValue(BigDecimal.ZERO);
+        order.setShippingPrice(new BigDecimal("20.00"));
+
+        return orderRepository.save(order);
+    }
+
+    public void addItem(
+            String idCustomer,
+            AddItemToOrderRequest request
+    ) throws IOException {
+
+        Customer customer = customerRepository.findById(idCustomer)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
+                .orElseGet(() -> createCart(customer));
 
         Product product = productRepository.findById(request.getIdProduct())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        ProductVariation variation = product.getVariations().stream()
-                .filter(productVariation -> productVariation.getId().equals(request.getIdVariation()))
+        ProductVariation variation = product.getVariations()
+                .stream()
+                .filter(productVariation ->
+                        productVariation.getId().equals(request.getIdVariation()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Variation not found for this product"));
+                .orElseThrow(() ->
+                        new RuntimeException("Variation not found for this product"));
 
         OrderItem item = new OrderItem();
+
         item.setOrder(order);
         item.setProduct(product);
         item.setProductVariation(variation);
         item.setQuantity(request.getQuantity());
         item.setUnitPrice(product.getPrice());
-        item.setSubtotal(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
 
-        if (request.getDescription() != null)
+        item.setSubtotal(
+                product.getPrice()
+                        .multiply(BigDecimal.valueOf(request.getQuantity()))
+        );
+
+        boolean hasDescription = request.getDescription() != null;
+
+        if (hasDescription) {
             item.setDescription(request.getDescription());
+        }
 
-        if (request.getCustomerCustomization() != null && !request.getCustomerCustomization().isEmpty()) {
+        boolean hasCustomization =
+                request.getCustomerCustomization() != null
+                        && !request.getCustomerCustomization().isEmpty();
+
+        if (hasCustomization) {
             String privateId = cloudinaryService.uploadPrivate(
                     request.getCustomerCustomization(),
                     "customization"
             );
+
             item.setCustomerCustomizationId(privateId);
         }
 
         orderItemRepository.save(item);
 
-        BigDecimal total = orderItemRepository.findAllByOrderId(order.getId())
-                .stream()
-                .map(OrderItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setProductsValue(
+                order.getProductsValue().add(item.getSubtotal())
+        );
 
-        order.setProductsValue(total);
         orderRepository.save(order);
     }
 
-    public void finishOrder(String orderId, FinishOrderRequest request) {
+    public void finishOrder(
+            String orderId,
+            FinishOrderRequest request
+    ) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         Payment payment = new Payment();
+
         payment.setOrder(order);
         payment.setMethod(request.getMethod());
         payment.setAmountPaid(order.getTotalValue());
         payment.setStatus(PaymentStatus.PENDING);
 
-        if (request.getInstallments() != null) {
+        boolean hasInstallments = request.getInstallments() != null;
+
+        if (hasInstallments) {
             payment.setInstallments(request.getInstallments());
         }
 
@@ -135,14 +192,21 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public OrderResponse getCart(String idCustomer) {
-        return orderRepository.findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
-                .map(OrderResponse::new)
-                .orElseThrow(() -> new RuntimeException("No active cart found"));
+    @Transactional(readOnly = true)
+    public Optional<OrderResponse> getCart(String idCustomer) {
+        return orderRepository
+                .findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
+                .map(order ->
+                        new OrderResponse(
+                                order,
+                                orderItemRepository.findAllByOrderId(order.getId())
+                        )
+                );
     }
 
     public List<OrderResponse> getOrders(String idCustomer) {
-        return orderRepository.findAllByCustomerId(idCustomer)
+        return orderRepository
+                .findAllByCustomerId(idCustomer)
                 .stream()
                 .map(OrderResponse::new)
                 .toList();
@@ -151,12 +215,14 @@ public class OrderService {
     public OrderResponse getOrderById(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
         return new OrderResponse(order);
     }
 
     public OrderTrackingResponse getOrderTracking(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
         return new OrderTrackingResponse(order);
     }
 
@@ -164,8 +230,15 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        if (order.getStatus() == OrderStatus.PAID || order.getStatus() == OrderStatus.CANCELLED) {
-            throw new RuntimeException("Order cannot be cancelled in status: " + order.getStatus());
+        boolean isOrderClosed =
+                order.getStatus() == OrderStatus.PAID
+                        || order.getStatus() == OrderStatus.CANCELLED;
+
+        if (isOrderClosed) {
+            throw new RuntimeException(
+                    "Order cannot be cancelled in status: "
+                            + order.getStatus()
+            );
         }
 
         order.setStatus(OrderStatus.CANCELLED);

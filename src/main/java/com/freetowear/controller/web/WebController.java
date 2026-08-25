@@ -1,21 +1,23 @@
 package com.freetowear.controller.web;
 
 import com.freetowear.dto.request.account.RegisterRequest;
+import com.freetowear.infra.security.CustomerDetails;
+import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/*
- * WebController — maps GET routes to Thymeleaf templates. No business logic.
- * */
 @Controller
 public class WebController {
 
     private final ProductService productService;
+    private final OrderService orderService;
 
-    public WebController(ProductService productService) {
+    public WebController(ProductService productService, OrderService orderService) {
         this.productService = productService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/")
@@ -40,7 +42,15 @@ public class WebController {
     }
 
     @GetMapping("/cart")
-    public String cart() {
+    public String cart(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        if (customerDetails != null) {
+            model.addAttribute("cart", orderService.getCart(customerDetails.getId()).orElse(null));
+        } else {
+            model.addAttribute("cart", null);
+        }
         return "cart";
     }
 

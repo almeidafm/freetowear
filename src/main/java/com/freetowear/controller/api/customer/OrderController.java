@@ -17,20 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-/*
- * OrderController — manages customer orders.
- * POST   /order ✔
- * POST   /order/{id}/item ✔
- * POST   /order/{id}/cancel ✔
- * POST   /order/{id}/finish ✔
- * GET    /order ✔
- * GET    /order/{id} ✔
- * GET    /order/{id}/tracking ✔
- * PATCH  /order/{id} ⏳
- * PATCH  /order/{id}/item/{idItem} ⏳
- * DELETE /order/{id} ⏳
- * DELETE /order/{id}/item/{idItem} ⏳
- * */
 @Controller
 @RequestMapping("/order")
 public class OrderController {
@@ -45,7 +31,11 @@ public class OrderController {
             @RequestParam(required = false) String idCoupon
     ) {
         String idCustomer = customerDetails.getId();
-        orderService.createOrder(new CreateOrderRequest(idCustomer, idAddress, idCoupon));
+
+        orderService.createOrder(
+                new CreateOrderRequest(idCustomer, idAddress, idCoupon)
+        );
+
         return "redirect:/";
     }
 
@@ -96,11 +86,8 @@ public class OrderController {
     }
 
     @GetMapping("/cart")
-    @ResponseBody
-    public OrderResponse getCart(
-            @AuthenticationPrincipal CustomerDetails customerDetails
-    ) {
-        return orderService.getCart(customerDetails.getId());
+    public String cart() {
+        return "redirect:/cart";
     }
 
     @GetMapping

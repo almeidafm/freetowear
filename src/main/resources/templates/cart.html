@@ -15,5 +15,84 @@
     <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
 </div>
 
+<h2>Your Cart</h2>
+
+<div th:if="${cart == null or #lists.isEmpty(cart.items)}">
+    <p>Your cart is empty.</p>
+    <a th:href="@{/}">Continue shopping</a>
+</div>
+
+<div th:unless="${cart == null or #lists.isEmpty(cart.items)}">
+
+    <div th:each="item : ${cart.items}" class="cart-item">
+        <hr>
+        <div class="item-info">
+
+            <h3 th:text="${item.productName}">
+                Product name
+            </h3>
+
+            <p>
+                Variation:
+                <span th:text="${item.variation}">
+                Variation
+            </span>
+            </p>
+
+            <p>
+                Quantity:
+                <span th:text="${item.quantity}">
+                1
+            </span>
+            </p>
+
+        </div>
+
+        <div class="item-price">
+
+            <p>
+                Unit price:
+                <span th:text="${item.unitPrice}">
+                0.00
+            </span>
+            </p>
+
+            <strong>
+            <span th:text="${item.subtotal}">
+                0.00
+            </span>
+            </strong>
+        </div>
+    </div>
+
+    <div class="summary">
+        <hr>
+        <div class="summary-row">
+            <span>Products</span>
+            <span th:text="${cart.productsValue}">
+                0.00
+            </span>
+        </div>
+
+        <div class="summary-row">
+            <span>Shipping</span>
+            <span th:text="${cart.shippingPrice}">
+                0.00
+            </span>
+        </div>
+
+        <div class="summary-row total">
+            <span>Total</span>
+            <span th:text="${cart.totalValue}">
+                0.00
+            </span>
+        </div>
+
+        <a th:href="@{/checkout}" class="checkout">
+            Proceed to checkout
+        </a>
+    </div>
+</div>
+
 </body>
 </html>
