@@ -36,6 +36,9 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/forgot-password")
+    public String forgotPassword() { return "forgotpassword"; }
+
     @GetMapping("/account")
     public String account() {
         return "account";
