@@ -2,7 +2,9 @@ package com.freetowear.dto.response.coupon;
 
 import com.freetowear.entity.Coupon;
 import com.freetowear.enums.DiscountType;
+
 import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

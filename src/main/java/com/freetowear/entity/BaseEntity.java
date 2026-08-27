@@ -1,7 +1,12 @@
 package com.freetowear.entity;
 
 import com.freetowear.util.UlidEntityListener;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
 import lombok.Getter;
 import lombok.Setter;
 

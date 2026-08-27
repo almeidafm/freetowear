@@ -4,21 +4,21 @@ import com.freetowear.dto.request.product.CreateProductRequest;
 import com.freetowear.dto.request.product.UpdateProductRequest;
 import com.freetowear.service.ProductService;
 import com.freetowear.enums.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.ui.Model;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
-/*
- * ProductController — manages products. (admin only)
- * POST   /product/create ✔
- * GET    /product ✔
- * GET    /product/{id} ✔
- * PATCH  /product/{id} ✔
- * */
 @Controller
 @RequestMapping("/products")
 public class ProductController {

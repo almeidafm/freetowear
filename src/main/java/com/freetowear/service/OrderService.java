@@ -22,6 +22,7 @@ import com.freetowear.repository.OrderItemRepository;
 import com.freetowear.repository.OrderRepository;
 import com.freetowear.repository.PaymentRepository;
 import com.freetowear.repository.ProductRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +58,11 @@ public class OrderService {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    private boolean isMatchingCartItem(OrderItem item, String productId, String variationId) {
+        return item.getProduct().getId().equals(productId)
+                && item.getProductVariation().getId().equals(variationId);
+    }
 
     public void createOrder(CreateOrderRequest request) {
         Customer customer = customerRepository.findById(request.getIdCustomer())
@@ -230,15 +236,11 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        boolean isOrderClosed =
-                order.getStatus() == OrderStatus.PAID
-                        || order.getStatus() == OrderStatus.CANCELLED;
+        boolean isOrderAlreadyFinalized = order.getStatus() == OrderStatus.PAID
+                || order.getStatus() == OrderStatus.CANCELLED;
 
-        if (isOrderClosed) {
-            throw new RuntimeException(
-                    "Order cannot be cancelled in status: "
-                            + order.getStatus()
-            );
+        if (isOrderAlreadyFinalized) {
+            throw new RuntimeException("Order cannot be cancelled in status: " + order.getStatus());
         }
 
         order.setStatus(OrderStatus.CANCELLED);
@@ -263,14 +265,9 @@ public class OrderService {
                 )
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        OrderItem item = orderItemRepository
-                .findAllByOrderId(order.getId())
+        OrderItem item = orderItemRepository.findAllByOrderId(order.getId())
                 .stream()
-                .filter(orderItem ->
-                        orderItem.getProduct().getId().equals(idProduct)
-                                && orderItem.getProductVariation()
-                                .getId().equals(idVariation)
-                )
+                .filter(orderItem -> isMatchingCartItem(orderItem, idProduct, idVariation))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cart item not found"));
 
@@ -302,11 +299,7 @@ public class OrderService {
         OrderItem item = orderItemRepository
                 .findAllByOrderId(order.getId())
                 .stream()
-                .filter(orderItem ->
-                        orderItem.getProduct().getId().equals(idProduct)
-                                && orderItem.getProductVariation()
-                                .getId().equals(idVariation)
-                )
+                .filter(orderItem -> isMatchingCartItem(orderItem, idProduct, idVariation))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cart item not found"));
 

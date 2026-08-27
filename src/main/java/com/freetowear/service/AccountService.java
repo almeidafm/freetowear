@@ -8,13 +8,14 @@ import com.freetowear.repository.CustomerRepository;
 import com.freetowear.dto.request.account.*;
 import com.freetowear.dto.request.account.*;
 import com.freetowear.dto.response.account.CustomerResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -31,6 +32,7 @@ public class AccountService {
     public CustomerResponse getAccount(String id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
         return new CustomerResponse(customer);
     }
 
@@ -82,13 +84,24 @@ public class AccountService {
 
     private LocalDate parseAndValidateAge(String birthDate) {
         LocalDate birth = LocalDate.parse(birthDate);
-        if (birth.isAfter(LocalDate.now()))
+
+        boolean isBirthDateInFuture = birth.isAfter(LocalDate.now());
+        if (isBirthDateInFuture) {
             throw new IllegalArgumentException("Birth date cannot be in the future");
+        }
+
         long age = ChronoUnit.YEARS.between(birth, LocalDate.now());
-        if (age < 18)
+
+        boolean isUnder18 = age < 18;
+        if (isUnder18) {
             throw new IllegalArgumentException("Must be at least 18 years old");
-        if (age > 150)
+        }
+
+        boolean isOver150 = age > 150;
+        if (isOver150) {
             throw new IllegalArgumentException("Invalid birth date");
+        }
+
         return birth;
     }
 
@@ -137,6 +150,7 @@ public class AccountService {
         customerRepository.findById(id).ifPresent(customer -> {
             if (!passwordEncoder.matches(request.getPassword(), customer.getPassword()))
                 throw new IllegalArgumentException("Invalid password");
+
             customer.setActive(false);
             customerRepository.save(customer);
         });

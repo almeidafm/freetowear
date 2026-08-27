@@ -4,20 +4,20 @@ import com.freetowear.dto.request.category.CreateCategoryRequest;
 import com.freetowear.dto.request.category.UpdateCategoryRequest;
 import com.freetowear.dto.response.category.CategoryResponse;
 import com.freetowear.service.CategoryService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.List;
 
-/*
- * CategoryController — manages product categories.
- * POST   /category/create ✔
- * GET    /category ✔
- * GET    /category/{id} ✔
- * PATCH  /category/{id} ✔
- * */
 @Controller
 @RequestMapping("/category")
 public class CategoryController {

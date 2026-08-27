@@ -1,6 +1,12 @@
 package com.freetowear.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,13 +47,4 @@ public class OrderItem extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean active = true;
-
-    // =====================
-    // SUBTOTAL CALCULATION
-    // =====================
-    private void updateSubtotal() {
-        if (unitPrice != null && quantity != null) {
-            this.subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
-        }
-    }
 }

@@ -1,9 +1,12 @@
 package com.freetowear.dto.request.product;
 
 import com.freetowear.enums.Size;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.web.multipart.MultipartFile;
+
 import java.math.BigDecimal;
 
 @Getter

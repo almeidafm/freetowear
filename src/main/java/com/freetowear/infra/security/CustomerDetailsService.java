@@ -2,6 +2,7 @@ package com.freetowear.infra.security;
 
 import com.freetowear.entity.Customer;
 import com.freetowear.repository.CustomerRepository;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -4,6 +4,7 @@ import com.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class WebController {
 
     private final ProductService productService;
+
     private final OrderService orderService;
 
     public WebController(ProductService productService, OrderService orderService) {
@@ -21,9 +23,7 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String home() {
-        return "index";
-    }
+    public String home() { return "index"; }
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -32,17 +32,13 @@ public class WebController {
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+    public String login() { return "login"; }
 
     @GetMapping("/forgot-password")
     public String forgotPassword() { return "forgotpassword"; }
 
     @GetMapping("/account")
-    public String account() {
-        return "account";
-    }
+    public String account() { return "account"; }
 
     @GetMapping("/cart")
     public String cart(
@@ -63,14 +59,10 @@ public class WebController {
     }
 
     @GetMapping("/products/search")
-    public String search() {
-        return "search";
-    }
+    public String search() { return "search"; }
 
     @GetMapping("/categories")
-    public  String categories() {
-        return "categories";
-    }
+    public  String categories() { return "categories"; }
 
     @GetMapping("/test")
     public String test(Model model) {

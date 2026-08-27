@@ -6,7 +6,9 @@ import com.freetowear.dto.response.account.AddressResponse;
 import com.freetowear.dto.response.account.CustomerResponse;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.AccountService;
+
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,21 +16,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-/*
- * AccountController — manages customer account operations.
- * POST   /account/register ✔
- * POST   /account/{id}/address ✔
- * GET    /account/{id} ✔
- * PATCH  /account/{id} ✔
- * PATCH  /account/{id}/email ⏳
- * PATCH  /account/{id}/password ⏳
- * PATCH  /account/password/reset ⏳
- * DELETE /account/{id} ⏳
- * */
 @Controller
 @RequestMapping("/account")
 public class AccountController {

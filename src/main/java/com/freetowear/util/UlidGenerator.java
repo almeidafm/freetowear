@@ -8,6 +8,5 @@ public final class UlidGenerator {
 
     public static String generate() {
         return UlidCreator.getMonotonicUlid().toString();
-
     }
 }

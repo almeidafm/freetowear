@@ -1,6 +1,7 @@
 package com.freetowear.dto.request.account;
 
 import jakarta.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.Setter;
 

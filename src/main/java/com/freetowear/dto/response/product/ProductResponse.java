@@ -2,7 +2,9 @@ package com.freetowear.dto.response.product;
 
 import com.freetowear.entity.Product;
 import com.freetowear.entity.ProductVariation;
+
 import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.List;
 

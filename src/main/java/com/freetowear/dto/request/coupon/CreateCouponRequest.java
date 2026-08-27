@@ -1,8 +1,10 @@
 package com.freetowear.dto.request.coupon;
 
 import com.freetowear.enums.DiscountType;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 

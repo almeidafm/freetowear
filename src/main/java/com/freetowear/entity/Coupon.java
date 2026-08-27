@@ -1,7 +1,14 @@
 package com.freetowear.entity;
 
 import com.freetowear.enums.DiscountType;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+
 import lombok.Getter;
 import lombok.Setter;
 

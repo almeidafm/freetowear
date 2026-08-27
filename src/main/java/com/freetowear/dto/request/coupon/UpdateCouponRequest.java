@@ -1,6 +1,7 @@
 package com.freetowear.dto.request.coupon;
 
 import com.freetowear.enums.DiscountType;
+
 import lombok.Getter;
 import lombok.Setter;
 

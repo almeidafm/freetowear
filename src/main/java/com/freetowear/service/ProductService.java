@@ -11,8 +11,10 @@ import com.freetowear.dto.request.product.CreateProductRequest;
 import com.freetowear.dto.request.product.UpdateProductRequest;
 import com.freetowear.dto.response.product.ProductResponse;
 import com.freetowear.infra.CloudinaryService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,21 +94,21 @@ public class ProductService {
         if (request.getPrice() != null) product.setPrice(request.getPrice());
         if (request.getActive() != null) product.setActive(request.getActive());
 
-        if (request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            product.setCategory(category);
-        }
-
-        if (request.getImage() != null && !request.getImage().isEmpty()) {
-            if (product.getImagePublicId() != null) {
+        boolean hasNewImage = request.getImage() != null && !request.getImage().isEmpty();
+        if (hasNewImage) {
+            boolean hasExistingImage = product.getImagePublicId() != null;
+            if (hasExistingImage) {
                 cloudinaryService.delete(product.getImagePublicId());
             }
             String publicId = cloudinaryService.uploadPublic(request.getImage(), "products");
             product.setImagePublicId(publicId);
         }
 
-        if (request.getColor() != null || request.getSize() != null || request.getStock() != null) {
+        boolean hasVariationUpdates = request.getColor() != null
+                || request.getSize() != null
+                || request.getStock() != null;
+
+        if (hasVariationUpdates) {
             ProductVariation variation = product.getVariations().get(0);
             if (request.getColor() != null) variation.setColor(request.getColor());
             if (request.getSize() != null) variation.setSize(request.getSize());

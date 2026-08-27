@@ -12,7 +12,8 @@ public class UlidEntityListener {
             if (idField == null) return;
 
             idField.setAccessible(true);
-            if (idField.get(entity) == null) {
+            boolean isIdNotAssigned = idField.get(entity) == null;
+            if (isIdNotAssigned) {
                 idField.set(entity, UlidGenerator.generate());
             }
         } catch (IllegalAccessException e) {
