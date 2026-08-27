@@ -1,9 +1,7 @@
 # FreeToWear
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.7-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
-![Spring MVC](https://img.shields.io/badge/Spring_MVC-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
-![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
@@ -15,7 +13,6 @@
 - [Dependências](#dependências)
 - [Funcionalidades](#funcionalidades)
 - [Próximas Versões](#próximas-versões)
-- [Known Bugs](#known-bugs)
 - [Licença](#licença)
 
 ---
@@ -52,16 +49,21 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 
 ## Funcionalidades
 
-- Cadastro e gerenciamento da conta do cliente
-- Gerenciamento de endereços vinculados à conta
+- Cadastro de clientes com validação e mensagens de erro no formulário
+- Login, logout, persistência de sessão
+- Exibição do usuário autenticado ou visitante nas páginas da loja
+- Gerenciamento da conta, incluindo alteração de e-mail, senha, dados cadastrais e endereços
+- Página inicial para recuperação de senha
 - Identificadores públicos seguros com ULID
 - Autenticação de usuários com sessão HTTP e Spring Security
 - Autorização por perfil de acesso
 - Controle de sessão e persistência de login
 - Criptografia de senhas com BCrypt
 - Catálogo de produtos organizado por categorias
-- Gerenciamento de produtos, categorias e cupons
-- Carrinho de compras com gerenciamento de itens
+- Navegação para catálogo, categorias, busca, carrinho e checkout
+- Gerenciamento administrativo de produtos, categorias, cupons e variações de produto
+- Seleção de variações por cor e tamanho na página do produto
+- Carrinho de compras com adição, alteração de quantidade e remoção de itens
 - Fluxo de criação e finalização de pedidos
 - Aplicação de cupons de desconto nos pedidos
 - Seleção da forma de pagamento durante a compra
@@ -83,15 +85,6 @@ As funcionalidades abaixo ainda estão em desenvolvimento e serão adicionadas n
 - Implementação de testes automatizados
 - Auditoria de ações críticas do sistema
 - Melhorias gerais de segurança, desempenho e manutenção
-
----
-
-## Known Bugs
-
-- Algumas regras de validação ainda não foram aplicadas em todos os endpoints
-- O fluxo de recuperação de senha ainda está em desenvolvimento
-
->Este projeto está em desenvolvimento e possui finalidade educacional e de portfólio. Não é recomendado para uso em produção no estado atual.
 
 ---
 
