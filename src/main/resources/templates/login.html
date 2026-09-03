@@ -4,6 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Login — FreetоWear</title>
     <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
@@ -30,32 +32,83 @@
                 &times;
             </button>
 
-            <div class="email-verification-icon">
-                ✉
+            <div id="verificationStepOne">
+
+                <div class="email-verification-icon">
+                    ✉
+                </div>
+
+                <h2>Verify your email</h2>
+
+                <p>
+                    Your email address has not been verified yet.
+                </p>
+
+                <p>
+                    Verify your email to keep your account secure.
+                </p>
+
+                <div class="email-verification-actions">
+
+                    <button type="button"
+                            onclick="sendVerificationCode()"
+                            class="verify-email-button">
+                        Verify email
+                    </button>
+
+                    <button type="button"
+                            onclick="closeEmailVerificationModal()"
+                            class="skip-email-button">
+                        Skip for now
+                    </button>
+
+                </div>
+
             </div>
 
-            <h2>Verify your email</h2>
+            <div id="verificationStepTwo" style="display: none;">
 
-            <p>
-                Your email address has not been verified yet.
-            </p>
+                <div class="email-verification-icon">
+                    ✉
+                </div>
 
-            <p>
-                Verify your email to keep your account secure.
-            </p>
+                <h2>Enter verification code</h2>
 
-            <div class="email-verification-actions">
-                <button type="button"
-                        onclick="closeEmailVerificationModal()"
-                        class="verify-email-button">
-                    Verify email
-                </button>
+                <p>
+                    We sent a verification code to your email.
+                </p>
 
-                <button type="button"
-                        onclick="closeEmailVerificationModal()"
-                        class="skip-email-button">
-                    Skip for now
-                </button>
+                <input
+                        type="text"
+                        id="verificationCode"
+                        maxlength="6"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        placeholder="000000"
+                        class="verification-code-input"
+                />
+
+                <div id="verificationError"
+                     class="verification-error"
+                     style="display: none;">
+                </div>
+
+                <div class="email-verification-actions">
+
+                    <button type="button"
+                            onclick="verifyEmailCode()"
+                            class="verify-email-button">
+                        Confirm code
+                    </button>
+
+                    <button type="button"
+                            onclick="sendVerificationCode()"
+                            class="skip-email-button">
+                        Send code again
+                    </button>
+
+                </div>
+
             </div>
 
         </div>
@@ -134,16 +187,175 @@
             background: white;
             color: #333;
         }
-    </style>
 
+        .verification-code-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            margin-top: 20px;
+
+            border: 1px solid #ccc;
+            border-radius: 6px;
+
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 8px;
+        }
+
+        .verification-code-input:focus {
+            outline: none;
+            border-color: #222;
+        }
+
+        .verification-error {
+            margin-top: 12px;
+            color: #c62828;
+            font-size: 14px;
+        }
+    </style>
     <script>
+
         function closeEmailVerificationModal() {
-            const modal = document.getElementById("emailVerificationModal");
+            const modal =
+                document.getElementById("emailVerificationModal");
 
             if (modal) {
                 modal.style.display = "none";
             }
         }
+
+
+        async function sendVerificationCode() {
+
+            const button =
+                document.querySelector("#verificationStepOne .verify-email-button");
+
+            const csrfToken =
+                document.querySelector('meta[name="_csrf"]').content;
+
+            const csrfHeader =
+                document.querySelector('meta[name="_csrf_header"]').content;
+
+            button.disabled = true;
+            button.textContent = "Sending...";
+
+            try {
+
+                const response = await fetch(
+                    "/email-verification/send",
+                    {
+                        method: "POST",
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Could not send verification code."
+                    );
+                }
+
+                document.getElementById(
+                    "verificationStepOne"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "verificationStepTwo"
+                ).style.display = "block";
+
+                document.getElementById(
+                    "verificationCode"
+                ).focus();
+
+            } catch (error) {
+
+                console.error("Verification email error:", error);
+
+                alert(error.message);
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Verify email";
+            }
+        }
+
+
+        async function verifyEmailCode() {
+
+            const code =
+                document.getElementById("verificationCode").value.trim();
+
+            const errorElement =
+                document.getElementById("verificationError");
+
+            const csrfToken =
+                document.querySelector('meta[name="_csrf"]').content;
+
+            const csrfHeader =
+                document.querySelector('meta[name="_csrf_header"]').content;
+
+            errorElement.style.display = "none";
+
+            if (!/^\d{6}$/.test(code)) {
+
+                errorElement.textContent =
+                    "Enter a valid 6-digit code.";
+
+                errorElement.style.display = "block";
+
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    "/email-verification/verify",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json",
+                            [csrfHeader]: csrfToken
+                        },
+
+                        body: JSON.stringify({
+                            code: code
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    errorElement.textContent =
+                        data.message || "Invalid verification code.";
+
+                    errorElement.style.display = "block";
+
+                    return;
+                }
+
+                closeEmailVerificationModal();
+
+                alert("Email verified successfully.");
+
+            } catch (error) {
+
+                console.error("Verification error:", error);
+
+                errorElement.textContent =
+                    "An error occurred while verifying the code.";
+
+                errorElement.style.display = "block";
+            }
+        }
+
     </script>
 
     <div th:if="${param.success}" class="alert success">

@@ -22,6 +22,10 @@ public class CustomerDetails implements UserDetails, Serializable {
         this.customer = customer;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
     @Override
     public String getUsername() {
         return customer.getEmail();

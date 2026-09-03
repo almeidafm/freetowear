@@ -3,6 +3,8 @@ package com.freetowear.service;
 import com.freetowear.entity.Customer;
 import com.freetowear.entity.VerificationCode;
 import com.freetowear.enums.VerificationType;
+import com.freetowear.infra.EmailService;
+import com.freetowear.repository.CustomerRepository;
 import com.freetowear.repository.VerificationCodeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class VerificationCodeService {
     private static final int MAX_ATTEMPTS = 5;
 
     private final VerificationCodeRepository verificationCodeRepository;
+    private final CustomerRepository customerRepository;
+    private final EmailService emailService;
 
     private final SecureRandom secureRandom = new SecureRandom();
 
@@ -39,13 +43,18 @@ public class VerificationCodeService {
         verificationCode.setCustomer(customer);
         verificationCode.setType(type);
         verificationCode.setCode(code);
-        verificationCode.setExpiresAt(
-                LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES)
+        verificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES)
         );
 
         verificationCodeRepository.save(verificationCode);
 
         return code;
+    }
+
+    @Transactional
+    public void sendEmailVerificationCode(Customer customer) {
+        String code = generate(customer, VerificationType.EMAIL);
+        emailService.sendVerificationEmail(customer.getEmail(), code);
     }
 
     @Transactional
@@ -78,12 +87,23 @@ public class VerificationCodeService {
         );
 
         if (!verificationCode.getCode().equals(code)) {
-            throw new IllegalArgumentException("Código inválido");
+            verificationCodeRepository.save(verificationCode);
+
+            throw new IllegalArgumentException(
+                    "Código inválido"
+            );
         }
 
         verificationCode.setUsed(true);
 
         verificationCodeRepository.save(verificationCode);
+    }
+
+    @Transactional
+    public void verifyEmail(Customer customer, String code) {
+        verify(customer, VerificationType.EMAIL, code);
+        customer.setEmailVerified(true);
+        customerRepository.save(customer);
     }
 
     private void invalidatePreviousCodes(
@@ -102,10 +122,7 @@ public class VerificationCodeService {
     }
 
     private String generateCode() {
-        int bound = (int) Math.pow(10, CODE_LENGTH);
-
-        int number = secureRandom.nextInt(bound);
-
-        return String.format("%0" + CODE_LENGTH + "d", number);
+        int number = secureRandom.nextInt(1_000_000);
+        return String.format("%06d", number);
     }
 }
