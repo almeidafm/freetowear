@@ -38,6 +38,9 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 - [spring-boot-starter-validation](https://hibernate.org/validator) `3.5.7`
 - [spring-session-jdbc](https://spring.io/projects/spring-session) `3.5.7`
 - [spring-boot-starter-data-jpa](https://spring.io/projects/spring-data-jpa) `3.5.7`
+- [spring-boot-starter-mail](https://spring.io/projects/spring-boot) `3.5.7`
+- [spring-boot-devtools](https://spring.io/projects/spring-boot) `3.5.7`
+- [spring-boot-starter-test](https://spring.io/projects/spring-boot) `3.5.7`
 - [mysql-connector-j](https://dev.mysql.com/downloads/connector/j) `9.4.0`
 - [lombok](https://projectlombok.org) `1.18.34`
 - [ulid-creator](https://github.com/f4b6a3/ulid-creator) `5.2.3`
@@ -69,7 +72,8 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 - Seleção da forma de pagamento durante a compra
 - Upload e gerenciamento de imagens dos produtos
 - Upload de imagens personalizadas pelo cliente com URL assinada e protegida
-  
+- Verificação de e-mail via SMTP para confirmação e validação do endereço de e-mail do usuário  
+
 ---
 
 ## Próximas Versões
