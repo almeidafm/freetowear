@@ -31,6 +31,9 @@ public class Customer extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private boolean isEmailVerified = false;
+
     @Column(nullable = false, length = 255)
     private String password;
 
@@ -39,6 +42,9 @@ public class Customer extends BaseEntity implements Serializable {
 
     @Column(length = 20)
     private String phone;
+
+    @Column(nullable = false)
+    private boolean isPhoneVerified = false;
 
     @Column
     private LocalDate birthDate;

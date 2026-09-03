@@ -3,6 +3,7 @@ package com.freetowear.service;
 import com.freetowear.dto.response.account.AddressResponse;
 import com.freetowear.entity.Address;
 import com.freetowear.entity.Customer;
+import com.freetowear.enums.VerificationType;
 import com.freetowear.repository.AddressRepository;
 import com.freetowear.repository.CustomerRepository;
 import com.freetowear.dto.request.account.*;
@@ -28,6 +29,9 @@ public class AccountService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private  VerificationCodeService verificationCodeService;
 
     public CustomerResponse getAccount(String id) {
         Customer customer = customerRepository.findById(id)
@@ -154,5 +158,41 @@ public class AccountService {
             customer.setActive(false);
             customerRepository.save(customer);
         });
+    }
+
+    public String requestEmailVerification(String id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Account not found")
+                );
+
+        if (customer.isEmailVerified()) {
+            throw new IllegalArgumentException("Email already verified");
+        }
+
+        return verificationCodeService.generate(
+                customer,
+                VerificationType.EMAIL
+        );
+    }
+
+    public void verifyEmail(String id, String code) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Account not found")
+                );
+
+        if (customer.isEmailVerified()) {
+            throw new IllegalArgumentException("Email already verified");
+        }
+
+        verificationCodeService.verify(
+                customer,
+                VerificationType.EMAIL,
+                code
+        );
+
+        customer.setEmailVerified(true);
+        customerRepository.save(customer);
     }
 }

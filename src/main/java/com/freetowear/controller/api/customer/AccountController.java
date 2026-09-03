@@ -1,9 +1,7 @@
 package com.freetowear.controller.api.customer;
 
 import com.freetowear.dto.request.account.*;
-import com.freetowear.dto.request.account.*;
-import com.freetowear.dto.response.account.AddressResponse;
-import com.freetowear.dto.response.account.CustomerResponse;
+import com.freetowear.dto.response.account.*;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.AccountService;
 
