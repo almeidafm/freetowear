@@ -18,6 +18,134 @@
         <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
     </div><br>
 
+    <div th:if="${showEmailVerificationPopup}"
+         id="emailVerificationModal"
+         class="email-verification-overlay">
+
+        <div class="email-verification-modal">
+
+            <button type="button"
+                    class="email-verification-close"
+                    onclick="closeEmailVerificationModal()">
+                &times;
+            </button>
+
+            <div class="email-verification-icon">
+                ✉
+            </div>
+
+            <h2>Verify your email</h2>
+
+            <p>
+                Your email address has not been verified yet.
+            </p>
+
+            <p>
+                Verify your email to keep your account secure.
+            </p>
+
+            <div class="email-verification-actions">
+                <button type="button"
+                        onclick="closeEmailVerificationModal()"
+                        class="verify-email-button">
+                    Verify email
+                </button>
+
+                <button type="button"
+                        onclick="closeEmailVerificationModal()"
+                        class="skip-email-button">
+                    Skip for now
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        .email-verification-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .email-verification-modal {
+            position: relative;
+            width: 90%;
+            max-width: 420px;
+            padding: 32px;
+            background: white;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .email-verification-close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            border: none;
+            background: transparent;
+            font-size: 28px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .email-verification-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .email-verification-modal h2 {
+            margin-bottom: 12px;
+        }
+
+        .email-verification-modal p {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .email-verification-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .verify-email-button,
+        .skip-email-button {
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .verify-email-button {
+            border: none;
+            background: #222;
+            color: white;
+        }
+
+        .skip-email-button {
+            border: 1px solid #ccc;
+            background: white;
+            color: #333;
+        }
+    </style>
+
+    <script>
+        function closeEmailVerificationModal() {
+            const modal = document.getElementById("emailVerificationModal");
+
+            if (modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
     <div th:if="${param.success}" class="alert success">
         Login successful.
     </div>

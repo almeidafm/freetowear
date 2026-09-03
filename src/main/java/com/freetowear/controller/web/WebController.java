@@ -5,6 +5,8 @@ import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +34,25 @@ public class WebController {
     }
 
     @GetMapping("/login")
-    public String login() { return "login"; }
+    public String login(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model,
+            HttpSession session
+    ) {
+        Boolean emailVerificationPopupShown =
+                (Boolean) session.getAttribute("emailVerificationPopupShown");
+
+        if (customerDetails != null
+                && !customerDetails.isEmailVerified()
+                && !Boolean.TRUE.equals(emailVerificationPopupShown)) {
+
+            model.addAttribute("showEmailVerificationPopup", true);
+
+            session.setAttribute("emailVerificationPopupShown", true);
+        }
+
+        return "login";
+    }
 
     @GetMapping("/forgot-password")
     public String forgotPassword() { return "forgotpassword"; }
