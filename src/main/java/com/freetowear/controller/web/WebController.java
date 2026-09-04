@@ -57,9 +57,6 @@ public class WebController {
     @GetMapping("/account")
     public String account() { return "account"; }
 
-    @GetMapping("/forgot-password")
-    public String forgotPassword() { return "forgotpassword"; }
-
     @GetMapping("/cart")
     public String cart(
             @AuthenticationPrincipal CustomerDetails customerDetails,

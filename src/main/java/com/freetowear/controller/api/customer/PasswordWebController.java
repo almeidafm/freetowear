@@ -19,6 +19,9 @@ public class PasswordWebController {
         this.accountService = accountService;
     }
 
+    @GetMapping("/forgot")
+    public String forgotPassword() { return "forgotpassword"; }
+
     @PostMapping("/request-code")
     @ResponseBody
     public ResponseEntity<?> requestCode(@RequestBody Map<String, String> payload) {

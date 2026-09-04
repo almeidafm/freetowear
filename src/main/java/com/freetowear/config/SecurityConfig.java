@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
                         .requestMatchers("/css/**", "/js/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/forgot-password").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/password/forgot").permitAll()
                         .requestMatchers(HttpMethod.POST, "/password/request-code", "/password/verify-code", "/password/reset").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/**").hasRole("ADMIN")
