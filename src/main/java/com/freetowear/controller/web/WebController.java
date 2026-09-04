@@ -2,6 +2,7 @@ package com.freetowear.controller.web;
 
 import com.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.dto.response.category.CategoryResponse;
+import com.freetowear.dto.response.product.ProductResponse;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.CategoryService;
 import com.freetowear.service.OrderService;
@@ -15,7 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Controller
 public class WebController {
@@ -86,7 +90,19 @@ public class WebController {
     }
 
     @GetMapping("/products/search")
-    public String search() { return "search"; }
+    public String search(
+            @RequestParam(required = false) String q,
+            Model model) {
+
+        String query = q == null ? "" : q.trim();
+
+        List<ProductResponse> products = query.isBlank() ? List.of() : productService.searchByName(query);
+
+        model.addAttribute("products", products);
+        model.addAttribute("query", query);
+
+        return "search";
+    }
 
     @GetMapping("/categories")
     public String categories(Model model) {

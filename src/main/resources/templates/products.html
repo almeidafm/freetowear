@@ -15,6 +15,21 @@
     <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
 </div><br>
 
+<form th:action="@{/products/search}"
+      method="get"
+      class="search-form">
+
+    <input type="search"
+           name="q"
+           placeholder="Buscar produtos ou categorias..."
+           autocomplete="off">
+
+    <button type="submit">
+        Buscar
+    </button>
+
+</form>
+
 <table border="1" cellpadding="10">
     <thead>
     <tr>
@@ -42,6 +57,5 @@
     </tr>
     </tbody>
 </table>
-
 </body>
 </html>

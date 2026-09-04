@@ -1,19 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Busca | FreeToWear</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<div>
-    <span>👤</span>
-    <span sec:authorize="isAnonymous()">Guest</span>
-    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
-</div>
+<main class="search-page">
 
+    <section class="search-header">
+        <h1>Resultados da busca</h1>
+
+        <p th:if="${query != null and !query.isBlank()}">
+            Resultados para:
+            <strong th:text="${query}"></strong>
+        </p>
+    </section>
+
+    <section class="products-grid"
+             th:if="${products != null and !products.isEmpty()}">
+
+        <article class="product-card"
+                 th:each="product : ${products}">
+            <hr>
+            <a th:href="@{/products/{id}(id=${product.id})}">
+
+                <img th:src="${product.imageUrl}"
+                     th:alt="${product.name}"
+                     width="250" >
+
+                <h2 th:text="${product.name}">
+                    Nome do produto
+                </h2>
+
+            </a>
+
+            <p>
+                <strong th:text="${product.price}">
+                    R$ 0,00
+                </strong>
+            </p>
+
+        </article>
+
+    </section>
+
+    <section class="search-empty"
+             th:if="${products == null or products.isEmpty()}">
+
+        <h2>Nenhum produto encontrado</h2>
+
+        <p>
+            Tente buscar por outro produto.
+        </p>
+
+        <button type="button" onclick="history.back()">
+            Voltar
+        </button>
+
+    </section>
+</main>
 </body>
 </html>

@@ -131,4 +131,14 @@ public class ProductService {
                 )
                 .collect(Collectors.toList());
     }
+
+    public List<ProductResponse> searchByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(product -> new ProductResponse(
+                        product,
+                        cloudinaryService.buildUrl(product.getImagePublicId())
+                ))
+                .toList();
+    }
 }
