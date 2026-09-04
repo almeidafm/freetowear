@@ -2,18 +2,38 @@
 <html lang="pt-BR"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
-    <title>Categories</title>
+    <title>Categorias - FreeToWear</title>
 </head>
+
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
+
+<h1>
+    <a th:href="@{/}">FreeToWear</a>
+</h1>
 
 <div>
     <span>👤</span>
     <span sec:authorize="isAnonymous()">Guest</span>
     <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+</div><br>
+
+<h2>Categorias</h2>
+
+<div th:if="${#lists.isEmpty(categories)}">
+    <p>Nenhuma categoria encontrada.</p>
 </div>
+
+<ul th:unless="${#lists.isEmpty(categories)}">
+    <li th:each="category : ${categories}">
+        <a th:href="@{/categories/{id}(id=${category.id})}"
+           th:text="${category.name}">
+            Categoria
+        </a>
+    </li>
+</ul>
 
 </body>
 </html>

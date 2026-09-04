@@ -117,4 +117,18 @@ public class ProductService {
 
         productRepository.save(product);
     }
+
+    public List<ProductResponse> listProductsByCategory(String categoryId) {
+        List<Product> products =
+                productRepository.findByCategoryIdAndActiveTrue(categoryId);
+
+        return products.stream()
+                .map(product ->
+                        new ProductResponse(
+                                product,
+                                cloudinaryService.buildUrl(product.getImagePublicId())
+                        )
+                )
+                .collect(Collectors.toList());
+    }
 }

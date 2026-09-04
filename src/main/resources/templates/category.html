@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${category.name} + ' - FreeToWear'">
+        Categoria - FreeToWear
+    </title>
+</head>
+
+<body>
+
+<h1>
+    <a th:href="@{/}">FreeToWear</a>
+</h1>
+
+<div>
+    <span>👤</span>
+    <span sec:authorize="isAnonymous()">Guest</span>
+    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+</div><br>
+
+<p>
+    <a th:href="@{/categories}">
+        ← Voltar para categorias
+    </a>
+</p>
+
+<h2 th:text="${category.name}">
+    Categoria
+</h2>
+
+<div th:if="${#lists.isEmpty(products)}">
+    <p>
+        Nenhum produto encontrado nesta categoria.
+    </p>
+</div>
+
+<div th:unless="${#lists.isEmpty(products)}">
+
+    <p>
+        <span th:text="${#lists.size(products)}">0</span>
+        produtos encontrados
+    </p>
+
+    <div th:each="product : ${products}">
+
+        <div>
+
+            <a th:href="@{/products/{id}(id=${product.id})}">
+
+                <img th:src="${product.imageUrl}"
+                     th:alt="${product.name}"
+                     width="200">
+
+                <h3 th:text="${product.name}">
+                    Produto
+                </h3>
+
+            </a>
+
+            <p th:text="${product.description}">
+                Descrição
+            </p>
+
+            <strong>
+                R$
+                <span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">
+                    0,00
+                </span>
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
