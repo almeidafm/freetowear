@@ -6,9 +6,7 @@ import com.freetowear.enums.VerificationType;
 import com.freetowear.infra.EmailService;
 import com.freetowear.repository.CustomerRepository;
 import com.freetowear.repository.VerificationCodeRepository;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,27 +25,21 @@ public class VerificationCodeService {
     private final VerificationCodeRepository verificationCodeRepository;
     private final CustomerRepository customerRepository;
     private final EmailService emailService;
-
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Transactional
-    public String generate(
-            Customer customer,
-            VerificationType type
-    ) {
+    public String generate(Customer customer, VerificationType type) {
         invalidatePreviousCodes(customer, type);
-
         String code = generateCode();
 
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setCustomer(customer);
         verificationCode.setType(type);
         verificationCode.setCode(code);
-        verificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES)
-        );
+        verificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES));
+        verificationCode.setAttempts(0);
 
         verificationCodeRepository.save(verificationCode);
-
         return code;
     }
 
@@ -58,44 +50,50 @@ public class VerificationCodeService {
     }
 
     @Transactional
-    public void verify(
-            Customer customer,
-            VerificationType type,
-            String code
-    ) {
-        VerificationCode verificationCode =
-                verificationCodeRepository
-                        .findFirstByCustomerAndTypeAndUsedFalseAndInvalidatedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
-                                customer,
-                                type,
-                                LocalDateTime.now()
-                        )
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Código inválido ou expirado"
-                                )
-                        );
+    public void sendPasswordResetCode(Customer customer) {
+        String code = generate(customer, VerificationType.PASSWORD_RESET);
+        emailService.sendPasswordResetEmail(customer.getEmail(), code);
+    }
+
+    @Transactional
+    public void checkCode(Customer customer, VerificationType type, String code) {
+        VerificationCode verificationCode = verificationCodeRepository
+                .findFirstByCustomerAndTypeAndUsedFalseAndInvalidatedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
+                        customer, type, LocalDateTime.now()
+                )
+                .orElseThrow(() -> new IllegalArgumentException("Código inválido ou expirado"));
 
         if (verificationCode.getAttempts() >= MAX_ATTEMPTS) {
-            throw new IllegalArgumentException(
-                    "Número máximo de tentativas excedido"
-            );
+            throw new IllegalArgumentException("Número máximo de tentativas excedido");
         }
 
-        verificationCode.setAttempts(
-                verificationCode.getAttempts() + 1
-        );
+        if (!verificationCode.getCode().equals(code)) {
+            verificationCode.setAttempts(verificationCode.getAttempts() + 1);
+            verificationCodeRepository.save(verificationCode);
+            throw new IllegalArgumentException("Código inválido");
+        }
+    }
+
+    @Transactional
+    public void verify(Customer customer, VerificationType type, String code) {
+        VerificationCode verificationCode = verificationCodeRepository
+                .findFirstByCustomerAndTypeAndUsedFalseAndInvalidatedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
+                        customer, type, LocalDateTime.now()
+                )
+                .orElseThrow(() -> new IllegalArgumentException("Código inválido ou expirado"));
+
+        if (verificationCode.getAttempts() >= MAX_ATTEMPTS) {
+            throw new IllegalArgumentException("Número máximo de tentativas excedido");
+        }
+
+        verificationCode.setAttempts(verificationCode.getAttempts() + 1);
 
         if (!verificationCode.getCode().equals(code)) {
             verificationCodeRepository.save(verificationCode);
-
-            throw new IllegalArgumentException(
-                    "Código inválido"
-            );
+            throw new IllegalArgumentException("Código inválido");
         }
 
         verificationCode.setUsed(true);
-
         verificationCodeRepository.save(verificationCode);
     }
 
@@ -106,18 +104,11 @@ public class VerificationCodeService {
         customerRepository.save(customer);
     }
 
-    private void invalidatePreviousCodes(
-            Customer customer,
-            VerificationType type
-    ) {
-        List<VerificationCode> codes =
-                verificationCodeRepository.findByCustomerAndTypeAndUsedFalseAndInvalidatedFalse(
-                        customer,
-                        type
-                );
-
-        codes.forEach(code -> code.setInvalidated(true));
-
+    private void invalidatePreviousCodes(Customer customer, VerificationType type) {
+        List<VerificationCode> codes = verificationCodeRepository.findByCustomerAndTypeAndUsedFalseAndInvalidatedFalse(
+                customer, type
+        );
+        codes.forEach(c -> c.setInvalidated(true));
         verificationCodeRepository.saveAll(codes);
     }
 

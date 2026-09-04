@@ -2,5 +2,6 @@ package com.freetowear.enums;
 
 public enum VerificationType {
     EMAIL,
-    PHONE
+    PHONE,
+    PASSWORD_RESET
 }

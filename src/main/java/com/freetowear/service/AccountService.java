@@ -3,6 +3,7 @@ package com.freetowear.service;
 import com.freetowear.dto.response.account.AddressResponse;
 import com.freetowear.entity.Address;
 import com.freetowear.entity.Customer;
+import com.freetowear.entity.VerificationCode;
 import com.freetowear.enums.VerificationType;
 import com.freetowear.repository.AddressRepository;
 import com.freetowear.repository.CustomerRepository;
@@ -10,13 +11,17 @@ import com.freetowear.dto.request.account.*;
 import com.freetowear.dto.request.account.*;
 import com.freetowear.dto.response.account.CustomerResponse;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -142,11 +147,39 @@ public class AccountService {
         customerRepository.save(customer);
     }
 
+    @Transactional
     public void resetPassword(ForgotPasswordRequest request) {
-        Customer customer = customerRepository.findByEmailOrPhone(request.getContact(), request.getContact())
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        Customer customer = customerRepository.findByEmail(request.getContact())
+                .orElseThrow(() -> new IllegalArgumentException("Contato ou código inválido"));
+
+        verificationCodeService.verify(customer, VerificationType.PASSWORD_RESET, request.getCode());
 
         customer.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        customerRepository.save(customer);
+    }
+
+    public void requestPasswordReset(String email) {
+        customerRepository.findByEmail(email).ifPresent(customer -> {
+            verificationCodeService.sendPasswordResetCode(customer);
+        });
+    }
+
+    public void verifyPasswordResetCode(String email, String code) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("E-mail ou código inválido"));
+
+        verificationCodeService.checkCode(customer, VerificationType.PASSWORD_RESET, code);
+    }
+
+    @Transactional
+    public void completePasswordReset(String email, String code, String newPassword) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("E-mail ou código inválido"));
+
+        verificationCodeService.verify(customer, VerificationType.PASSWORD_RESET, code);
+
+        customer.setPassword(passwordEncoder.encode(newPassword));
         customerRepository.save(customer);
     }
 
