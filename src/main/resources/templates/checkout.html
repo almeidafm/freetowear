@@ -2,18 +2,1086 @@
 <html lang="pt-BR"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Checkout</title>
-</head>
-<body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<div>
-    <span>👤</span>
-    <span sec:authorize="isAnonymous()">Guest</span>
-    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .checkout-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-wrapper {
+            padding: 40px 30px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .step.active .step-number {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .step.completed .step-number {
+            background: #4ade80;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .progress-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .checkout-content {
+            padding: 40px 30px;
+            min-height: 400px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .address-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .address-option {
+            position: relative;
+        }
+
+        .address-option input[type="radio"] {
+            display: none;
+        }
+
+        .address-label {
+            display: block;
+            padding: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .address-label:hover {
+            border-color: #667eea;
+        }
+
+        .address-option input[type="radio"]:checked + .address-label {
+            border-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .address-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .address-details {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .default-badge {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 3px 7px;
+            border-radius: 4px;
+            background: #4ade80;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .empty-address-message {
+            padding: 15px;
+            border-radius: 6px;
+            background: #f9f9f9;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .error-message {
+            padding: 15px;
+            border-radius: 6px;
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .add-address-button {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        #new-address-form {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+        }
+
+        .placeholder-message {
+            padding: 30px 0;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="checkout-container">
+
+    <div class="progress-wrapper">
+
+        <div class="progress-steps">
+
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Shipping</div>
+            </div>
+
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Payment</div>
+            </div>
+
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Review</div>
+            </div>
+
+        </div>
+
+        <div class="progress-title" id="progressTitle">
+            Shipping Address
+        </div>
+
+    </div>
+
+    <div class="checkout-content">
+
+        <div class="form-section active" id="step1">
+
+            <p class="section-subtitle">
+                Where should we send your order?
+            </p>
+
+            <div class="form-group">
+
+                <label>
+                    Saved addresses
+                </label>
+
+                <div id="address-list" class="address-options">
+
+                    <p id="address-loading">
+                        Loading your addresses...
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <button
+                        type="button"
+                        class="btn btn-secondary add-address-button"
+                        id="add-address-btn"
+                        onclick="toggleNewAddressForm()">
+
+                    + Add new address
+
+                </button>
+
+            </div>
+
+            <div id="new-address-form" style="display: none;">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="cep">
+                            CEP
+                        </label>
+
+                        <input
+                                type="text"
+                                id="cep"
+                                name="cep"
+                                maxlength="8"
+                                placeholder="00000000">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="state">
+                            State
+                        </label>
+
+                        <select
+                                id="state"
+                                name="state">
+
+                            <option value="">
+                                Select state
+                            </option>
+
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="street">
+                        Street
+                    </label>
+
+                    <input
+                            type="text"
+                            id="street"
+                            name="street"
+                            maxlength="100">
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="number">
+                            Number
+                        </label>
+
+                        <input
+                                type="text"
+                                id="number"
+                                name="number"
+                                maxlength="10">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="complement">
+                            Complement
+                        </label>
+
+                        <input
+                                type="text"
+                                id="complement"
+                                name="complement"
+                                maxlength="50">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="neighborhood">
+                        Neighborhood
+                    </label>
+
+                    <input
+                            type="text"
+                            id="neighborhood"
+                            name="neighborhood"
+                            maxlength="100">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="city">
+                        City
+                    </label>
+
+                    <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            maxlength="100">
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="checkbox-group">
+
+                        <input
+                                type="checkbox"
+                                id="defaultAddress"
+                                name="defaultAddress"
+                                value="true">
+
+                        <label for="defaultAddress">
+                            Use as my default address
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="button-group">
+
+                    <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="save-address-btn"
+                            onclick="saveNewAddress()">
+
+                        Save address
+
+                    </button>
+
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="toggleNewAddressForm(false)">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="form-section" id="step2">
+
+            <p class="section-subtitle">
+                How would you like to pay?
+            </p>
+
+            <div class="placeholder-message">
+                Payment step coming next.
+            </div>
+
+        </div>
+
+        <div class="form-section" id="step3">
+
+            <p class="section-subtitle">
+                Please review your order.
+            </p>
+
+            <div class="placeholder-message">
+                Review step coming next.
+            </div>
+
+        </div>
+
+        <div class="button-group">
+
+            <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="backBtn"
+                    onclick="previousStep()"
+                    style="display: none;">
+
+                Back
+
+            </button>
+
+            <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="nextBtn"
+                    onclick="nextStep()">
+
+                Continue
+
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
+
+<script>
+
+    let currentStep = 1;
+    let selectedAddressId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        loadAddresses();
+
+        updateStep(1);
+
+    });
+
+    async function loadAddresses() {
+        try {
+            const response = await fetch('/account/address', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            console.log('GET /account/address:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Erro ao carregar endereços:', errorText);
+                throw new Error(`GET /account/address retornou ${response.status}`);
+            }
+
+            const addresses = await response.json();
+
+            console.log('Endereços recebidos:', addresses);
+
+            renderAddresses(addresses);
+
+        } catch (error) {
+            console.error('Erro em loadAddresses():', error);
+            throw error;
+        }
+    }
+
+    function renderAddresses(addresses) {
+
+        const addressList =
+            document.getElementById('address-list');
+
+        if (!addresses || addresses.length === 0) {
+
+            selectedAddressId = null;
+
+            addressList.innerHTML = `
+                <div class="empty-address-message">
+                    You don't have any saved addresses yet.
+                </div>
+            `;
+
+            toggleNewAddressForm(true);
+
+            return;
+        }
+
+        const defaultAddress =
+            addresses.find(
+                address => address.defaultAddress === true
+            );
+
+        const selectedAddress =
+            defaultAddress || addresses[0];
+
+        selectedAddressId =
+            selectedAddress.id;
+
+        addressList.innerHTML =
+            addresses.map(address => {
+
+                const checked =
+                    address.id === selectedAddressId;
+
+                return `
+
+                    <div class="address-option">
+
+                        <input
+                            type="radio"
+                            id="address-${address.id}"
+                            name="shippingAddress"
+                            value="${address.id}"
+                            ${checked ? 'checked' : ''}
+                            onchange="selectAddress('${address.id}')"
+                        >
+
+                        <label
+                            for="address-${address.id}"
+                            class="address-label"
+                        >
+
+                            <div class="address-title">
+
+                                ${escapeHtml(address.street)}
+
+                                ${
+                                    address.number
+                                        ? ', ' + escapeHtml(address.number)
+                                        : ''
+                                }
+
+                                ${
+                                    address.defaultAddress
+                                        ? '<span class="default-badge">Default</span>'
+                                        : ''
+                                }
+
+                            </div>
+
+                            <div class="address-details">
+
+                                ${
+                                    address.neighborhood
+                                        ? escapeHtml(address.neighborhood) + '<br>'
+                                        : ''
+                                }
+
+                                ${
+                                    address.city
+                                        ? escapeHtml(address.city)
+                                        : ''
+                                }
+
+                                ${
+                                    address.state
+                                        ? ' - ' + escapeHtml(address.state)
+                                        : ''
+                                }
+
+                                ${
+                                    address.cep
+                                        ? '<br>CEP: ' + escapeHtml(address.cep)
+                                        : ''
+                                }
+
+                                ${
+                                    address.complement
+                                        ? '<br>' + escapeHtml(address.complement)
+                                        : ''
+                                }
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                `;
+
+            }).join('');
+
+    }
+
+    function selectAddress(addressId) {
+
+        selectedAddressId = addressId;
+
+    }
+
+    function toggleNewAddressForm(forceOpen = null) {
+
+        const form =
+            document.getElementById('new-address-form');
+
+        const button =
+            document.getElementById('add-address-btn');
+
+        let shouldOpen;
+
+        if (forceOpen !== null) {
+
+            shouldOpen = forceOpen;
+
+        } else {
+
+            shouldOpen =
+                form.style.display === 'none';
+
+        }
+
+        form.style.display =
+            shouldOpen ? 'block' : 'none';
+
+        button.style.display =
+            shouldOpen ? 'none' : 'block';
+
+    }
+
+    async function saveNewAddress() {
+
+        const data = {
+            cep: document.getElementById('cep').value.trim(),
+            street: document.getElementById('street').value.trim(),
+            number: document.getElementById('number').value.trim(),
+            complement: document.getElementById('complement').value.trim(),
+            neighborhood: document.getElementById('neighborhood').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            state: document.getElementById('state').value,
+            defaultAddress: document.getElementById('defaultAddress').checked
+        };
+
+        console.log('Dados sendo enviados:', data);
+
+        if (
+            !data.cep ||
+            !data.street ||
+            !data.neighborhood ||
+            !data.city ||
+            !data.state
+        ) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        try {
+
+            const csrfToken =
+                document.querySelector('meta[name="_csrf"]').content;
+
+            const csrfHeader =
+                document.querySelector('meta[name="_csrf_header"]').content;
+
+            console.log('CSRF Token:', csrfToken);
+            console.log('CSRF Header:', csrfHeader);
+
+            const response = await fetch('/account/address', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'text/plain',
+                    [csrfHeader]: csrfToken
+                },
+
+                body: new URLSearchParams(data)
+
+            });
+
+            console.log(
+                'POST /account/address - Status:',
+                response.status
+            );
+
+            console.log(
+                'Response OK?',
+                response.ok
+            );
+
+            const responseText =
+                await response.text();
+
+            console.log(
+                'Response Text:',
+                responseText
+            );
+
+            if (!response.ok) {
+
+                console.error(
+                    'Error saving address:',
+                    response.status,
+                    responseText
+                );
+
+                alert(
+                    `Error ${response.status}: ${responseText}`
+                );
+
+                return;
+            }
+
+            clearNewAddressForm();
+
+            toggleNewAddressForm(false);
+
+            await loadAddresses();
+
+            alert('Address saved successfully!');
+
+        } catch (error) {
+
+            console.error(
+                'Request error:',
+                error
+            );
+
+            alert(
+                'Error: ' + error.message
+            );
+
+        }
+
+    }
+
+    function clearNewAddressForm() {
+
+        document.getElementById('cep').value = '';
+
+        document.getElementById('street').value = '';
+
+        document.getElementById('number').value = '';
+
+        document.getElementById('complement').value = '';
+
+        document.getElementById('neighborhood').value = '';
+
+        document.getElementById('city').value = '';
+
+        document.getElementById('state').value = '';
+
+        document.getElementById('defaultAddress').checked = false;
+
+    }
+
+    function nextStep() {
+
+        if (currentStep === 1) {
+
+            if (!selectedAddressId) {
+
+                alert(
+                    'Please select a shipping address.'
+                );
+
+                return;
+            }
+
+        }
+
+        if (currentStep < 3) {
+
+            updateStep(currentStep + 1);
+
+        }
+
+    }
+
+    function previousStep() {
+
+        if (currentStep > 1) {
+
+            updateStep(currentStep - 1);
+
+        }
+
+    }
+
+    function updateStep(step) {
+
+        document
+            .querySelectorAll('.form-section')
+            .forEach(section => {
+
+                section.classList.remove('active');
+
+            });
+
+        const currentSection =
+            document.getElementById(`step${step}`);
+
+        if (currentSection) {
+
+            currentSection.classList.add('active');
+
+        }
+
+        document
+            .querySelectorAll('.step')
+            .forEach((element, index) => {
+
+                const stepNumber = index + 1;
+
+                element.classList.remove(
+                    'active',
+                    'completed'
+                );
+
+                if (stepNumber < step) {
+
+                    element.classList.add(
+                        'completed'
+                    );
+
+                } else if (stepNumber === step) {
+
+                    element.classList.add(
+                        'active'
+                    );
+
+                }
+
+            });
+
+        const titles = [
+
+            'Shipping Address',
+
+            'Payment Information',
+
+            'Order Review'
+
+        ];
+
+        document.getElementById(
+            'progressTitle'
+        ).textContent = titles[step - 1];
+
+        const backButton =
+            document.getElementById('backBtn');
+
+        const nextButton =
+            document.getElementById('nextBtn');
+
+        backButton.style.display =
+            step > 1 ? 'block' : 'none';
+
+        nextButton.textContent =
+            step === 3
+                ? 'Complete Order'
+                : 'Continue';
+
+        currentStep = step;
+
+    }
+
+    function escapeHtml(value) {
+
+        if (value == null) {
+
+            return '';
+
+        }
+
+        return String(value)
+
+            .replace(/&/g, '&amp;')
+
+            .replace(/</g, '&lt;')
+
+            .replace(/>/g, '&gt;')
+
+            .replace(/"/g, '&quot;')
+
+            .replace(/'/g, '&#039;');
+
+    }
+
+</script>
 
 </body>
 </html>
