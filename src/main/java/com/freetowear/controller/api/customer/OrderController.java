@@ -115,6 +115,15 @@ public class OrderController {
         return "redirect:/cart";
     }
 
+    @GetMapping("/current")
+    @ResponseBody
+    public OrderResponse getCurrentCart(
+            @AuthenticationPrincipal CustomerDetails customerDetails
+    ) {
+        return orderService.getCart(customerDetails.getId())
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+    }
+
     @PostMapping("/cart/remove")
     public String removeCartItem(
             @AuthenticationPrincipal CustomerDetails customerDetails,

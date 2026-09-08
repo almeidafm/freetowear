@@ -60,6 +60,89 @@
             z-index: 1;
         }
 
+        .review-section {
+            margin-bottom: 24px;
+        }
+
+        .review-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .review-card {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .review-address {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .review-payment {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .review-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-item-info {
+            min-width: 0;
+        }
+
+        .review-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .review-item-variation {
+            font-size: 12px;
+            color: #777;
+            margin-top: 3px;
+        }
+
+        .review-item-quantity {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .review-item-price {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .review-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 12px;
+            margin-top: 8px;
+            border-top: 1px solid #ddd;
+            font-weight: 600;
+        }
+
         .step {
             position: relative;
             z-index: 2;
@@ -709,11 +792,15 @@
         <div class="form-section" id="step3">
 
             <p class="section-subtitle">
-                Please review your order.
+                Please review your order before completing your purchase.
             </p>
 
-            <div class="placeholder-message">
-                Review step coming next.
+            <div id="review-content">
+
+                <div class="placeholder-message">
+                    Loading order information...
+                </div>
+
             </div>
 
         </div>
@@ -751,7 +838,10 @@
 
     let currentStep = 1;
     let selectedAddressId = null;
+    let selectedAddress = null;
+    let addresses = [];
     let selectedPaymentMethod = null;
+    let currentCart = null;
 
     function selectPaymentMethod(paymentMethod) {
 
@@ -784,16 +874,199 @@
                 throw new Error(`GET /account/address retornou ${response.status}`);
             }
 
-            const addresses = await response.json();
+           addresses = await response.json();
 
-            console.log('Endereços recebidos:', addresses);
+           console.log('Endereços recebidos:', addresses);
 
-            renderAddresses(addresses);
+           renderAddresses(addresses);
 
         } catch (error) {
             console.error('Erro em loadAddresses():', error);
             throw error;
         }
+    }
+
+    async function loadCurrentCart() {
+
+        const response = await fetch('/order/current', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Unable to load cart.');
+        }
+
+        currentCart = await response.json();
+
+        renderReview();
+    }
+
+    function formatCurrency(value) {
+
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(value || 0);
+
+}
+
+    function renderReview() {
+
+        const reviewContent =
+            document.getElementById('review-content');
+
+        if (!currentCart) {
+
+            reviewContent.innerHTML = `
+                <div class="placeholder-message">
+                    Loading order information...
+                </div>
+            `;
+
+            return;
+        }
+
+        const address =
+            selectedAddress;
+
+        const addressHtml = address
+            ? `
+                <div class="review-address">
+                    ${escapeHtml(address.street)}
+                    ${address.number
+                        ? ', ' + escapeHtml(address.number)
+                        : ''
+                    }
+                    <br>
+
+                    ${address.neighborhood
+                        ? escapeHtml(address.neighborhood) + '<br>'
+                        : ''
+                    }
+
+                    ${escapeHtml(address.city)}
+                    ${address.state
+                        ? ' - ' + escapeHtml(address.state)
+                        : ''
+                    }
+                    <br>
+
+                    ${address.cep
+                        ? 'CEP: ' + escapeHtml(address.cep)
+                        : ''
+                    }
+
+                    ${address.complement
+                        ? '<br>' + escapeHtml(address.complement)
+                        : ''
+                    }
+                </div>
+            `
+            : `
+                <div class="error-message">
+                    No shipping address selected.
+                </div>
+            `;
+
+        const paymentLabels = {
+            CREDIT_CARD: 'Credit Card',
+            PIX: 'PIX',
+            BOLETO: 'Boleto'
+        };
+
+        const paymentLabel =
+            paymentLabels[selectedPaymentMethod]
+            || selectedPaymentMethod
+            || 'Not selected';
+
+        const itemsHtml =
+            currentCart.items && currentCart.items.length > 0
+                ? currentCart.items.map(item => `
+                    <div class="review-item">
+
+                        <div class="review-item-info">
+
+                            <div class="review-item-name">
+                                ${escapeHtml(item.productName)}
+                            </div>
+
+                            <div class="review-item-variation">
+                                ${escapeHtml(item.variation)}
+                                · Qty: ${item.quantity}
+                            </div>
+
+                        </div>
+
+                        <div class="review-item-price">
+                            ${formatCurrency(item.subtotal)}
+                        </div>
+
+                    </div>
+                `).join('')
+                : `
+                    <div class="placeholder-message">
+                        Your cart is empty.
+                    </div>
+                `;
+
+        reviewContent.innerHTML = `
+
+            <div class="review-section">
+
+                <div class="review-section-title">
+                    Shipping Address
+                </div>
+
+                <div class="review-card">
+                    ${addressHtml}
+                </div>
+
+            </div>
+
+            <div class="review-section">
+
+                <div class="review-section-title">
+                    Payment Method
+                </div>
+
+                <div class="review-card review-payment">
+                    ${escapeHtml(paymentLabel)}
+                </div>
+
+            </div>
+
+            <div class="review-section">
+
+                <div class="review-section-title">
+                    Order Items
+                </div>
+
+                <div class="review-card">
+
+                    <div class="review-items">
+                        ${itemsHtml}
+                    </div>
+
+                    <div class="review-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <span>
+                            ${formatCurrency(currentCart.totalValue)}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
     }
 
     function renderAddresses(addresses) {
@@ -816,12 +1089,12 @@
             return;
         }
 
-        const defaultAddress =
+       const defaultAddress =
             addresses.find(
                 address => address.defaultAddress === true
             );
 
-        const selectedAddress =
+        selectedAddress =
             defaultAddress || addresses[0];
 
         selectedAddressId =
@@ -917,6 +1190,11 @@
 
         selectedAddressId = addressId;
 
+        selectedAddress =
+            addresses.find(
+                address => String(address.id) === String(addressId)
+            );
+        renderReview();
     }
 
     function toggleNewAddressForm(forceOpen = null) {
@@ -1103,9 +1381,15 @@
 
         }
 
-        if (currentStep < 3) {
-            updateStep(currentStep + 1);
+        if (currentStep === 3) {
+
+            completeOrder();
+
+            return;
         }
+
+        updateStep(currentStep + 1);
+
     }
 
     function previousStep() {
@@ -1123,18 +1407,14 @@
         document
             .querySelectorAll('.form-section')
             .forEach(section => {
-
                 section.classList.remove('active');
-
             });
 
         const currentSection =
             document.getElementById(`step${step}`);
 
         if (currentSection) {
-
             currentSection.classList.add('active');
-
         }
 
         document
@@ -1149,29 +1429,17 @@
                 );
 
                 if (stepNumber < step) {
-
-                    element.classList.add(
-                        'completed'
-                    );
-
+                    element.classList.add('completed');
                 } else if (stepNumber === step) {
-
-                    element.classList.add(
-                        'active'
-                    );
-
+                    element.classList.add('active');
                 }
 
             });
 
         const titles = [
-
             'Shipping Address',
-
             'Payment Information',
-
             'Order Review'
-
         ];
 
         document.getElementById(
@@ -1193,6 +1461,10 @@
                 : 'Continue';
 
         currentStep = step;
+
+        if (step === 3) {
+            loadCurrentCart();
+        }
 
     }
 
