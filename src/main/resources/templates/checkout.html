@@ -306,6 +306,51 @@
             color: #666;
         }
 
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .payment-option {
+            position: relative;
+        }
+
+        .payment-option input[type="radio"] {
+            display: none;
+        }
+
+        .payment-label {
+            display: block;
+            padding: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .payment-label:hover {
+            border-color: #667eea;
+        }
+
+        .payment-option input[type="radio"]:checked + .payment-label {
+            border-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .payment-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .payment-description {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -580,8 +625,83 @@
                 How would you like to pay?
             </p>
 
-            <div class="placeholder-message">
-                Payment step coming next.
+            <div class="payment-options">
+
+                <div class="payment-option">
+
+                    <input
+                            type="radio"
+                            id="payment-credit-card"
+                            name="paymentMethod"
+                            value="CREDIT_CARD"
+                            onchange="selectPaymentMethod(this.value)">
+
+                    <label
+                            for="payment-credit-card"
+                            class="payment-label">
+
+                        <div class="payment-title">
+                            Credit Card
+                        </div>
+
+                        <div class="payment-description">
+                            Pay securely with your credit card.
+                        </div>
+
+                    </label>
+
+                </div>
+
+                <div class="payment-option">
+
+                    <input
+                            type="radio"
+                            id="payment-pix"
+                            name="paymentMethod"
+                            value="PIX"
+                            onchange="selectPaymentMethod(this.value)">
+
+                    <label
+                            for="payment-pix"
+                            class="payment-label">
+
+                        <div class="payment-title">
+                            PIX
+                        </div>
+
+                        <div class="payment-description">
+                            Pay instantly using PIX.
+                        </div>
+
+                    </label>
+
+                </div>
+
+                <div class="payment-option">
+
+                    <input
+                            type="radio"
+                            id="payment-boleto"
+                            name="paymentMethod"
+                            value="BOLETO"
+                            onchange="selectPaymentMethod(this.value)">
+
+                    <label
+                            for="payment-boleto"
+                            class="payment-label">
+
+                        <div class="payment-title">
+                            Boleto
+                        </div>
+
+                        <div class="payment-description">
+                            Pay using a boleto bancário.
+                        </div>
+
+                    </label>
+
+                </div>
+
             </div>
 
         </div>
@@ -631,6 +751,13 @@
 
     let currentStep = 1;
     let selectedAddressId = null;
+    let selectedPaymentMethod = null;
+
+    function selectPaymentMethod(paymentMethod) {
+
+    selectedPaymentMethod = paymentMethod;
+
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -963,12 +1090,22 @@
 
         }
 
-        if (currentStep < 3) {
+        if (currentStep === 2) {
 
-            updateStep(currentStep + 1);
+            if (!selectedPaymentMethod) {
+
+                alert(
+                    'Please select a payment method.'
+                );
+
+                return;
+            }
 
         }
 
+        if (currentStep < 3) {
+            updateStep(currentStep + 1);
+        }
     }
 
     function previousStep() {
