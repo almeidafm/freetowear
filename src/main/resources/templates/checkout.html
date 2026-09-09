@@ -1392,6 +1392,76 @@
 
     }
 
+    async function completeOrder() {
+
+        if (!selectedAddressId) {
+            alert('Please select a shipping address.');
+            return;
+        }
+
+        if (!selectedPaymentMethod) {
+            alert('Please select a payment method.');
+            return;
+        }
+
+        const csrfToken =
+            document.querySelector('meta[name="_csrf"]').content;
+
+        const csrfHeader =
+            document.querySelector('meta[name="_csrf_header"]').content;
+
+        try {
+
+            const orderResponse = await fetch(
+                `/order?idAddress=${encodeURIComponent(selectedAddressId)}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        [csrfHeader]: csrfToken
+                    }
+                }
+            );
+
+            if (!orderResponse.ok) {
+                throw new Error(
+                    'Could not save the shipping address.'
+                );
+            }
+
+            const finishResponse = await fetch(
+                '/order/current/finish',
+                {
+                    method: 'POST',
+                    headers: {
+                        [csrfHeader]: csrfToken,
+                        'Content-Type':
+                            'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        method: selectedPaymentMethod
+                    })
+                }
+            );
+
+            if (!finishResponse.ok) {
+                throw new Error(
+                    'Could not complete the order.'
+                );
+            }
+
+            window.location.href = '/';
+
+        } catch (error) {
+
+            console.error(
+                'Error completing order:',
+                error
+            );
+
+            alert(error.message);
+        }
+    }
+
     function previousStep() {
 
         if (currentStep > 1) {
