@@ -5,7 +5,10 @@ import com.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.dto.response.order.OrderResponse;
 import com.freetowear.dto.response.order.OrderTrackingResponse;
+import com.freetowear.entity.Order;
+import com.freetowear.enums.OrderStatus;
 import com.freetowear.infra.security.CustomerDetails;
+import com.freetowear.repository.OrderRepository;
 import com.freetowear.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -31,6 +34,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @PostMapping
     public String createOrder(
@@ -70,6 +76,20 @@ public class OrderController {
             @Valid @ModelAttribute FinishOrderRequest request
     ) {
         orderService.finishOrder(id, request);
+        return "redirect:/";
+    }
+
+    @PostMapping("/current/finish")
+    public String finishCurrentOrder(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            @Valid @ModelAttribute FinishOrderRequest request
+    ) {
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.CART)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        orderService.finishOrder(order.getId(), request);
+
         return "redirect:/";
     }
 
