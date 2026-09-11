@@ -36,7 +36,7 @@ public class Order extends BaseEntity {
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_address_id", nullable = false)
+    @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)

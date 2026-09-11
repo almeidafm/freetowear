@@ -449,7 +449,7 @@
 
 <body>
 
-<div class="checkout-container">
+<div class="checkout-container" th:if="${checkoutAvailable}">
 
     <div class="progress-wrapper">
 
@@ -834,7 +834,19 @@
 
 </div>
 
-<script>
+<div th:if="${paymentPending}">
+    <h2>Pagamento pendente</h2>
+    <p>Você possui um pedido aguardando pagamento.</p>
+    <a href="/">Voltar para a loja</a>
+</div>
+
+<div th:if="${!checkoutAvailable and !paymentPending}">
+    <h2>Nenhum carrinho ativo</h2>
+    <p>Você não possui um carrinho ativo.</p>
+    <a href="/">Voltar para a loja</a>
+</div>
+
+<script th:if="${checkoutAvailable}">
 
     let currentStep = 1;
     let selectedAddressId = null;
@@ -844,17 +856,12 @@
     let currentCart = null;
 
     function selectPaymentMethod(paymentMethod) {
-
-    selectedPaymentMethod = paymentMethod;
-
+        selectedPaymentMethod = paymentMethod;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-
         loadAddresses();
-
         updateStep(1);
-
     });
 
     async function loadAddresses() {

@@ -3,6 +3,7 @@ package com.freetowear.controller.web;
 import com.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.dto.response.category.CategoryResponse;
 import com.freetowear.dto.response.product.ProductResponse;
+import com.freetowear.entity.Order;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.CategoryService;
 import com.freetowear.service.OrderService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class WebController {
@@ -85,7 +87,22 @@ public class WebController {
     }
 
     @GetMapping("/checkout")
-    public String checkout() {
+    public String checkout(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        String customerId = customerDetails.getId();
+
+        boolean checkoutAvailable =
+                orderService.getCart(customerId).isPresent();
+
+        boolean paymentPending =
+                !checkoutAvailable &&
+                        orderService.getPendingOrder(customerId).isPresent();
+
+        model.addAttribute("checkoutAvailable", checkoutAvailable);
+        model.addAttribute("paymentPending", paymentPending);
+
         return "checkout";
     }
 

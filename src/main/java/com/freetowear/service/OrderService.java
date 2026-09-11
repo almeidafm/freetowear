@@ -218,6 +218,13 @@ public class OrderService {
                 .toList();
     }
 
+    public Optional<Order> getPendingOrder(String customerId) {
+        return orderRepository.findByCustomerIdAndStatus(
+                customerId,
+                OrderStatus.PENDING
+        );
+    }
+
     public OrderResponse getOrderById(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
