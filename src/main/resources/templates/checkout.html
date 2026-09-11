@@ -467,6 +467,11 @@
 
             <div class="step" data-step="3">
                 <div class="step-number">3</div>
+                <div class="step-label">Coupon</div>
+            </div>
+
+            <div class="step" data-step="4">
+                <div class="step-number">4</div>
                 <div class="step-label">Review</div>
             </div>
 
@@ -790,6 +795,12 @@
         </div>
 
         <div class="form-section" id="step3">
+            <p>Add coupon</p>
+            <input type="text" name="addCoupon" placeholder="Coupon">
+            <button type="submit">Add Coupon</button>
+        </div>
+
+        <div class="form-section" id="step4">
 
             <p class="section-subtitle">
                 Please review your order before completing your purchase.
@@ -1388,7 +1399,7 @@
 
         }
 
-        if (currentStep === 3) {
+        if (currentStep === 4) {
 
             completeOrder();
 
@@ -1533,13 +1544,13 @@
             step > 1 ? 'block' : 'none';
 
         nextButton.textContent =
-            step === 3
+            step === 4
                 ? 'Complete Order'
                 : 'Continue';
 
         currentStep = step;
 
-        if (step === 3) {
+        if (step === 4) {
             loadCurrentCart();
         }
 
