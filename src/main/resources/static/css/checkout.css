@@ -1,0 +1,475 @@
+/* ============================================
+   RESET & GLOBAL STYLES
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+
+.checkout-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.checkout-content {
+    padding: 40px 30px;
+    min-height: 400px;
+}
+
+
+/* ============================================
+   PROGRESS WRAPPER & STEPS
+   ============================================ */
+
+.progress-wrapper {
+    padding: 40px 30px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+}
+
+.step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.step.active .step-number {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.step.completed .step-number {
+    background: #4ade80;
+    color: white;
+}
+
+.step-label {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.progress-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+
+/* ============================================
+   FORM SECTIONS
+   ============================================ */
+
+.form-section {
+    display: none;
+}
+
+.form-section.active {
+    display: block;
+}
+
+.section-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+
+/* ============================================
+   ADDRESS OPTIONS
+   ============================================ */
+
+.address-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.address-option {
+    position: relative;
+}
+
+.address-option input[type="radio"] {
+    display: none;
+}
+
+.address-label {
+    display: block;
+    padding: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.address-label:hover {
+    border-color: #667eea;
+}
+
+.address-option input[type="radio"]:checked + .address-label {
+    border-color: #667eea;
+    background: #f5f3ff;
+}
+
+.address-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.address-details {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.default-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: #4ade80;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.empty-address-message {
+    padding: 15px;
+    border-radius: 6px;
+    background: #f9f9f9;
+    color: #666;
+    font-size: 14px;
+}
+
+
+/* ============================================
+   PAYMENT OPTIONS
+   ============================================ */
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-option {
+    position: relative;
+}
+
+.payment-option input[type="radio"] {
+    display: none;
+}
+
+.payment-label {
+    display: block;
+    padding: 18px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.payment-label:hover {
+    border-color: #667eea;
+}
+
+.payment-option input[type="radio"]:checked + .payment-label {
+    border-color: #667eea;
+    background: #f5f3ff;
+}
+
+.payment-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.payment-description {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ============================================
+   REVIEW SECTION
+   ============================================ */
+
+.review-section {
+    margin-bottom: 24px;
+}
+
+.review-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.review-card {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.review-address {
+    color: #555;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.review-payment {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.review-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-item-info {
+    min-width: 0;
+}
+
+.review-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.review-item-variation {
+    font-size: 12px;
+    color: #777;
+    margin-top: 3px;
+}
+
+.review-item-price {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.review-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 1px solid #ddd;
+    font-weight: 600;
+}
+
+.placeholder-message {
+    padding: 30px 0;
+    text-align: center;
+    color: #666;
+}
+
+.error-message {
+    padding: 15px;
+    border-radius: 6px;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+
+/* ============================================
+   CHECKBOX & FORM UTILITIES
+   ============================================ */
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+}
+
+.checkbox-group label {
+    margin: 0;
+}
+
+
+/* ============================================
+   NEW ADDRESS FORM
+   ============================================ */
+
+#new-address-form {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #eee;
+}
+
+.add-address-button {
+    width: 100%;
+    margin-top: 5px;
+}
+
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+}
