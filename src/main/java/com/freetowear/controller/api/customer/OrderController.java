@@ -1,7 +1,6 @@
 package com.freetowear.controller.api.customer;
 
 import com.freetowear.dto.request.order.AddItemToOrderRequest;
-import com.freetowear.dto.request.order.CreateOrderRequest;
 import com.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.dto.response.order.OrderResponse;
 import com.freetowear.dto.response.order.OrderTrackingResponse;
@@ -37,21 +36,6 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
-
-    @PostMapping
-    public String createOrder(
-            @AuthenticationPrincipal CustomerDetails customerDetails,
-            @RequestParam String idAddress,
-            @RequestParam(required = false) String idCoupon
-    ) {
-        String idCustomer = customerDetails.getId();
-
-        orderService.createOrder(
-                new CreateOrderRequest(idCustomer, idAddress, idCoupon)
-        );
-
-        return "redirect:/";
-    }
 
     @PostMapping("/item")
     public String addItem(

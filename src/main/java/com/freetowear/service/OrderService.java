@@ -1,11 +1,7 @@
 package com.freetowear.service;
 
-import com.freetowear.dto.request.order.AddItemToOrderRequest;
-import com.freetowear.dto.request.order.CreateOrderRequest;
-import com.freetowear.dto.request.order.FinishOrderRequest;
-import com.freetowear.dto.response.order.OrderResponse;
-import com.freetowear.dto.response.order.OrderTrackingResponse;
-import com.freetowear.entity.Address;
+import com.freetowear.dto.request.order.*;
+import com.freetowear.dto.response.order.*;
 import com.freetowear.entity.Customer;
 import com.freetowear.entity.Order;
 import com.freetowear.entity.OrderItem;
@@ -62,39 +58,6 @@ public class OrderService {
     private boolean isMatchingCartItem(OrderItem item, String productId, String variationId) {
         return item.getProduct().getId().equals(productId)
                 && item.getProductVariation().getId().equals(variationId);
-    }
-
-    public void createOrder(CreateOrderRequest request) {
-        Customer customer = customerRepository.findById(request.getIdCustomer())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-
-        Address address = addressRepository.findById(request.getIdAddress())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
-
-        boolean addressBelongsToCustomer =
-                address.getCustomer().getId().equals(customer.getId());
-
-        if (!addressBelongsToCustomer) {
-            throw new RuntimeException("Address does not belong to this customer");
-        }
-
-        Order order = orderRepository
-                .findByCustomerIdAndStatus(
-                        customer.getId(),
-                        OrderStatus.CART
-                )
-                .orElseThrow(() -> new RuntimeException("No active cart found"));
-
-        order.setDeliveryAddress(address);
-
-        if (request.getIdCoupon() != null) {
-            couponRepository.findById(request.getIdCoupon())
-                    .ifPresent(order::setCoupon);
-        } else {
-            order.setCoupon(null);
-        }
-
-        orderRepository.save(order);
     }
 
     private Order createCart(Customer customer) {
