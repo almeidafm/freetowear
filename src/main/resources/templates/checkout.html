@@ -9,9 +9,6 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Checkout</title>
     <link rel="stylesheet" th:href="@{/css/checkout.css}">
-    <script th:src="@{/js/checkout-state.js}"></script>
-    <script th:src="@{/js/checkout-navigation.js}"></script>
-    <script th:src="@{/js/checkout-forms.js}"></script>
 </head>
 
 <body>
@@ -243,14 +240,12 @@
     <a href="/">Voltar para a loja</a>
 </div>
 
-<script th:if="${checkoutAvailable}" src="js/checkout-state.js"></script>
-<script th:if="${checkoutAvailable}" src="js/checkout-navigation.js"></script>
-<script th:if="${checkoutAvailable}" src="js/checkout-forms.js"></script>
+<script th:if="${checkoutAvailable}" th:src="@{/js/checkout-state.js}"></script>
+<script th:if="${checkoutAvailable}" th:src="@{/js/checkout-navigation.js}"></script>
+<script th:if="${checkoutAvailable}" th:src="@{/js/checkout-forms.js}"></script>
 <script th:if="${checkoutAvailable}">
-    document.addEventListener('DOMContentLoaded', () => {
-        loadAddresses();
-        updateStep(1);
-    });
+    loadAddresses();
+    updateStep(1);
 </script>
 
 </body>

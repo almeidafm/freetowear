@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddItemToOrderRequest {
+public class AddItemToCartRequest {
 
     @NotNull
     private String idProduct;
@@ -25,9 +25,9 @@ public class AddItemToOrderRequest {
     private MultipartFile customerCustomization;
     private String description;
 
-    public AddItemToOrderRequest() {}
+    public AddItemToCartRequest() {}
 
-    public AddItemToOrderRequest(String idProduct, String idVariation, Integer quantity, MultipartFile customerCustomization, String description) {
+    public AddItemToCartRequest(String idProduct, String idVariation, Integer quantity, MultipartFile customerCustomization, String description) {
         this.idProduct = idProduct;
         this.idVariation = idVariation;
         this.quantity = quantity;

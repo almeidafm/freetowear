@@ -3,6 +3,8 @@ package com.freetowear.service;
 import com.freetowear.dto.request.order.*;
 import com.freetowear.dto.response.order.*;
 import com.freetowear.entity.Customer;
+import com.freetowear.entity.Coupon;
+import com.freetowear.entity.Address;
 import com.freetowear.entity.Order;
 import com.freetowear.entity.OrderItem;
 import com.freetowear.entity.Payment;
@@ -61,19 +63,19 @@ public class OrderService {
     }
 
     private Order createCart(Customer customer) {
-        Order order = new Order();
+        Order cart = new Order();
 
-        order.setCustomer(customer);
-        order.setStatus(OrderStatus.CART);
-        order.setProductsValue(BigDecimal.ZERO);
-        order.setShippingPrice(new BigDecimal("20.00"));
+        cart.setCustomer(customer);
+        cart.setStatus(OrderStatus.CART);
+        cart.setProductsValue(BigDecimal.ZERO);
+        cart.setShippingPrice(new BigDecimal("20.00"));
 
-        return orderRepository.save(order);
+        return orderRepository.save(cart);
     }
 
     public void addItem(
             String idCustomer,
-            AddItemToOrderRequest request
+            AddItemToCartRequest request
     ) throws IOException {
 
         Customer customer = customerRepository.findById(idCustomer)
@@ -135,23 +137,61 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    @Transactional
     public void finishOrder(
-            String orderId,
+            String customerId,
             FinishOrderRequest request
     ) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        boolean hasPendingOrder = orderRepository
+                .findByCustomerIdAndStatus(
+                        customerId,
+                        OrderStatus.PENDING
+                )
+                .isPresent();
+
+        if (hasPendingOrder) {
+            throw new RuntimeException("Customer already has a pending order");
+        }
+
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(
+                        customerId,
+                        OrderStatus.CART
+                )
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        Address address = addressRepository
+                .findById(request.getIdAddress())
+                .orElseThrow(() -> new RuntimeException("Address not found"));
+
+        boolean addressBelongsToCustomer =
+                address.getCustomer().getId().equals(customerId);
+
+        if (!addressBelongsToCustomer) {
+            throw new RuntimeException("Address does not belong to customer");
+        }
+
+        order.setDeliveryAddress(address);
+
+        if (request.getIdCoupon() != null && !request.getIdCoupon().isBlank()) {
+            Coupon coupon = couponRepository
+                    .findById(request.getIdCoupon())
+                    .orElseThrow(() -> new RuntimeException("Coupon not found"));
+
+            order.setCoupon(coupon);
+        } else {
+            order.setCoupon(null);
+        }
+
+        recalculateProductsValue(order);
 
         Payment payment = new Payment();
-
         payment.setOrder(order);
         payment.setMethod(request.getMethod());
         payment.setAmountPaid(order.getTotalValue());
         payment.setStatus(PaymentStatus.PENDING);
 
-        boolean hasInstallments = request.getInstallments() != null;
-
-        if (hasInstallments) {
+        if (request.getInstallments() != null) {
             payment.setInstallments(request.getInstallments());
         }
 

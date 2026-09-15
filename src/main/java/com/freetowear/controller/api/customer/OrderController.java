@@ -1,6 +1,6 @@
 package com.freetowear.controller.api.customer;
 
-import com.freetowear.dto.request.order.AddItemToOrderRequest;
+import com.freetowear.dto.request.order.AddItemToCartRequest;
 import com.freetowear.dto.request.order.FinishOrderRequest;
 import com.freetowear.dto.response.order.OrderResponse;
 import com.freetowear.dto.response.order.OrderTrackingResponse;
@@ -47,7 +47,7 @@ public class OrderController {
             @RequestParam(required = false) String description
     ) {
         try {
-            orderService.addItem(customerDetails.getId(), new AddItemToOrderRequest(idProduct, idVariation, quantity, customerCustomization, description));
+            orderService.addItem(customerDetails.getId(), new AddItemToCartRequest(idProduct, idVariation, quantity, customerCustomization, description));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +72,7 @@ public class OrderController {
                 .findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.CART)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        orderService.finishOrder(order.getId(), request);
+        orderService.finishOrder(customerDetails.getId(), request);
 
         return "redirect:/";
     }
@@ -95,11 +95,6 @@ public class OrderController {
     ) {
         orderService.cancelOrder(customerDetails.getId());
         return "redirect:/";
-    }
-
-    @GetMapping("/cart")
-    public String cart() {
-        return "redirect:/cart";
     }
 
     @PostMapping("/cart/update")
