@@ -158,4 +158,24 @@ public class WebController {
         model.addAttribute("products", productService.listProducts());
         return "admin/test";
     }
+
+    @GetMapping("/account/orders")
+    public String accountOrders() {
+        return "account/account-order";
+    }
+
+    @GetMapping("/account/profile")
+    public String accountProfile() {
+        return "account/profile";
+    }
+
+    @GetMapping("/order-success")
+    public String orderSuccess() {
+        return "commerce/order-sucess";
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "site/about";
+    }
 }

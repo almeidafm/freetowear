@@ -38,7 +38,7 @@ public class AccountController {
     public String getAccount(@PathVariable String id, Model model) {
         CustomerResponse customer = accountService.getAccount(id);
         model.addAttribute("customer", customer);
-        return "auth/account";
+        return "account/account";
     }
 
     @PostMapping("/register")
