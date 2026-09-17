@@ -96,12 +96,12 @@ public class ProductController {
     @GetMapping
     public String listProducts(Model model) {
         model.addAttribute("products", productService.listProducts());
-        return "products";
+        return "catalog/products";
     }
 
     @GetMapping("/{id}")
     public String showProduct(@PathVariable String id, Model model) {
         model.addAttribute("product", productService.findById(id));
-        return "product";
+        return "catalog/product";
     }
 }

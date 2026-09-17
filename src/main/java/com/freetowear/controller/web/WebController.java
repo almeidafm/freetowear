@@ -40,12 +40,12 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String home() { return "index"; }
+    public String home() { return "site/index"; }
 
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("request", new RegisterRequest());
-        return "register";
+        return "auth/register";
     }
 
     @GetMapping("/login")
@@ -66,11 +66,11 @@ public class WebController {
             session.setAttribute("emailVerificationPopupShown", true);
         }
 
-        return "login";
+        return "auth/login";
     }
 
     @GetMapping("/account")
-    public String account() { return "account"; }
+    public String account() { return "account/account"; }
 
     @GetMapping("/cart")
     public String cart(
@@ -82,7 +82,7 @@ public class WebController {
         } else {
             model.addAttribute("cart", null);
         }
-        return "cart";
+        return "commerce/cart";
     }
 
     @GetMapping("/checkout")
@@ -102,7 +102,7 @@ public class WebController {
         model.addAttribute("checkoutAvailable", checkoutAvailable);
         model.addAttribute("paymentPending", paymentPending);
 
-        return "checkout";
+        return "commerce/checkout";
     }
 
     @GetMapping("/products/search")
@@ -117,13 +117,13 @@ public class WebController {
         model.addAttribute("products", products);
         model.addAttribute("query", query);
 
-        return "search";
+        return "catalog/search";
     }
 
     @GetMapping("/categories")
     public String categories(Model model) {
         model.addAttribute("categories", categoryService.getAllCategories());
-        return "categories";
+        return "catalog/categories";
     }
 
     @GetMapping("/categories/{id}")
@@ -150,12 +150,12 @@ public class WebController {
                 productService.listProductsByCategory(id)
         );
 
-        return "category";
+        return "catalog/category";
     }
 
     @GetMapping("/test")
     public String test(Model model) {
         model.addAttribute("products", productService.listProducts());
-        return "test";
+        return "admin/test";
     }
 }

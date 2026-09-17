@@ -20,7 +20,7 @@ public class PasswordWebController {
     }
 
     @GetMapping("/forgot")
-    public String forgotPassword() { return "forgotpassword"; }
+    public String forgotPassword() { return "auth/forgot-password"; }
 
     @PostMapping("/request-code")
     @ResponseBody
