@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>500</title>
+    <title>500 - Internal Server Error</title>
 </head>
 <body>
 <h1><a th:href="@{/}">Home</a><br></h1>
+
+<main>
+    <section>
+        <h1>500 - Internal Server Error</h1>
+        <p>An unexpected error occurred on the server.</p>
+        <p>Please try again later or contact support if the problem persists.</p>
+    </section>
+</main>
 </body>
 </html>

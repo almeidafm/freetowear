@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>403</title>
+    <title>403 - Access Forbidden</title>
 </head>
 <body>
 <h1><a th:href="@{/}">Home</a><br></h1>
+
+<main>
+    <section>
+        <h1>403 - Access Forbidden</h1>
+        <p>You do not have permission to access this resource.</p>
+        <p>If you believe this is an error, please contact support.</p>
+    </section>
+</main>
 </body>
 </html>
