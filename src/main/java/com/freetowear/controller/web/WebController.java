@@ -178,4 +178,7 @@ public class WebController {
     public String about() {
         return "site/about";
     }
+
+    @GetMapping("/payment")
+    public String payment() { return "commerce/payment";}
 }
