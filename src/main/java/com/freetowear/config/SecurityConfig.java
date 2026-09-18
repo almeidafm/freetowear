@@ -38,15 +38,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/about").permitAll()
                         .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products", "/products/**", "/categories", "/categories/**").permitAll()
                         .requestMatchers("/css/**", "/js/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/password/forgot").permitAll()
                         .requestMatchers(HttpMethod.POST, "/password/request-code", "/password/verify-code", "/password/reset").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/**").hasRole("ADMIN")
-                        .requestMatchers("/category/**", "/coupon/**").hasRole("ADMIN")
+                        .requestMatchers("/category", "/category/**", "/coupon", "/coupon/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
 
