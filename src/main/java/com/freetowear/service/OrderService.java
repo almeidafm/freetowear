@@ -10,6 +10,7 @@ import com.freetowear.entity.OrderItem;
 import com.freetowear.entity.Payment;
 import com.freetowear.entity.Product;
 import com.freetowear.entity.ProductVariation;
+import com.freetowear.enums.DiscountType;
 import com.freetowear.enums.OrderStatus;
 import com.freetowear.enums.PaymentStatus;
 import com.freetowear.infra.CloudinaryService;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -173,10 +176,31 @@ public class OrderService {
 
         order.setDeliveryAddress(address);
 
+        recalculateProductsValue(order);
+
         if (request.getIdCoupon() != null && !request.getIdCoupon().isBlank()) {
+            String couponIdentifier = request.getIdCoupon().trim();
             Coupon coupon = couponRepository
-                    .findById(request.getIdCoupon())
+                    .findByCodeIgnoreCase(couponIdentifier)
+                    .or(() -> couponRepository.findById(couponIdentifier))
                     .orElseThrow(() -> new RuntimeException("Coupon not found"));
+
+            if (Boolean.FALSE.equals(coupon.getActive())) {
+                throw new RuntimeException("Coupon is not active");
+            }
+
+            LocalDate today = LocalDate.now();
+            if (coupon.getStartDate() != null && today.isBefore(coupon.getStartDate())) {
+                throw new RuntimeException("Coupon is not yet valid");
+            }
+
+            if (coupon.getEndDate() != null && today.isAfter(coupon.getEndDate())) {
+                throw new RuntimeException("Coupon has expired");
+            }
+
+            if (coupon.getMinimumOrderValue() != null && order.getProductsValue().compareTo(coupon.getMinimumOrderValue()) < 0) {
+                throw new RuntimeException("Order value does not meet minimum order value for this coupon");
+            }
 
             order.setCoupon(coupon);
         } else {
@@ -328,6 +352,34 @@ public class OrderService {
 
         order.setProductsValue(productsValue);
 
+        if (order.getCoupon() != null) {
+            BigDecimal discount = calculateDiscount(order.getCoupon(), productsValue);
+            order.setDiscountValue(discount);
+        } else {
+            order.setDiscountValue(BigDecimal.ZERO);
+        }
+
         orderRepository.save(order);
+    }
+
+    private BigDecimal calculateDiscount(Coupon coupon, BigDecimal productsValue) {
+        if (coupon == null || productsValue == null || coupon.getDiscountValue() == null) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal discount = BigDecimal.ZERO;
+        if (coupon.getDiscountType() == DiscountType.PERCENTAGE) {
+            discount = productsValue
+                    .multiply(coupon.getDiscountValue())
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        } else if (coupon.getDiscountType() == DiscountType.FIXED) {
+            discount = coupon.getDiscountValue();
+        }
+
+        if (discount.compareTo(productsValue) > 0) {
+            discount = productsValue;
+        }
+
+        return discount;
     }
 }

@@ -22,6 +22,10 @@ function nextStep() {
     }
 
     if (currentStep === 4) {
+        const couponInput = document.getElementById('coupon');
+        if (couponInput) {
+            document.getElementById('selectedCouponId').value = couponInput.value.trim();
+        }
         const form = document.getElementById('checkout-form');
         form.requestSubmit();
         return;
