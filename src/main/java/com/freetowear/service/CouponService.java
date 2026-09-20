@@ -52,6 +52,14 @@ public class CouponService {
         return new CouponResponse(coupon);
     }
 
+    public CouponResponse getCouponByCode(String code) {
+        Coupon coupon = couponRepository.findByCodeIgnoreCase(code)
+                .or(() -> couponRepository.findById(code))
+                .orElseThrow(() -> new RuntimeException("Coupon not found: " + code));
+        return new CouponResponse(coupon);
+    }
+
+
     public List<CouponResponse> getAllCoupons() {
         return couponRepository.findAll()
                 .stream()

@@ -195,7 +195,7 @@
 
                 <div class="form-group">
                     <label for="coupon">Coupon</label>
-                    <input type="text" id="coupon" placeholder="Coupon">
+                    <input type="text" id="coupon" placeholder="Coupon" onkeydown="if(event.key==='Enter'){event.preventDefault();nextStep();}">
                 </div>
             </div>
 

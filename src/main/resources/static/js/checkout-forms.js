@@ -180,6 +180,26 @@ function clearNewAddressForm() {
 // ============================================
 async function loadCurrentCart() {
     try {
+        const couponInput = document.getElementById('coupon');
+        const couponCode = couponInput ? couponInput.value.trim() : '';
+
+        if (couponCode && (!appliedCoupon || (appliedCoupon.code && appliedCoupon.code.toLowerCase() !== couponCode.toLowerCase()))) {
+            try {
+                const couponRes = await fetch(`/order/coupon?code=${encodeURIComponent(couponCode)}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (couponRes.ok) {
+                    appliedCoupon = await couponRes.json();
+                } else {
+                    appliedCoupon = null;
+                }
+            } catch (e) {
+                console.error('Error fetching coupon:', e);
+            }
+        } else if (!couponCode) {
+            appliedCoupon = null;
+        }
+
         const response = await fetch('/order/current', {
             method: 'GET',
             headers: {
@@ -250,6 +270,55 @@ function renderReview() {
 
     const paymentLabel = paymentLabels[selectedPaymentMethod] || selectedPaymentMethod || 'Not selected';
 
+    let couponHtml = `
+        <div class="review-item">
+            <div class="review-item-info">
+                <div class="review-item-name">
+                    No coupon
+                </div>
+            </div>
+        </div>
+    `;
+
+    const couponInput = document.getElementById('coupon');
+    const couponVal = couponInput ? couponInput.value.trim() : '';
+
+    if (appliedCoupon) {
+        const displayCode = (couponVal || appliedCoupon.code).toUpperCase();
+
+        let discountDisplay = '';
+        if (appliedCoupon.discountType === 'PERCENTAGE') {
+            discountDisplay = `${Number(appliedCoupon.discountValue)}%`;
+        } else if (appliedCoupon.discountType === 'FIXED') {
+            discountDisplay = formatCurrency(appliedCoupon.discountValue);
+        } else if (appliedCoupon.discountValue != null) {
+            discountDisplay = `${appliedCoupon.discountValue}`;
+        }
+
+        couponHtml = `
+            <div class="review-item">
+                <div class="review-item-info">
+                    <div class="review-item-name">
+                        ${escapeHtml(displayCode)}
+                    </div>
+                </div>
+                <div class="review-item-price">
+                    ${discountDisplay}
+                </div>
+            </div>
+        `;
+    } else if (couponVal) {
+        couponHtml = `
+            <div class="review-item">
+                <div class="review-item-info">
+                    <div class="review-item-name">
+                        ${escapeHtml(couponVal)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     const itemsHtml = currentCart.items && currentCart.items.length > 0
         ? currentCart.items
             .map(item => `
@@ -274,6 +343,34 @@ function renderReview() {
             </div>
         `;
 
+   let finalTotal = Number(currentCart.totalValue || 0);
+   let originalTotal = null;
+
+   if (appliedCoupon && currentCart.productsValue != null) {
+       const productsVal = Number(currentCart.productsValue);
+       const shipping = Number(currentCart.shippingPrice || 0);
+
+       originalTotal = productsVal + shipping;
+
+       if (currentCart.discountValue != null && Number(currentCart.discountValue) > 0) {
+           finalTotal = Number(currentCart.totalValue || 0);
+       } else {
+           let discount = 0;
+
+           if (appliedCoupon.discountType === 'PERCENTAGE') {
+               discount = (productsVal * Number(appliedCoupon.discountValue)) / 100;
+           } else if (appliedCoupon.discountType === 'FIXED') {
+               discount = Number(appliedCoupon.discountValue);
+           }
+
+           if (discount > productsVal) {
+               discount = productsVal;
+           }
+
+           finalTotal = Math.max(0, productsVal - discount + shipping);
+       }
+   }
+
     reviewContent.innerHTML = `
         <div class="review-section">
             <div class="review-section-title">Shipping Address</div>
@@ -292,7 +389,7 @@ function renderReview() {
         <div class="review-section">
             <div class="review-section-title">Coupon</div>
             <div class="review-card review-payment">
-                ${document.getElementById('coupon').value.trim() || 'No coupon'}
+                ${couponHtml}
             </div>
         </div>
 
@@ -304,7 +401,12 @@ function renderReview() {
                 </div>
                 <div class="review-total">
                     <span>Total</span>
-                    <span>${formatCurrency(currentCart.totalValue)}</span>
+                    <span>
+                        ${originalTotal != null && originalTotal > finalTotal
+                            ? `<span class="review-total-original">${formatCurrency(originalTotal)}</span> `
+                            : ''}
+                        ${formatCurrency(finalTotal)}
+                    </span>
                 </div>
             </div>
         </div>

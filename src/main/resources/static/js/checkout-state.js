@@ -14,6 +14,8 @@ let selectedPaymentMethod = null;
 
 let currentCart = null;
 
+let appliedCoupon = null;
+
 
 // ============================================
 // UTILITY FUNCTIONS

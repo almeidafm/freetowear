@@ -1,7 +1,7 @@
 // ============================================
 // STEP NAVIGATION
 // ============================================
-function nextStep() {
+async function nextStep() {
     if (currentStep === 1) {
         if (!selectedAddressId) {
             alert('Please select a shipping address.');
@@ -17,8 +17,30 @@ function nextStep() {
     }
 
     if (currentStep === 3) {
-        const coupon = document.getElementById('coupon').value.trim();
-        document.getElementById('selectedCouponId').value = coupon;
+        const couponInput = document.getElementById('coupon');
+        const coupon = couponInput ? couponInput.value.trim() : '';
+
+        if (coupon) {
+            try {
+                const response = await fetch(`/order/coupon?code=${encodeURIComponent(coupon)}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    alert(data.message || 'Invalid coupon.');
+                    return;
+                }
+                appliedCoupon = await response.json();
+                document.getElementById('selectedCouponId').value = appliedCoupon.code || coupon;
+            } catch (error) {
+                console.error('Error validating coupon:', error);
+                alert('Could not validate coupon.');
+                return;
+            }
+        } else {
+            appliedCoupon = null;
+            document.getElementById('selectedCouponId').value = '';
+        }
     }
 
     if (currentStep === 4) {

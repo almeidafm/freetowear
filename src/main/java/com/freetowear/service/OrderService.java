@@ -2,6 +2,7 @@ package com.freetowear.service;
 
 import com.freetowear.dto.request.order.*;
 import com.freetowear.dto.response.order.*;
+import com.freetowear.dto.response.coupon.CouponResponse;
 import com.freetowear.entity.Customer;
 import com.freetowear.entity.Coupon;
 import com.freetowear.entity.Address;
@@ -179,29 +180,7 @@ public class OrderService {
         recalculateProductsValue(order);
 
         if (request.getIdCoupon() != null && !request.getIdCoupon().isBlank()) {
-            String couponIdentifier = request.getIdCoupon().trim();
-            Coupon coupon = couponRepository
-                    .findByCodeIgnoreCase(couponIdentifier)
-                    .or(() -> couponRepository.findById(couponIdentifier))
-                    .orElseThrow(() -> new RuntimeException("Coupon not found"));
-
-            if (Boolean.FALSE.equals(coupon.getActive())) {
-                throw new RuntimeException("Coupon is not active");
-            }
-
-            LocalDate today = LocalDate.now();
-            if (coupon.getStartDate() != null && today.isBefore(coupon.getStartDate())) {
-                throw new RuntimeException("Coupon is not yet valid");
-            }
-
-            if (coupon.getEndDate() != null && today.isAfter(coupon.getEndDate())) {
-                throw new RuntimeException("Coupon has expired");
-            }
-
-            if (coupon.getMinimumOrderValue() != null && order.getProductsValue().compareTo(coupon.getMinimumOrderValue()) < 0) {
-                throw new RuntimeException("Order value does not meet minimum order value for this coupon");
-            }
-
+            Coupon coupon = getValidCoupon(customerId, request.getIdCoupon());
             order.setCoupon(coupon);
         } else {
             order.setCoupon(null);
@@ -381,5 +360,47 @@ public class OrderService {
         }
 
         return discount;
+    }
+
+    public CouponResponse validateCoupon(String customerId, String code) {
+        Coupon coupon = getValidCoupon(customerId, code);
+        return new CouponResponse(coupon);
+    }
+
+    public Coupon getValidCoupon(String customerId, String code) {
+        if (code == null || code.isBlank()) {
+            throw new RuntimeException("Coupon code is required");
+        }
+
+        String couponIdentifier = code.trim();
+        Coupon coupon = couponRepository
+                .findByCodeIgnoreCase(couponIdentifier)
+                .or(() -> couponRepository.findById(couponIdentifier))
+                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+
+        if (Boolean.FALSE.equals(coupon.getActive())) {
+            throw new RuntimeException("Coupon is not active");
+        }
+
+        LocalDate today = LocalDate.now();
+        if (coupon.getStartDate() != null && today.isBefore(coupon.getStartDate())) {
+            throw new RuntimeException("Coupon is not yet valid");
+        }
+
+        if (coupon.getEndDate() != null && today.isAfter(coupon.getEndDate())) {
+            throw new RuntimeException("Coupon has expired");
+        }
+
+        if (coupon.getMinimumOrderValue() != null && customerId != null) {
+            Order cart = orderRepository
+                    .findByCustomerIdAndStatus(customerId, OrderStatus.CART)
+                    .orElse(null);
+            if (cart != null && cart.getProductsValue() != null
+                    && cart.getProductsValue().compareTo(coupon.getMinimumOrderValue()) < 0) {
+                throw new RuntimeException("Order value does not meet minimum order value for this coupon");
+            }
+        }
+
+        return coupon;
     }
 }

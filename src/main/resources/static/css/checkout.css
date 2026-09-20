@@ -357,6 +357,12 @@ select:focus {
     white-space: nowrap;
 }
 
+.review-total-original {
+    text-decoration: line-through;
+    opacity: 0.6;
+    margin-right: 8px;
+}
+
 .review-total {
     display: flex;
     justify-content: space-between;
