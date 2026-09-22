@@ -15,8 +15,11 @@
     <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
 </div><br>
 
-<button type="submit">PAY</button>
+<p th:if="${param.error}" style="color: red;">No active order found.</p>
 
+<form th:action="@{/order/pay}" method="post">
+    <button type="submit">PAY</button>
+</form>
 
 </body>
 </html>

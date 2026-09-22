@@ -362,6 +362,16 @@ public class OrderService {
         return discount;
     }
 
+    @Transactional
+    public void payOrder(String customerId) {
+        Order order = orderRepository
+                .findByCustomerIdAndStatus(customerId, OrderStatus.PENDING)
+                .orElseThrow(() -> new RuntimeException("No active order found for this customer"));
+
+        order.setStatus(OrderStatus.PAID);
+        orderRepository.save(order);
+    }
+
     public CouponResponse validateCoupon(String customerId, String code) {
         Coupon coupon = getValidCoupon(customerId, code);
         return new CouponResponse(coupon);

@@ -167,4 +167,15 @@ public class OrderController {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+    @PostMapping("/pay")
+    public String payOrder(
+            @AuthenticationPrincipal CustomerDetails customerDetails
+    ) {
+        try {
+            orderService.payOrder(customerDetails.getId());
+            return "redirect:/order-success";
+        } catch (RuntimeException e) {
+            return "redirect:/payment?error=no-active-order";
+        }
+    }
 }

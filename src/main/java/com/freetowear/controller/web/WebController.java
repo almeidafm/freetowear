@@ -171,7 +171,7 @@ public class WebController {
 
     @GetMapping("/order-success")
     public String orderSuccess() {
-        return "commerce/order-sucess";
+        return "commerce/order-success";
     }
 
     @GetMapping("/about")
