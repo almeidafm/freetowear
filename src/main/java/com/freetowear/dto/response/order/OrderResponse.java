@@ -7,6 +7,7 @@ import com.freetowear.enums.OrderStatus;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,6 +21,7 @@ public class OrderResponse {
     private BigDecimal discountValue;
     private BigDecimal totalValue;
     private OrderStatus status;
+    private LocalDateTime createdAt;
     private List<OrderItemResponse> items;
 
     public OrderResponse() {}
@@ -37,6 +39,7 @@ public class OrderResponse {
         this.discountValue = order.getDiscountValue();
         this.totalValue = order.getTotalValue();
         this.status = order.getStatus();
+        this.createdAt = order.getCreatedAt();
         this.items = items.stream().map(OrderItemResponse::new).toList();
     }
 

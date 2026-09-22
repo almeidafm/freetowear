@@ -224,6 +224,17 @@ public class OrderService {
                 .toList();
     }
 
+    public List<OrderResponse> getRecentOrders(String idCustomer) {
+        return orderRepository
+                .findAllByCustomerId(idCustomer)
+                .stream()
+                .filter(o -> o.getStatus() != OrderStatus.CART)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .limit(5)
+                .map(OrderResponse::new)
+                .toList();
+    }
+
     public Optional<Order> getPendingOrder(String customerId) {
         return orderRepository.findByCustomerIdAndStatus(
                 customerId,

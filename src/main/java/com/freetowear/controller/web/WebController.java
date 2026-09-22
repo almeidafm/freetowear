@@ -5,6 +5,7 @@ import com.freetowear.dto.response.category.CategoryResponse;
 import com.freetowear.dto.response.product.ProductResponse;
 import com.freetowear.entity.Order;
 import com.freetowear.infra.security.CustomerDetails;
+import com.freetowear.service.AccountService;
 import com.freetowear.service.CategoryService;
 import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
@@ -28,15 +29,18 @@ public class WebController {
     private final ProductService productService;
     private final OrderService orderService;
     private final CategoryService categoryService;
+    private final AccountService accountService;
 
     public WebController(
             ProductService productService,
             OrderService orderService,
-            CategoryService categoryService
+            CategoryService categoryService,
+            AccountService accountService
     ) {
         this.productService = productService;
         this.orderService = orderService;
         this.categoryService = categoryService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/")
@@ -165,7 +169,14 @@ public class WebController {
     }
 
     @GetMapping("/account/profile")
-    public String accountProfile() {
+    public String accountProfile(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        String customerId = customerDetails.getId();
+        model.addAttribute("customer", accountService.getAccount(customerId));
+        model.addAttribute("addresses", accountService.getAddresses(customerId));
+        model.addAttribute("recentOrders", orderService.getRecentOrders(customerId));
         return "account/profile";
     }
 

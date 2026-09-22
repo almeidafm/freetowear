@@ -1,10 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
+
+<header>
+    <h1>My Profile</h1>
+    <nav>
+        <a th:href="@{/}">Home</a>
+    </nav>
+</header>
+
+<main>
+
+    <div>
+        <h2>Profile</h2>
+
+        <div>
+            <span th:text="${#strings.substring(customer.name, 0, 1)}">A</span>
+        </div>
+
+        <dl>
+            <dt>Name</dt>
+            <dd th:text="${customer.name}">John Doe</dd>
+
+            <dt>Email</dt>
+            <dd th:text="${customer.email}">john@example.com</dd>
+
+            <dt>Account created</dt>
+            <dd th:text="${customer.createdAt != null ? #temporals.format(customer.createdAt, 'dd/MM/yyyy') : '—'}">
+                22/09/2026
+            </dd>
+        </dl>
+    </div>
+
+    <div>
+        <h2>Contact</h2>
+
+        <dl>
+            <dt>Email</dt>
+            <dd th:text="${customer.email}">john@example.com</dd>
+
+            <dt>Phone</dt>
+            <dd th:text="${customer.phone != null ? customer.phone : '—'}">(11) 99999-9999</dd>
+
+            <dt>Birth date</dt>
+            <dd th:text="${customer.birthDate != null ? #temporals.format(customer.birthDate, 'dd/MM/yyyy') : '—'}">
+                01/01/1990
+            </dd>
+
+            <dt>CPF</dt>
+            <dd th:text="${customer.cpf != null ? customer.cpf : '—'}">000.000.000-00</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h2>Addresses</h2>
+
+        <div th:if="${#lists.isEmpty(addresses)}">
+            <p>No addresses registered.</p>
+        </div>
+
+        <div th:each="address : ${addresses}">
+            <address>
+                <strong th:text="${address.street}">Rua Example</strong><br>
+                <span th:text="${address.number}">123</span><br>
+                <span th:text="${address.complement}" th:if="${address.complement != null}">Apt 10</span><br th:if="${address.complement != null}">
+                <span th:text="${address.neighborhood}">Centro</span><br>
+                <span th:text="${address.city}">São Paulo</span> -
+                <span th:text="${address.state}">SP</span><br>
+                <span th:text="${address.cep}">00000-000</span>
+            </address>
+        </div>
+    </div>
+
+    <div>
+        <h2>Orders</h2>
+
+        <h3>Recent orders</h3>
+
+        <div th:if="${#lists.isEmpty(recentOrders)}">
+            <p>No orders found.</p>
+        </div>
+
+        <table th:if="${!#lists.isEmpty(recentOrders)}">
+            <thead>
+            <tr>
+                <th>Order</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="order : ${recentOrders}">
+                <td th:text="'#' + ${order.id}"></td>
+
+                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}">
+                </td>
+
+                <td th:text="${order.status}">
+                </td>
+
+                <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}">
+                </td>
+
+                <td>
+                    <a th:href="@{/orders/{id}(id=${order.id})}">
+                        View order
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <a th:href="@{/orders}">View all orders</a>
+        </p>
+    </div>
+
+</main>
+
 </body>
 </html>
