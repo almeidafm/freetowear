@@ -319,6 +319,20 @@ function renderReview() {
         `;
     }
 
+    const shippingPrice = Number(currentCart.shippingPrice || 0);
+    const shippingHtml = `
+        <div class="review-item">
+            <div class="review-item-info">
+                <div class="review-item-name">
+                    Shipping
+                </div>
+            </div>
+            <div class="review-item-price">
+                ${shippingPrice > 0 ? formatCurrency(shippingPrice) : 'Free'}
+            </div>
+        </div>
+    `;
+
     const itemsHtml = currentCart.items && currentCart.items.length > 0
         ? currentCart.items
             .map(item => `
@@ -336,7 +350,7 @@ function renderReview() {
                     </div>
                 </div>
             `)
-            .join('')
+            .join('') + shippingHtml
         : `
             <div class="placeholder-message">
                 Your cart is empty.
