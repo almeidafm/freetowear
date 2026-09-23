@@ -163,11 +163,6 @@ public class WebController {
         return "admin/test";
     }
 
-    @GetMapping("/account/orders")
-    public String accountOrders() {
-        return "account/account-order";
-    }
-
     @GetMapping("/orders")
     public String orders(
             @AuthenticationPrincipal CustomerDetails customerDetails,
