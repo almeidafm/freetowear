@@ -220,8 +220,18 @@ public class OrderService {
         return orderRepository
                 .findAllByCustomerId(idCustomer)
                 .stream()
-                .map(OrderResponse::new)
+                .filter(order -> order.getStatus() != OrderStatus.CART)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .map(order -> new OrderResponse(order, orderItemRepository.findAllByOrderId(order.getId())))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<OrderResponse> getOrder(String orderId, String customerId) {
+        return orderRepository.findById(orderId)
+                .filter(order -> order.getCustomer().getId().equals(customerId))
+                .filter(order -> order.getStatus() != OrderStatus.CART)
+                .map(order -> new OrderResponse(order, orderItemRepository.findAllByOrderId(order.getId())));
     }
 
     public List<OrderResponse> getRecentOrders(String idCustomer) {

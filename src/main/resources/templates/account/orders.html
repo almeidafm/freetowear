@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+</head>
+<body>
+<header>
+    <h1>My Orders</h1>
+    <a th:href="@{/}">Home</a>
+</header>
+
+<main>
+    <p th:if="${orders == null}">Loading orders...</p>
+
+    <p th:if="${ordersError}" th:text="${ordersError}">Orders could not be loaded.</p>
+
+    <div th:if="${orders != null and #lists.isEmpty(orders)}">
+        <h2>No orders yet</h2>
+        <p>Your completed orders will appear here.</p>
+        <a th:href="@{/products}">Continue shopping</a>
+    </div>
+
+    <table th:if="${orders != null and !#lists.isEmpty(orders)}">
+        <thead>
+        <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="'#' + ${order.id}">#order</td>
+            <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</td>
+            <td th:text="${order.status}">PENDING</td>
+            <td th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+            <td><a th:href="@{/orders/{id}(id=${order.id})}">View details</a></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

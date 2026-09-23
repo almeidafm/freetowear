@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Order details</title>
+</head>
+<body>
+<header>
+    <h1 th:text="'Order #' + ${order.id}">Order details</h1>
+    <a th:href="@{/orders}">Back to my orders</a>
+</header>
+
+<main>
+    <p><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</span></p>
+    <p><strong>Status:</strong> <span th:text="${order.status}">PENDING</span></p>
+    <p th:if="${order.deliveryAddress != null}"><strong>Delivery address:</strong> <span th:text="${order.deliveryAddress}">Address</span></p>
+
+    <h2>Items</h2>
+    <p th:if="${#lists.isEmpty(order.items)}">This order has no items.</p>
+    <table th:if="${!#lists.isEmpty(order.items)}">
+        <thead><tr><th>Product</th><th>Variation</th><th>Quantity</th><th>Unit price</th><th>Subtotal</th></tr></thead>
+        <tbody>
+        <tr th:each="item : ${order.items}">
+            <td th:text="${item.productName}">Product</td>
+            <td th:text="${item.variation}">Variation</td>
+            <td th:text="${item.quantity}">1</td>
+            <td th:text="${'R$ ' + #numbers.formatDecimal(item.unitPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+            <td th:text="${'R$ ' + #numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Summary</h2>
+    <p>Products: <span th:text="${'R$ ' + #numbers.formatDecimal(order.productsValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+    <p>Discount: <span th:text="${'R$ ' + #numbers.formatDecimal(order.discountValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+    <p>Shipping: <span th:text="${'R$ ' + #numbers.formatDecimal(order.shippingPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+    <p><strong>Total: <span th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></strong></p>
+</main>
+</body>
+</html>

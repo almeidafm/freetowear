@@ -168,6 +168,32 @@ public class WebController {
         return "account/account-order";
     }
 
+    @GetMapping("/orders")
+    public String orders(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        try {
+            model.addAttribute("orders", orderService.getOrders(customerDetails.getId()));
+        } catch (RuntimeException exception) {
+            model.addAttribute("ordersError", "Orders could not be loaded. Please try again.");
+            model.addAttribute("orders", List.of());
+        }
+        return "account/orders";
+    }
+
+    @GetMapping("/orders/{id}")
+    public String orderDetails(
+            @PathVariable String id,
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        var order = orderService.getOrder(id, customerDetails.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        model.addAttribute("order", order);
+        return "account/order-details";
+    }
+
     @GetMapping("/account/profile")
     public String accountProfile(
             @AuthenticationPrincipal CustomerDetails customerDetails,
