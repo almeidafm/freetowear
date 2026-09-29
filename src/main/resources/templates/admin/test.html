@@ -344,10 +344,14 @@
             <div class="card">
                 <div class="card-title">Manually Update Order Tracking</div>
 
-                <div class="form-grid">
+                <form id="formUpdateOrderTracking" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div class="form-grid">
                     <div class="form-group">
                         <label>Order ID</label>
-                        <input type="text" name="orderId" placeholder="1" required>
+                        <input type="text" name="orderId" placeholder="1" required
+                               oninput="document.getElementById('formUpdateOrderTracking').action='/order/' + this.value + '/tracking'">
                     </div>
                     <div class="form-group">
                         <label>Tracking Code</label>
@@ -357,16 +361,20 @@
                         <label>Status</label>
                         <select name="trackingStatus" required>
                             <option value="" disabled selected>Select a status</option>
-                            <option value="PROCESSING">Processing</option>
+                            <option value="PREPARING_ORDER">Preparing order</option>
+                            <option value="READY_TO_SHIP">Ready to ship</option>
                             <option value="SHIPPED">Shipped</option>
                             <option value="IN_TRANSIT">In transit</option>
+                            <option value="OUT_FOR_DELIVERY">Out for delivery</option>
+                            <option value="DELIVERY_ATTEMPTED">Delivery attempted</option>
+                            <option value="AWAITING_PICKUP">Awaiting pickup</option>
                             <option value="DELIVERED">Delivered</option>
-                            <option value="CANCELLED">Cancelled</option>
                         </select>
                     </div>
-                </div>
+                    </div>
 
-                <button type="button" class="btn btn-primary">Update Tracking</button>
+                    <button type="submit" class="btn btn-primary">Update Tracking</button>
+                </form>
             </div>
         </div>
 

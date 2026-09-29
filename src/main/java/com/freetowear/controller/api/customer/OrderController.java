@@ -6,6 +6,7 @@ import com.freetowear.dto.response.order.OrderResponse;
 import com.freetowear.dto.response.order.OrderTrackingResponse;
 import com.freetowear.entity.Order;
 import com.freetowear.enums.OrderStatus;
+import com.freetowear.enums.OrderTrackingStatus;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.repository.OrderRepository;
 import com.freetowear.service.OrderService;
@@ -90,6 +91,16 @@ public class OrderController {
     @ResponseBody
     public OrderTrackingResponse getOrderTracking(@PathVariable String id) {
         return orderService.getOrderTracking(id);
+    }
+
+    @PostMapping("/{id}/tracking")
+    public String updateOrderTracking(
+            @PathVariable String id,
+            @RequestParam OrderTrackingStatus trackingStatus,
+            @RequestParam(required = false) String trackingCode
+    ) {
+        orderService.updateOrderTracking(id, trackingStatus, trackingCode);
+        return "redirect:/test";
     }
 
     @PostMapping("/cancel")

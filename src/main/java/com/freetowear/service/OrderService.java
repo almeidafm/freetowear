@@ -277,6 +277,19 @@ public class OrderService {
     }
 
     @Transactional
+    public void updateOrderTracking(String orderId, OrderTrackingStatus trackingStatus, String trackingCode) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (trackingCode != null && !trackingCode.isBlank()) {
+            order.setTrackingCode(trackingCode);
+            orderRepository.save(order);
+        }
+
+        saveTracking(order, trackingStatus);
+    }
+
+    @Transactional
     public void cancelOrder(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));

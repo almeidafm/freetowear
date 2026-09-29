@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/password/request-code", "/password/verify-code", "/password/reset").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/order/*/tracking").hasRole("ADMIN")
                         .requestMatchers("/category", "/category/**", "/coupon", "/coupon/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
