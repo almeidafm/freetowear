@@ -8,11 +8,13 @@ import com.freetowear.entity.Coupon;
 import com.freetowear.entity.Address;
 import com.freetowear.entity.Order;
 import com.freetowear.entity.OrderItem;
+import com.freetowear.entity.OrderTracking;
 import com.freetowear.entity.Payment;
 import com.freetowear.entity.Product;
 import com.freetowear.entity.ProductVariation;
 import com.freetowear.enums.DiscountType;
 import com.freetowear.enums.OrderStatus;
+import com.freetowear.enums.OrderTrackingStatus;
 import com.freetowear.enums.PaymentStatus;
 import com.freetowear.infra.CloudinaryService;
 import com.freetowear.repository.AddressRepository;
@@ -20,6 +22,7 @@ import com.freetowear.repository.CouponRepository;
 import com.freetowear.repository.CustomerRepository;
 import com.freetowear.repository.OrderItemRepository;
 import com.freetowear.repository.OrderRepository;
+import com.freetowear.repository.OrderTrackingRepository;
 import com.freetowear.repository.PaymentRepository;
 import com.freetowear.repository.ProductRepository;
 
@@ -57,6 +60,9 @@ public class OrderService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
+    @Autowired
+    private OrderTrackingRepository orderTrackingRepository;
 
     @Autowired
     private CloudinaryService cloudinaryService;
@@ -259,13 +265,18 @@ public class OrderService {
         return new OrderResponse(order);
     }
 
+    @Transactional(readOnly = true)
     public OrderTrackingResponse getOrderTracking(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        return new OrderTrackingResponse(order);
+        return new OrderTrackingResponse(
+                order,
+                orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(orderId)
+        );
     }
 
+    @Transactional
     public void cancelOrder(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -279,6 +290,7 @@ public class OrderService {
 
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
+        saveTracking(order, OrderTrackingStatus.CANCELLED);
     }
 
     @Transactional
@@ -391,6 +403,15 @@ public class OrderService {
 
         order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
+        saveTracking(order, OrderTrackingStatus.PAYMENT_RECEIVED);
+    }
+
+    private void saveTracking(Order order, OrderTrackingStatus status) {
+        OrderTracking tracking = new OrderTracking();
+        tracking.setOrder(order);
+        tracking.setTrackingStatus(status);
+        tracking.setTrackingCode(order.getTrackingCode());
+        orderTrackingRepository.save(tracking);
     }
 
     public CouponResponse validateCoupon(String customerId, String code) {

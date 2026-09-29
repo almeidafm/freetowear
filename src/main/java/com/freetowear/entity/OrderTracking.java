@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
         indexes = {
                 @Index(columnList = "order_id"),
                 @Index(columnList = "order_id, occurred_at"),
-                @Index(columnList = "event_type"),
+                @Index(columnList = "tracking_status"),
                 @Index(columnList = "tracking_code")
         }
 )
