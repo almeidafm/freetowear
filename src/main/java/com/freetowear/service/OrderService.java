@@ -25,6 +25,7 @@ import com.freetowear.repository.OrderRepository;
 import com.freetowear.repository.OrderTrackingRepository;
 import com.freetowear.repository.PaymentRepository;
 import com.freetowear.repository.ProductRepository;
+import com.freetowear.util.UlidGenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -415,8 +416,13 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("No active order found for this customer"));
 
         order.setStatus(OrderStatus.PAID);
+        order.setTrackingCode(generateTrackingCode());
         orderRepository.save(order);
         saveTracking(order, OrderTrackingStatus.PAYMENT_RECEIVED);
+    }
+
+    private String generateTrackingCode() {
+        return UlidGenerator.generate();
     }
 
     private void saveTracking(Order order, OrderTrackingStatus status) {
