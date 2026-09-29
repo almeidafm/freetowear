@@ -17,6 +17,16 @@
     <p><strong>Status:</strong> <span th:text="${order.status}">PENDING</span></p>
     <p th:if="${order.deliveryAddress != null}"><strong>Delivery address:</strong> <span th:text="${order.deliveryAddress}">Address</span></p>
 
+    <h2>Tracking</h2>
+    <p th:if="${order.trackingCode != null}"><strong>Tracking code:</strong> <span th:text="${order.trackingCode}">tracking-code</span></p>
+    <p th:if="${#lists.isEmpty(order.trackingEvents)}">No tracking updates yet.</p>
+    <ol th:if="${!#lists.isEmpty(order.trackingEvents)}">
+        <li th:each="event : ${order.trackingEvents}">
+            <strong th:text="${event.status}">PAYMENT_RECEIVED</strong>
+            - <span th:text="${#temporals.format(event.occurredAt, 'dd/MM/yyyy HH:mm')}">22/09/2026 14:30</span>
+        </li>
+    </ol>
+
     <h2>Items</h2>
     <p th:if="${#lists.isEmpty(order.items)}">This order has no items.</p>
     <table th:if="${!#lists.isEmpty(order.items)}">

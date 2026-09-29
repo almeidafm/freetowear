@@ -229,7 +229,11 @@ public class OrderService {
                 .stream()
                 .filter(order -> order.getStatus() != OrderStatus.CART)
                 .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
-                .map(order -> new OrderResponse(order, orderItemRepository.findAllByOrderId(order.getId())))
+                .map(order -> new OrderResponse(
+                        order,
+                        orderItemRepository.findAllByOrderId(order.getId()),
+                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId())
+                ))
                 .toList();
     }
 
@@ -238,7 +242,11 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .filter(order -> order.getCustomer().getId().equals(customerId))
                 .filter(order -> order.getStatus() != OrderStatus.CART)
-                .map(order -> new OrderResponse(order, orderItemRepository.findAllByOrderId(order.getId())));
+                .map(order -> new OrderResponse(
+                        order,
+                        orderItemRepository.findAllByOrderId(order.getId()),
+                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId())
+                ));
     }
 
     public List<OrderResponse> getRecentOrders(String idCustomer) {

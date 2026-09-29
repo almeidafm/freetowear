@@ -73,6 +73,7 @@ Requisição HTTP → Controller → Service → Repository → MySQL
 - Upload e gerenciamento de imagens dos produtos
 - Upload de imagens personalizadas pelo cliente com URL assinada e protegida
 - Verificação de e-mail via SMTP para confirmação e validação do endereço de e-mail do usuário  
+- Rastreamento do pedido com histórico de status
 
 ---
 

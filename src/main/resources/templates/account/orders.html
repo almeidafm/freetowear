@@ -25,7 +25,7 @@
 
     <table th:if="${orders != null and !#lists.isEmpty(orders)}">
         <thead>
-        <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th></th></tr>
+        <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th>Latest tracking</th><th></th></tr>
         </thead>
         <tbody>
         <tr th:each="order : ${orders}">
@@ -33,6 +33,13 @@
             <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</td>
             <td th:text="${order.status}">PENDING</td>
             <td th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+            <td>
+                <span th:if="${order.latestTrackingEvent != null}"
+                      th:text="${order.latestTrackingEvent.status}">PAYMENT_RECEIVED</span>
+                <small th:if="${order.latestTrackingEvent != null}"
+                       th:text="${#temporals.format(order.latestTrackingEvent.occurredAt, 'dd/MM/yyyy HH:mm')}">22/09/2026 14:30</small>
+                <span th:if="${order.latestTrackingEvent == null}">No updates yet</span>
+            </td>
             <td><a th:href="@{/orders/{id}(id=${order.id})}">View details</a></td>
         </tr>
         </tbody>

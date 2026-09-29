@@ -2,6 +2,7 @@ package com.freetowear.dto.response.order;
 
 import com.freetowear.entity.Order;
 import com.freetowear.entity.OrderItem;
+import com.freetowear.entity.OrderTracking;
 import com.freetowear.enums.OrderStatus;
 
 import lombok.Getter;
@@ -23,6 +24,9 @@ public class OrderResponse {
     private OrderStatus status;
     private LocalDateTime createdAt;
     private List<OrderItemResponse> items;
+    private String trackingCode;
+    private List<OrderTrackingResponse.TrackingEventResponse> trackingEvents;
+    private OrderTrackingResponse.TrackingEventResponse latestTrackingEvent;
 
     public OrderResponse() {}
 
@@ -31,6 +35,10 @@ public class OrderResponse {
     }
 
     public OrderResponse(Order order, List<OrderItem> items) {
+        this(order, items, List.of());
+    }
+
+    public OrderResponse(Order order, List<OrderItem> items, List<OrderTracking> tracking) {
         this.id = order.getId();
         this.customerName = order.getCustomer().getName();
         this.deliveryAddress = order.getDeliveryAddress() != null ? order.getDeliveryAddress().getStreet() : null;
@@ -41,6 +49,13 @@ public class OrderResponse {
         this.status = order.getStatus();
         this.createdAt = order.getCreatedAt();
         this.items = items.stream().map(OrderItemResponse::new).toList();
+        this.trackingCode = order.getTrackingCode();
+        this.trackingEvents = tracking.stream()
+                .map(OrderTrackingResponse.TrackingEventResponse::new)
+                .toList();
+        this.latestTrackingEvent = this.trackingEvents.isEmpty()
+                ? null
+                : this.trackingEvents.get(this.trackingEvents.size() - 1);
     }
 
     @Getter
