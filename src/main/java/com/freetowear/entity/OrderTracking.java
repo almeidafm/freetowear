@@ -1,6 +1,6 @@
 package com.freetowear.entity;
 
-import com.freetowear.enums.OrderEventType;
+import com.freetowear.enums.OrderTrackingStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -30,15 +30,15 @@ import java.time.LocalDateTime;
                 @Index(columnList = "tracking_code")
         }
 )
-public class OrderEvent extends BaseEntity {
+public class OrderTracking extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_type", nullable = false, length = 50)
-    private OrderEventType eventType;
+    @Column(name = "tracking_status", nullable = false, length = 50)
+    private OrderTrackingStatus trackingStatus;
 
     @Column(name = "occurred_at", nullable = false)
     private LocalDateTime occurredAt;
