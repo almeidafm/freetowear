@@ -351,6 +351,7 @@
                     <div class="form-group">
                         <label>Order ID</label>
                         <input type="text" name="orderId" placeholder="1" required
+                               onchange="loadValidTrackingStatuses(this.value)"
                                oninput="document.getElementById('formUpdateOrderTracking').action='/order/' + this.value + '/tracking'">
                     </div>
                     <div class="form-group">
@@ -359,16 +360,8 @@
                     </div>
                     <div class="form-group">
                         <label>Status</label>
-                        <select name="trackingStatus" required>
-                            <option value="" disabled selected>Select a status</option>
-                            <option value="PREPARING_ORDER">Preparing order</option>
-                            <option value="READY_TO_SHIP">Ready to ship</option>
-                            <option value="SHIPPED">Shipped</option>
-                            <option value="IN_TRANSIT">In transit</option>
-                            <option value="OUT_FOR_DELIVERY">Out for delivery</option>
-                            <option value="DELIVERY_ATTEMPTED">Delivery attempted</option>
-                            <option value="AWAITING_PICKUP">Awaiting pickup</option>
-                            <option value="DELIVERED">Delivered</option>
+                        <select id="trackingStatus" name="trackingStatus" required disabled>
+                            <option value="" selected>Enter an order ID first</option>
                         </select>
                     </div>
                     </div>
@@ -381,17 +374,6 @@
     </main>
 </div>
 
-<script>
-    const links = document.querySelectorAll('nav a');
-
-    function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-
-        links.forEach(a => {
-            a.classList.toggle('active', a.getAttribute('onclick')?.includes(id));
-        });
-    }
-</script>
+<script th:src="@{/js/admin-test.js}"></script>
 </body>
 </html>

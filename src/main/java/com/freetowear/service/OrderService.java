@@ -282,10 +282,45 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
+        List<OrderTracking> trackingEvents = orderTrackingRepository
+                .findByOrderIdOrderByOccurredAtAsc(orderId);
+        OrderTrackingStatus currentStatus = trackingEvents.isEmpty()
+                ? null
+                : trackingEvents.get(trackingEvents.size() - 1).getTrackingStatus();
+
+        if (currentStatus == null) {
+            throw new IllegalArgumentException("Order has no current tracking status");
+        }
+
+        boolean validTransition = switch (currentStatus) {
+            case PAYMENT_RECEIVED -> trackingStatus == OrderTrackingStatus.PREPARING_ORDER;
+            case PREPARING_ORDER -> trackingStatus == OrderTrackingStatus.READY_TO_SHIP;
+            case READY_TO_SHIP -> trackingStatus == OrderTrackingStatus.SHIPPED;
+            case SHIPPED -> trackingStatus == OrderTrackingStatus.IN_TRANSIT;
+            case IN_TRANSIT -> trackingStatus == OrderTrackingStatus.OUT_FOR_DELIVERY;
+            case OUT_FOR_DELIVERY -> trackingStatus == OrderTrackingStatus.DELIVERED
+                    || trackingStatus == OrderTrackingStatus.DELIVERY_ATTEMPTED;
+            case DELIVERY_ATTEMPTED -> trackingStatus == OrderTrackingStatus.OUT_FOR_DELIVERY
+                    || trackingStatus == OrderTrackingStatus.AWAITING_PICKUP;
+            case AWAITING_PICKUP -> trackingStatus == OrderTrackingStatus.DELIVERED;
+            default -> false;
+        };
+
+        if (!validTransition) {
+            throw new IllegalArgumentException("Invalid tracking status transition");
+        }
+
         if (trackingCode != null && !trackingCode.isBlank()) {
             order.setTrackingCode(trackingCode);
-            orderRepository.save(order);
         }
+
+        if (trackingStatus == OrderTrackingStatus.SHIPPED) {
+            order.setStatus(OrderStatus.SHIPPED);
+        } else if (trackingStatus == OrderTrackingStatus.DELIVERED) {
+            order.setStatus(OrderStatus.DELIVERED);
+        }
+
+        orderRepository.save(order);
 
         saveTracking(order, trackingStatus);
     }
