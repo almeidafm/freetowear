@@ -25,6 +25,7 @@
         <a href="#" onclick="show('admin-product-variation')">Product Variations</a>
         <a href="#" onclick="show('admin-category')">Categories</a>
         <a href="#" onclick="show('admin-coupon')">Coupons</a>
+        <a href="#" onclick="show('admin-order-tracking')">Order Tracking</a>
     </div>
 </nav>
 
@@ -332,6 +333,40 @@
 
                     <button type="submit" class="btn btn-primary">Update Coupon</button>
                 </form>
+            </div>
+        </div>
+
+        <!-- ADMIN — ORDER TRACKING -->
+        <div id="admin-order-tracking" class="section">
+            <div class="section-title">Admin · Order Tracking</div>
+            <div class="section-subtitle">MANUAL UPDATE · ORDER TRACKING</div>
+
+            <div class="card">
+                <div class="card-title">Manually Update Order Tracking</div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Order ID</label>
+                        <input type="text" name="orderId" placeholder="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tracking Code</label>
+                        <input type="text" name="trackingCode" placeholder="BR123456789XX">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="trackingStatus" required>
+                            <option value="" disabled selected>Select a status</option>
+                            <option value="PROCESSING">Processing</option>
+                            <option value="SHIPPED">Shipped</option>
+                            <option value="IN_TRANSIT">In transit</option>
+                            <option value="DELIVERED">Delivered</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary">Update Tracking</button>
             </div>
         </div>
 
