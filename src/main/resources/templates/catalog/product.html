@@ -115,7 +115,7 @@
 
     <article th:each="review : ${reviews}">
         <p>
-            <strong th:text="${review.customer.name}">Nome do cliente</strong>
+            <strong th:text="${review.customerName}">Nome do cliente</strong>
             &mdash;
             <span th:text="${review.rating}">5</span>/5
             &mdash;
@@ -126,10 +126,10 @@
         <p th:if="${review.text != null and !review.text.isBlank()}"
            th:text="${review.text}">Comentário do cliente.</p>
 
-        <div th:if="${review.images != null and !#lists.isEmpty(review.images)}">
-            <img th:each="img : ${review.images}"
-                 th:src="${img.imageUrl}"
-                 th:alt="${'Imagem da avaliação de ' + review.customer.name}"
+        <div th:if="${review.imageUrls != null and !#lists.isEmpty(review.imageUrls)}">
+            <img th:each="url : ${review.imageUrls}"
+                 th:src="${url}"
+                 th:alt="${'Imagem da avaliação de ' + review.customerName}"
                  width="150">
         </div>
     </article>

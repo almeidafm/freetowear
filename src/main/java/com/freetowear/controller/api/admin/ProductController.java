@@ -3,6 +3,7 @@ package com.freetowear.controller.api.admin;
 import com.freetowear.dto.request.product.CreateProductRequest;
 import com.freetowear.dto.request.product.UpdateProductRequest;
 import com.freetowear.service.ProductService;
+import com.freetowear.service.ReviewService;
 import com.freetowear.enums.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @PostMapping("/create")
     public String createProduct(
@@ -102,6 +106,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public String showProduct(@PathVariable String id, Model model) {
         model.addAttribute("product", productService.findById(id));
+        model.addAttribute("reviews", reviewService.findAllByProductId(id));
         return "catalog/product";
     }
 }

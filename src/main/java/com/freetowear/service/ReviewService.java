@@ -1,5 +1,6 @@
 package com.freetowear.service;
 
+import com.freetowear.dto.response.review.ReviewResponse;
 import com.freetowear.entity.Customer;
 import com.freetowear.entity.Product;
 import com.freetowear.entity.Review;
@@ -48,6 +49,21 @@ public class ReviewService {
         this.orderItemRepository = orderItemRepository;
         this.reviewRepository = reviewRepository;
         this.cloudinaryService = cloudinaryService;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponse> findAllByProductId(String productId) {
+        return reviewRepository.findAllByProductIdOrderByCreatedAtDesc(productId)
+                .stream()
+                .map(review -> {
+                    List<String> imageUrls = review.getImages() == null
+                            ? List.of()
+                            : review.getImages().stream()
+                                    .map(img -> cloudinaryService.buildUrl(img.getImagePublicId()))
+                                    .toList();
+                    return new ReviewResponse(review, imageUrls);
+                })
+                .toList();
     }
 
     @Transactional
