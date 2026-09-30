@@ -34,13 +34,13 @@ public class ReviewController {
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @Valid @RequestParam String productId,
             @RequestParam Integer rating,
-            @RequestParam String text,
-            @RequestParam(required = false, defaultValue = "") List<MultipartFile> images
+            @RequestParam(required = false) String text,
+            @RequestParam(required = false) List<MultipartFile> images
     ) {
         try {
             Review review = reviewService.createReview(
                     customerDetails.getId(),
-                    productId, rating, text, images
+                    productId, rating, text, images == null ? List.of() : images
             );
             return ResponseEntity.ok(Map.of("id", review.getId(), "message", "Review created"));
         } catch (IllegalArgumentException | IllegalStateException | IOException exception) {

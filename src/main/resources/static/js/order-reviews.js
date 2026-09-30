@@ -50,8 +50,20 @@ function createReviewCard(product) {
         if (!rating) { message.textContent = 'Please select a rating.'; return; }
         const data = new FormData(); data.append('productId', product.id); data.append('rating', rating.dataset.rating); data.append('text', form.querySelector('textarea').value);
         [...files.files].forEach(file => data.append('images', file));
-        const response = await fetch('/reviews', { method: 'POST', body: data });
-        message.textContent = response.ok ? 'Review submitted.' : 'Could not submit review.';
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+        const response = await fetch('/reviews', {
+            method: 'POST',
+            headers: csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {},
+            body: data
+        });
+        if (response.ok) {
+            message.textContent = 'Review submitted.';
+            form.querySelector('.submit-review').disabled = true;
+        } else {
+            const error = await response.json().catch(() => null);
+            message.textContent = error?.message || `Could not submit review (${response.status}).`;
+        }
     });
 
     form.querySelectorAll('.star-rating button').forEach(button => button.addEventListener('click', () => {
