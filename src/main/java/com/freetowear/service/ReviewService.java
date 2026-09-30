@@ -59,7 +59,16 @@ public class ReviewService {
                             : review.getImages().stream()
                                     .map(img -> cloudinaryService.buildUrl(img.getImagePublicId()))
                                     .toList();
-                    return new ReviewResponse(review, imageUrls);
+                    List<String> purchasedVariations = orderItemRepository
+                            .findPurchasedVariationsByCustomerAndProduct(
+                                    review.getCustomer().getId(),
+                                    productId,
+                                    COMPLETED_ORDER_STATUSES
+                            )
+                            .stream()
+                            .map(v -> v.getColor() + " / " + v.getSize().name())
+                            .toList();
+                    return new ReviewResponse(review, imageUrls, purchasedVariations);
                 })
                 .toList();
     }

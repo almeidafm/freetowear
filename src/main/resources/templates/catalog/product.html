@@ -114,6 +114,7 @@
     <p th:if="${#lists.isEmpty(reviews)}">Nenhuma avaliação ainda.</p>
 
     <article th:each="review : ${reviews}">
+        <hr>
         <p>
             <strong th:text="${review.customerName}">Nome do cliente</strong>
             &mdash;
@@ -121,6 +122,14 @@
             &mdash;
             <time th:datetime="${review.createdAt}"
                   th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">01/01/2025</time>
+        </p>
+
+        <p th:if="${review.purchasedVariations != null and !#lists.isEmpty(review.purchasedVariations)}">
+            <em>Comprou:
+                <span th:each="variation, iterStat : ${review.purchasedVariations}">
+                    <span th:text="${variation}">Cor / Tamanho</span><span th:if="${!iterStat.last}">, </span>
+                </span>
+            </em>
         </p>
 
         <p th:if="${review.text != null and !review.text.isBlank()}"
