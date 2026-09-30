@@ -45,10 +45,10 @@ function createReviewCard(product) {
         }));
     });
     form.querySelector('.submit-review').addEventListener('click', async () => {
-        const rating = form.querySelector('.selected');
+        const rating = form.dataset.rating;
         const message = form.querySelector('.review-message');
         if (!rating) { message.textContent = 'Please select a rating.'; return; }
-        const data = new FormData(); data.append('productId', product.id); data.append('rating', rating.dataset.rating); data.append('text', form.querySelector('textarea').value);
+        const data = new FormData(); data.append('productId', product.id); data.append('rating', rating); data.append('text', form.querySelector('textarea').value);
         [...files.files].forEach(file => data.append('images', file));
         const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
@@ -67,6 +67,7 @@ function createReviewCard(product) {
     });
 
     form.querySelectorAll('.star-rating button').forEach(button => button.addEventListener('click', () => {
+        form.dataset.rating = button.dataset.rating;
         form.querySelectorAll('.star-rating button').forEach(star => {
             star.classList.toggle('selected', star.dataset.rating <= button.dataset.rating);
         });
