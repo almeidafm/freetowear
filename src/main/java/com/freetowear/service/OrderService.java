@@ -232,7 +232,8 @@ public class OrderService {
                 .map(order -> new OrderResponse(
                         order,
                         orderItemRepository.findAllByOrderId(order.getId()),
-                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId())
+                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
+                        cloudinaryService::buildUrl
                 ))
                 .toList();
     }
@@ -245,7 +246,8 @@ public class OrderService {
                 .map(order -> new OrderResponse(
                         order,
                         orderItemRepository.findAllByOrderId(order.getId()),
-                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId())
+                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
+                        cloudinaryService::buildUrl
                 ));
     }
 

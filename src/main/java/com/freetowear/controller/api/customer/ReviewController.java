@@ -10,11 +10,14 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.List;
+import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/reviews")
@@ -29,17 +32,18 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<?> createReview(
             @AuthenticationPrincipal CustomerDetails customerDetails,
-            @Valid @RequestBody CreateReviewRequest request
+            @Valid @RequestParam String productId,
+            @RequestParam Integer rating,
+            @RequestParam String text,
+            @RequestParam(required = false, defaultValue = "") List<MultipartFile> images
     ) {
         try {
             Review review = reviewService.createReview(
                     customerDetails.getId(),
-                    request.getProductId(),
-                    request.getRating(),
-                    request.getText()
+                    productId, rating, text, images
             );
             return ResponseEntity.ok(Map.of("id", review.getId(), "message", "Review created"));
-        } catch (IllegalArgumentException | IllegalStateException exception) {
+        } catch (IllegalArgumentException | IllegalStateException | IOException exception) {
             return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
         }
     }

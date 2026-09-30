@@ -10,6 +10,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 
 @Getter
 public class OrderResponse {
@@ -39,6 +40,11 @@ public class OrderResponse {
     }
 
     public OrderResponse(Order order, List<OrderItem> items, List<OrderTracking> tracking) {
+        this(order, items, tracking, productId -> null);
+    }
+
+    public OrderResponse(Order order, List<OrderItem> items, List<OrderTracking> tracking,
+                         Function<String, String> imageUrlBuilder) {
         this.id = order.getId();
         this.customerName = order.getCustomer().getName();
         this.deliveryAddress = order.getDeliveryAddress() != null ? order.getDeliveryAddress().getStreet() : null;
@@ -48,7 +54,7 @@ public class OrderResponse {
         this.totalValue = order.getTotalValue();
         this.status = order.getStatus();
         this.createdAt = order.getCreatedAt();
-        this.items = items.stream().map(OrderItemResponse::new).toList();
+        this.items = items.stream().map(item -> new OrderItemResponse(item, imageUrlBuilder)).toList();
         this.trackingCode = order.getTrackingCode();
         this.trackingEvents = tracking.stream()
                 .map(OrderTrackingResponse.TrackingEventResponse::new)
@@ -63,15 +69,21 @@ public class OrderResponse {
         private final String idProduct;
         private final String idVariation;
         private final String productName;
+        private final String imageUrl;
         private final String variation;
         private final Integer quantity;
         private final BigDecimal unitPrice;
         private final BigDecimal subtotal;
 
         public OrderItemResponse(OrderItem item) {
+            this(item, productId -> null);
+        }
+
+        public OrderItemResponse(OrderItem item, Function<String, String> imageUrlBuilder) {
             this.idProduct = item.getProduct().getId();
             this.idVariation = item.getProductVariation().getId();
             this.productName = item.getProduct().getName();
+            this.imageUrl = imageUrlBuilder.apply(item.getProduct().getImagePublicId());
             this.variation = item.getProductVariation().getColor() + " / " + item.getProductVariation().getSize().name();
             this.quantity = item.getQuantity();
             this.unitPrice = item.getUnitPrice();

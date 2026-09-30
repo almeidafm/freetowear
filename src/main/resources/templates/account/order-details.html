@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Order details</title>
+    <link rel="stylesheet" th:href="@{/css/order-details.css}">
 </head>
 <body>
 <header>
@@ -57,56 +58,17 @@
             </div>
         </div>
 
-        <div class="product-review-list">
-            <article class="product-review-card" data-product-id="1">
-                <div class="product-review-product">
-                    <div class="product-review-image" role="img" aria-label="Shirt product image">Shirt</div>
-                    <div>
-                        <p class="product-id">Product ID 1</p>
-                        <h3>Shirt</h3>
-                        <p class="purchased-label">Purchased:</p>
-                        <p class="purchased-variations">White, Black</p>
-                    </div>
-                </div>
-                <div class="product-review-form">
-                    <p class="review-label">Review your product</p>
-                    <div class="star-rating" role="radiogroup" aria-label="Rate Shirt from 1 to 5 stars">
-                        <button type="button" aria-label="1 star">★</button>
-                        <button type="button" aria-label="2 stars">★</button>
-                        <button type="button" aria-label="3 stars">★</button>
-                        <button type="button" aria-label="4 stars">★</button>
-                        <button type="button" aria-label="5 stars">★</button>
-                    </div>
-                    <textarea placeholder="Write your review..." aria-label="Review for Shirt"></textarea>
-                    <label class="image-upload">＋ Add photos <input type="file" accept="image/*" multiple></label>
-                </div>
-            </article>
-
-            <article class="product-review-card" data-product-id="2">
-                <div class="product-review-product">
-                    <div class="product-review-image" role="img" aria-label="Pants product image">Pants</div>
-                    <div>
-                        <p class="product-id">Product ID 2</p>
-                        <h3>Pants</h3>
-                        <p class="purchased-label">Purchased:</p>
-                        <p class="purchased-variations">Jeans</p>
-                    </div>
-                </div>
-                <div class="product-review-form">
-                    <p class="review-label">Review your product</p>
-                    <div class="star-rating" role="radiogroup" aria-label="Rate Pants from 1 to 5 stars">
-                        <button type="button" aria-label="1 star">★</button>
-                        <button type="button" aria-label="2 stars">★</button>
-                        <button type="button" aria-label="3 stars">★</button>
-                        <button type="button" aria-label="4 stars">★</button>
-                        <button type="button" aria-label="5 stars">★</button>
-                    </div>
-                    <textarea placeholder="Write your review..." aria-label="Review for Pants"></textarea>
-                    <label class="image-upload">＋ Add photos <input type="file" accept="image/*" multiple></label>
-                </div>
-            </article>
+        <div id="review-items-data" hidden>
+            <div th:each="item : ${order.items}" class="review-item-data"
+                 th:data-product-id="${item.idProduct}"
+                 th:data-product-name="${item.productName}"
+                 th:data-image-url="${item.imageUrl}"
+                 th:data-variation="${item.variation}"></div>
         </div>
+        <div id="product-review-list" class="product-review-list"></div>
+        <p id="no-review-products" class="no-review-products" hidden>No products are available for review.</p>
     </section>
 </main>
+<script th:src="@{/js/order-reviews.js}"></script>
 </body>
 </html>
