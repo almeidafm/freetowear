@@ -26,8 +26,6 @@ import com.freetowear.infra.CloudinaryService;
 public class ReviewService {
 
     private static final EnumSet<OrderStatus> COMPLETED_ORDER_STATUSES = EnumSet.of(
-            OrderStatus.PAID,
-            OrderStatus.SHIPPED,
             OrderStatus.DELIVERED
     );
 
