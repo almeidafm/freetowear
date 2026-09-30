@@ -211,6 +211,21 @@ public class WebController {
         return "site/about";
     }
 
+    @GetMapping("/contact")
+    public String contact() {
+        return "site/contact";
+    }
+
+    @GetMapping("/privacy")
+    public String privacy() {
+        return "site/privacy";
+    }
+
+    @GetMapping("/terms")
+    public String terms() {
+        return "site/terms";
+    }
+
     @GetMapping("/payment")
     public String payment() { return "commerce/payment";}
 }
