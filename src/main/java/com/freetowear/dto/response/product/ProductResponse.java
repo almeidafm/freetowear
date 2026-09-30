@@ -15,6 +15,8 @@ public class ProductResponse {
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal ratingAverage;
+    private Integer ratingCount;
     private String imageUrl;
     private String categoryName;
     private Boolean active;
@@ -27,6 +29,8 @@ public class ProductResponse {
         this.name = product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();
+        this.ratingAverage = product.getRatingAverage();
+        this.ratingCount = product.getRatingCount();
         this.imageUrl = imageUrl;
         this.categoryName = product.getCategory().getName();
         this.active = product.getActive();
