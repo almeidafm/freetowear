@@ -12,7 +12,7 @@
 	<artifactId>FreeToWear</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>FreeToWear</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Spring Boot and Thymeleaf e-commerce platform for custom clothing</description>
 	<url/>
 	<licenses>
 		<license/>
