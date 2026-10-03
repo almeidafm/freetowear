@@ -38,7 +38,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/about", "/contact", "/privacy", "/terms").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/about", "/contact", "/privacy", "/terms", "/403").permitAll()
                         .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products", "/products/**", "/categories", "/categories/**").permitAll()
                         .requestMatchers("/css/**", "/js/**").permitAll()
@@ -61,6 +61,9 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/403")
                 )
                 .rememberMe(remember -> remember
                         .tokenRepository(persistentTokenRepository())

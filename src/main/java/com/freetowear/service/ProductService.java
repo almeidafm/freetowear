@@ -10,6 +10,7 @@ import com.freetowear.repository.ProductVariationRepository;
 import com.freetowear.dto.request.product.CreateProductRequest;
 import com.freetowear.dto.request.product.UpdateProductRequest;
 import com.freetowear.dto.response.product.ProductResponse;
+import com.freetowear.exception.ResourceNotFoundException;
 import com.freetowear.infra.CloudinaryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class ProductService {
 
     public ProductResponse findById(String id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         String imageUrl = cloudinaryService.buildUrl(product.getImagePublicId());
         return new ProductResponse(product, imageUrl);
     }

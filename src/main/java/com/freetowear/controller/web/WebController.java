@@ -10,6 +10,7 @@ import com.freetowear.service.CategoryService;
 import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
 
+import com.freetowear.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
@@ -136,14 +137,12 @@ public class WebController {
             Model model
     ) {
         CategoryResponse category = categoryService.getCategoryById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Categoria não encontrada"
                 ));
 
         if (!Boolean.TRUE.equals(category.getActive())) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
+            throw new ResourceNotFoundException(
                     "Categoria não encontrada"
             );
         }
@@ -184,7 +183,7 @@ public class WebController {
             Model model
     ) {
         var order = orderService.getOrder(id, customerDetails.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         model.addAttribute("order", order);
         return "account/order-details";
     }
@@ -228,4 +227,9 @@ public class WebController {
 
     @GetMapping("/payment")
     public String payment() { return "commerce/payment";}
+
+    @GetMapping("/403")
+    public String accessDenied() {
+        return "errors/403";
+    }
 }
