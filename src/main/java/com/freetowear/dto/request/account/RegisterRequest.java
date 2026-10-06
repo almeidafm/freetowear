@@ -1,5 +1,6 @@
 package com.freetowear.dto.request.account;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -31,9 +32,19 @@ public class RegisterRequest {
     )
     private String password;
 
+    @AssertTrue(message = "You must agree to the Terms and Conditions")
+    private Boolean termsAccepted;
+
     public RegisterRequest(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public RegisterRequest(String name, String email, String password, Boolean termsAccepted) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.termsAccepted = termsAccepted;
     }
 }

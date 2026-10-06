@@ -56,6 +56,9 @@ public class Customer extends BaseEntity implements Serializable {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime termsAndConditionsAcceptedAt;
+
     @Column(nullable = false)
     private Boolean active = true;
 }

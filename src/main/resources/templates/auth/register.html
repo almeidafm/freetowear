@@ -64,6 +64,24 @@
                 <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
 
+            <div class="form-group">
+                <label for="termsAccepted">
+                    <input
+                            id="termsAccepted"
+                            type="checkbox"
+                            th:field="*{termsAccepted}"
+                            required>
+                    Concordo com os
+                    <a th:href="@{/terms}" target="_blank">Termos e Condições</a>
+                    e declaro estar ciente da
+                    <a th:href="@{/privacy}" target="_blank">Política de Privacidade</a>.
+                </label>
+
+                <div th:if="${#fields.hasErrors('termsAccepted')}"
+                     th:errors="*{termsAccepted}">
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary">
                 Create Account
             </button>
