@@ -65,7 +65,7 @@ public class ProductController {
             @RequestParam Integer stock
     ) {
         productService.createVariation(productId, color, size, stock);
-        return "redirect:/test";
+        return "redirect:/admin";
     }
 
     @PatchMapping("/{id}")

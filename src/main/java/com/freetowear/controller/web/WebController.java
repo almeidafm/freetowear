@@ -160,10 +160,10 @@ public class WebController {
         return "catalog/category";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/admin")
     public String test(Model model) {
         model.addAttribute("products", productService.listProducts());
-        return "admin/test";
+        return "admin/admin";
     }
 
     @GetMapping("/orders")

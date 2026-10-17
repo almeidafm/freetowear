@@ -100,7 +100,7 @@ public class OrderController {
             @RequestParam(required = false) String trackingCode
     ) {
         orderService.updateOrderTracking(id, trackingStatus, trackingCode);
-        return "redirect:/test";
+        return "redirect:/admin";
     }
 
     @PostMapping("/cancel")
