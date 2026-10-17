@@ -73,12 +73,23 @@
                             required>
                     Concordo com os
                     <a th:href="@{/terms}" target="_blank">Termos e Condições</a>
-                    e declaro estar ciente da
+                </label>
+                <div th:if="${#fields.hasErrors('termsAccepted')}"
+                     th:errors="*{termsAccepted}">
+                </div>
+
+                <label for="privacyAccepted">
+                    <input
+                            id="privacyAccepted"
+                            type="checkbox"
+                            th:field="*{privacyAccepted}"
+                            required>
+                    Declaro estar ciente da
                     <a th:href="@{/privacy}" target="_blank">Política de Privacidade</a>.
                 </label>
 
-                <div th:if="${#fields.hasErrors('termsAccepted')}"
-                     th:errors="*{termsAccepted}">
+                <div th:if="${#fields.hasErrors('privacyAccepted')}"
+                     th:errors="*{privacyAccepted}">
                 </div>
             </div>
 

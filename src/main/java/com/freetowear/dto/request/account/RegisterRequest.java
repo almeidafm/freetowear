@@ -35,6 +35,9 @@ public class RegisterRequest {
     @AssertTrue(message = "You must agree to the Terms and Conditions")
     private Boolean termsAccepted;
 
+    @AssertTrue(message = "You must agree to the Privacy Policy")
+    private Boolean privacyAccepted;
+
     public RegisterRequest(String name, String email, String password) {
         this.name = name;
         this.email = email;
@@ -46,5 +49,14 @@ public class RegisterRequest {
         this.email = email;
         this.password = password;
         this.termsAccepted = termsAccepted;
+    }
+
+    public RegisterRequest(String name, String email, String password,
+                           Boolean termsAccepted, Boolean privacyAccepted) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.termsAccepted = termsAccepted;
+        this.privacyAccepted = privacyAccepted;
     }
 }
