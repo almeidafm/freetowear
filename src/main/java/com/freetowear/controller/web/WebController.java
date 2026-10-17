@@ -48,8 +48,12 @@ public class WebController {
     public String home() { return "site/index"; }
 
     @GetMapping("/register")
-    public String register(Model model) {
+    public String register(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
         model.addAttribute("request", new RegisterRequest());
+        model.addAttribute("alreadyLoggedIn", customerDetails != null);
         return "auth/register";
     }
 

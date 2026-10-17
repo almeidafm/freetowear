@@ -67,7 +67,11 @@
         Account created successfully. Please log in.
     </div>
     <div class="register-card">
-        <form method="post"
+        <div th:if="${alreadyLoggedIn}" class="alert">
+            You are already logged in. Please log out before creating a new account.
+        </div>
+
+        <form th:unless="${alreadyLoggedIn}" method="post"
               th:action="@{/account/register}"
               th:object="${request}">
             <input type="hidden"
