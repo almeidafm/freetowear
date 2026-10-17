@@ -128,7 +128,7 @@
                             th:field="*{privacyAccepted}"
                             required>
                     Declaro estar ciente da
-                    <a th:href="@{/privacy}" target="_blank">Política de Privacidade</a>.
+                    <a href="#privacyModal" id="privacyLink">Política de Privacidade</a>.
                 </label>
 
                 <div th:if="${#fields.hasErrors('privacyAccepted')}"
@@ -163,6 +163,21 @@
     </div>
 </div>
 
+<div id="privacyModal" class="modal" role="dialog" aria-modal="true"
+     aria-labelledby="privacyModalTitle" hidden>
+    <div class="modal-content">
+        <button type="button" class="modal-close" id="closePrivacyModal"
+                aria-label="Close privacy policy">&times;</button>
+        <iframe th:src="@{/privacy}" id="privacyFrame"
+                title="Política de Privacidade"></iframe>
+        <div class="modal-actions">
+            <button type="button" id="confirmPrivacyRead" disabled>
+                Confirmar leitura
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     (() => {
         const termsLink = document.getElementById('termsLink');
@@ -171,6 +186,12 @@
         const termsFrame = document.getElementById('termsFrame');
         const termsCheckbox = document.getElementById('termsAccepted');
         const confirmTermsRead = document.getElementById('confirmTermsRead');
+        const privacyLink = document.getElementById('privacyLink');
+        const privacyModal = document.getElementById('privacyModal');
+        const closePrivacyModal = document.getElementById('closePrivacyModal');
+        const privacyFrame = document.getElementById('privacyFrame');
+        const privacyCheckbox = document.getElementById('privacyAccepted');
+        const confirmPrivacyRead = document.getElementById('confirmPrivacyRead');
 
         termsCheckbox.disabled = true;
 
@@ -208,6 +229,44 @@
             termsCheckbox.disabled = false;
             termsModal.hidden = true;
             termsCheckbox.focus();
+        });
+
+        privacyCheckbox.disabled = true;
+
+        privacyLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            privacyModal.hidden = false;
+            closePrivacyModal.focus();
+        });
+
+        closePrivacyModal.addEventListener('click', () => {
+            privacyModal.hidden = true;
+        });
+
+        privacyModal.addEventListener('click', (event) => {
+            if (event.target === privacyModal) {
+                privacyModal.hidden = true;
+            }
+        });
+
+        privacyFrame.addEventListener('load', () => {
+            const privacyDocument = privacyFrame.contentDocument;
+            const privacyWindow = privacyFrame.contentWindow;
+
+            privacyDocument.addEventListener('scroll', () => {
+                const reachedBottom = privacyWindow.scrollY + privacyWindow.innerHeight
+                    >= privacyDocument.documentElement.scrollHeight - 8;
+
+                if (reachedBottom) {
+                    confirmPrivacyRead.disabled = false;
+                }
+            });
+        });
+
+        confirmPrivacyRead.addEventListener('click', () => {
+            privacyCheckbox.disabled = false;
+            privacyModal.hidden = true;
+            privacyCheckbox.focus();
         });
     })();
 </script>
