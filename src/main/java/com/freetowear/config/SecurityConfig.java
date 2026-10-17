@@ -65,6 +65,9 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .accessDeniedPage("/403")
                 )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
+                )
                 .rememberMe(remember -> remember
                         .tokenRepository(persistentTokenRepository())
                         .tokenValiditySeconds(rememberMeValidity)

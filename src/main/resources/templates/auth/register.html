@@ -7,6 +7,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
 
+    <style>
+        .modal[hidden] { display: none; }
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: grid;
+            place-items: center;
+            background: rgba(0, 0, 0, .6);
+        }
+        .modal-content {
+            position: relative;
+            width: min(700px, 90vw);
+            height: min(80vh, 700px);
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: calc(100% - 56px);
+            border: 0;
+        }
+        .modal-actions {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+        .modal-actions button:disabled { cursor: not-allowed; opacity: .5; }
+        .modal-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            z-index: 1;
+            border: 0;
+            background: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <h1><a></a></h1>
@@ -72,7 +115,7 @@
                             th:field="*{termsAccepted}"
                             required>
                     Concordo com os
-                    <a th:href="@{/terms}" target="_blank">Termos e Condições</a>
+                    <a href="#termsModal" id="termsLink">Termos e Condições</a>
                 </label>
                 <div th:if="${#fields.hasErrors('termsAccepted')}"
                      th:errors="*{termsAccepted}">
@@ -105,6 +148,69 @@
     </div>
 
 </div>
+
+<div id="termsModal" class="modal" role="dialog" aria-modal="true"
+     aria-labelledby="termsModalTitle" hidden>
+    <div class="modal-content">
+        <button type="button" class="modal-close" id="closeTermsModal"
+                aria-label="Close terms">&times;</button>
+        <iframe th:src="@{/terms}" id="termsFrame" title="Termos e Condições"></iframe>
+        <div class="modal-actions">
+            <button type="button" id="confirmTermsRead" disabled>
+                Confirmar leitura
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const termsLink = document.getElementById('termsLink');
+        const termsModal = document.getElementById('termsModal');
+        const closeTermsModal = document.getElementById('closeTermsModal');
+        const termsFrame = document.getElementById('termsFrame');
+        const termsCheckbox = document.getElementById('termsAccepted');
+        const confirmTermsRead = document.getElementById('confirmTermsRead');
+
+        termsCheckbox.disabled = true;
+
+        termsLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            termsModal.hidden = false;
+            closeTermsModal.focus();
+        });
+
+        closeTermsModal.addEventListener('click', () => {
+            termsModal.hidden = true;
+        });
+
+        termsModal.addEventListener('click', (event) => {
+            if (event.target === termsModal) {
+                termsModal.hidden = true;
+            }
+        });
+
+        termsFrame.addEventListener('load', () => {
+            const termsDocument = termsFrame.contentDocument;
+            const termsWindow = termsFrame.contentWindow;
+
+            termsDocument.addEventListener('scroll', () => {
+                const reachedBottom = termsWindow.scrollY + termsWindow.innerHeight
+                    >= termsDocument.documentElement.scrollHeight - 8;
+
+                if (reachedBottom) {
+                    confirmTermsRead.disabled = false;
+                }
+            });
+        });
+
+        confirmTermsRead.addEventListener('click', () => {
+            termsCheckbox.disabled = false;
+            termsModal.hidden = true;
+            termsCheckbox.focus();
+        });
+    })();
+</script>
 
 </body>
 </html>
