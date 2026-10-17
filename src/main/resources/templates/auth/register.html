@@ -193,7 +193,16 @@
         const privacyCheckbox = document.getElementById('privacyAccepted');
         const confirmPrivacyRead = document.getElementById('confirmPrivacyRead');
 
-        termsCheckbox.disabled = true;
+        let termsConfirmed = false;
+        let privacyConfirmed = false;
+
+        termsCheckbox.addEventListener('click', (event) => {
+            if (!termsConfirmed) {
+                event.preventDefault();
+                alert('Você precisa ler e confirmar os Termos e Condições antes de aceitá-los.');
+                termsLink.focus();
+            }
+        });
 
         termsLink.addEventListener('click', (event) => {
             event.preventDefault();
@@ -226,12 +235,18 @@
         });
 
         confirmTermsRead.addEventListener('click', () => {
-            termsCheckbox.disabled = false;
+            termsConfirmed = true;
             termsModal.hidden = true;
             termsCheckbox.focus();
         });
 
-        privacyCheckbox.disabled = true;
+        privacyCheckbox.addEventListener('click', (event) => {
+            if (!privacyConfirmed) {
+                event.preventDefault();
+                alert('Você precisa ler e confirmar a Política de Privacidade antes de aceitá-la.');
+                privacyLink.focus();
+            }
+        });
 
         privacyLink.addEventListener('click', (event) => {
             event.preventDefault();
@@ -264,7 +279,7 @@
         });
 
         confirmPrivacyRead.addEventListener('click', () => {
-            privacyCheckbox.disabled = false;
+            privacyConfirmed = true;
             privacyModal.hidden = true;
             privacyCheckbox.focus();
         });
