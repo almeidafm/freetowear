@@ -131,6 +131,14 @@ The application reads the following environment variables:
 
 The configured SMTP host is `mx.msgwing.com` on port `587` with authentication and STARTTLS enabled.
 
+Generate a strong remember-me key with:
+
+```bash
+openssl rand -base64 32
+```
+
+Use the generated value for `REMEMBER_ME_KEY`. Keep it secret and stable across application restarts. Changing it invalidates existing remember-me cookies.
+
 ### Create a `.env` file in the project root
 
 Example `.env` file:
@@ -139,7 +147,7 @@ Example `.env` file:
 DB_URL='jdbc:mysql://localhost:3306/freetowear'
 DB_USERNAME='your_mysql_user'
 DB_PASSWORD='your_mysql_password'
-REMEMBER_ME_KEY='secret-key'
+REMEMBER_ME_KEY='your_generated_remember_me_key'
 CLOUDINARY_URL='cloudinary://your_api_key:your_api_secret@your_cloud_name'
 SPRING_MAIL_USERNAME='your_smtp_username'
 SPRING_MAIL_PASSWORD='your_smtp_password'
@@ -156,6 +164,19 @@ CREATE DATABASE freetowear CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 Grant the configured database user access to this database. Hibernate updates the application schema automatically (`ddl-auto=update`), and Spring Session is configured to initialize its JDBC schema. This is convenient for development. For production, use a migration tool such as Flyway or Liquibase and review the session-schema initialization strategy.
+
+Spring Security remember-me requires a `persistent_logins` table. The application is configured to create it automatically at startup with `createTableOnStartup`, but it can also be created manually:
+
+```sql
+CREATE TABLE persistent_logins (
+    username VARCHAR(64) NOT NULL,
+    series VARCHAR(64) PRIMARY KEY,
+    token VARCHAR(64) NOT NULL,
+    last_used TIMESTAMP NOT NULL
+);
+```
+
+Create this table in the same database configured by `DB_URL`. For production, include it in the database migration process instead of relying on startup table creation.
 
 The application does not seed an administrator account. Create a regular account through the registration flow, then assign the `ROLE_ADMIN` role through a controlled database operation or an administrative provisioning process before using the administrator endpoints. Do not expose that operation publicly.
 
@@ -186,7 +207,7 @@ Windows (PowerShell or Command Prompt):
 .\mvnw.cmd spring-boot:run
 ```
 
-The first run downloads the dependencies, so it can take a few minutes. When the log shows a line like `Started ... in ... seconds`, open <http://localhost:8080> in your browser. Press `Ctrl+C` to stop the application.
+The first run downloads the dependencies, so it can take a few minutes, then open <http://localhost:8080> in your browser.
 
 If Maven is already installed, you can use `mvn spring-boot:run` instead.
 
