@@ -86,6 +86,7 @@ src/
 │   │   ├── dto/             Request and response DTOs
 │   │   ├── entity/          JPA domain entities
 │   │   ├── enums/           Domain enumerations
+│   │   ├── exception/       Handles application errors.
 │   │   ├── infra/           Cloudinary, email, and security integrations
 │   │   ├── repository/      Spring Data JPA repositories
 │   │   ├── service/         Application and business logic
