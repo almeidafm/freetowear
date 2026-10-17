@@ -145,7 +145,7 @@
             </button>
         </form>
 
-        <div class="login-link">
+        <div class="login-link" th:unless="${alreadyLoggedIn}">
             <span>Already have an account?</span>
             <a th:href="@{/login}">Sign In</a>
         </div>
