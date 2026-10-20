@@ -67,16 +67,30 @@ public class DashboardService {
                 .toList();
 
         // 1. Gross Revenue
-        BigDecimal grossRevCurrent = sum(validCurrent, Order::getTotalValue);
-        BigDecimal grossRevPrev = sum(validPrev, Order::getTotalValue);
+        BigDecimal grossRevCurrent = validCurrent.stream()
+                .map(o -> safe(o.getProductsValue()).add(safe(o.getShippingPrice())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal grossRevPrev = validPrev.stream()
+                .map(o -> safe(o.getProductsValue()).add(safe(o.getShippingPrice())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         KpiMetricResponse grossRevenueKpi = KpiMetricResponse.of(grossRevCurrent, grossRevPrev);
 
         // 2. Net Revenue
         BigDecimal netRevCurrent = validCurrent.stream()
-                .map(o -> safe(o.getProductsValue()).subtract(safe(o.getDiscountValue())))
+                .map(o -> {
+                    BigDecimal p = safe(o.getProductsValue());
+                    BigDecimal d = safe(o.getDiscountValue());
+                    BigDecimal net = p.subtract(d);
+                    return net.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : net;
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal netRevPrev = validPrev.stream()
-                .map(o -> safe(o.getProductsValue()).subtract(safe(o.getDiscountValue())))
+                .map(o -> {
+                    BigDecimal p = safe(o.getProductsValue());
+                    BigDecimal d = safe(o.getDiscountValue());
+                    BigDecimal net = p.subtract(d);
+                    return net.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : net;
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         KpiMetricResponse netRevenueKpi = KpiMetricResponse.of(netRevCurrent, netRevPrev);
 
@@ -222,7 +236,9 @@ public class DashboardService {
 
         return ordersByState.entrySet().stream()
                 .map(entry -> {
-                    BigDecimal rev = sum(entry.getValue(), Order::getTotalValue);
+                    BigDecimal rev = entry.getValue().stream()
+                            .map(o -> safe(o.getProductsValue()).add(safe(o.getShippingPrice())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
                     return new StateRevenueResponse(entry.getKey(), rev, (long) entry.getValue().size());
                 })
                 .sorted(Comparator.comparing(StateRevenueResponse::getRevenue).reversed())
