@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,5 +29,16 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, String> {
             @Param("customerId") String customerId,
             @Param("productId") String productId,
             @Param("statuses") Collection<OrderStatus> statuses
+    );
+
+    @Query("SELECT oi.product.category.name, SUM(oi.subtotal), SUM(oi.quantity) " +
+           "FROM OrderItem oi " +
+           "WHERE oi.order.createdAt >= :startDate AND oi.order.createdAt < :endDate " +
+           "AND oi.order.status NOT IN :excludedStatuses " +
+           "GROUP BY oi.product.category.name")
+    List<Object[]> findRevenueByCategory(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("excludedStatuses") Collection<OrderStatus> excludedStatuses
     );
 }

@@ -7,6 +7,7 @@ import com.freetowear.enums.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     List<Order> findAllByCustomerId(String customerId);
     Optional<Order> findByCustomerIdAndStatus(String customerId, OrderStatus status);
     List<Order> findByCustomer(Customer customer);
+    List<Order> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<Order> findByCreatedAtGreaterThanEqual(LocalDateTime start);
 }
