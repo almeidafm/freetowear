@@ -167,7 +167,9 @@ public class WebController {
     }
 
     @GetMapping("/admin/dashboard")
-    public String adminDashboard() { return "admin/admin-dashboard";}
+    public String adminDashboard() {
+        return "admin/admin-dashboard";
+    }
 
     @GetMapping("/orders")
     public String orders(
