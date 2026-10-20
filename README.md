@@ -61,6 +61,7 @@ FreeToWear provides an online storefront for customers to discover products, man
 - Coupon creation and updates
 - Order-tracking updates
 - Product image storage through Cloudinary
+- Dashboard with operational analytics, KPIs, period-over-period comparison, and interactive charts
 
 ## Architecture
 
