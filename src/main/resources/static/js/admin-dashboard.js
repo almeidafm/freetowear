@@ -14,14 +14,16 @@ const ms = (l, v) => `<div class="ms"><b>${v}</b><span>${l}</span></div>`;
 const mg = a => `<div class="mg">${a.join('')}</div>`;
 
 const kc = (label, formattedValue, kpi, inv = false) => {
-    const change = kpi ? kpi.deltaPercentage : null;
-    let badgeHtml = '<i class="mut">— vs período anterior</i>';
+    const change = kpi ? (kpi.changePercentage ?? kpi.deltaPercentage) : null;
+    let badgeHtml = '<i class="mut" style="color:#7e8992;">— vs período anterior</i>';
 
     if (change !== null && change !== undefined) {
-        const isInc = change >= 0;
+        const isInc = kpi.isIncrease !== undefined ? kpi.isIncrease : (change >= 0);
         const good = inv ? !isInc : isInc;
         const arrow = isInc ? '▲' : '▼';
-        badgeHtml = `<i class="${good ? 'up' : 'dn'}">${arrow} ${nf(Math.abs(change))}% vs período anterior</i>`;
+        const sign = isInc ? '+' : '';
+        const colorClass = good ? 'up' : 'dn';
+        badgeHtml = `<i class="${colorClass}">${arrow} ${sign}${nf(change)}% vs período anterior</i>`;
     }
 
     return `<div class="k"><span>${label}</span><b>${formattedValue}</b>${badgeHtml}</div>`;
