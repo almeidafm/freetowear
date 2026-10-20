@@ -161,10 +161,13 @@ public class WebController {
     }
 
     @GetMapping("/admin")
-    public String test(Model model) {
+    public String admin(Model model) {
         model.addAttribute("products", productService.listProducts());
         return "admin/admin";
     }
+
+    @GetMapping("/admin/dashboard")
+    public String adminDashboard() { return "admin/admin-dashboard";}
 
     @GetMapping("/orders")
     public String orders(
