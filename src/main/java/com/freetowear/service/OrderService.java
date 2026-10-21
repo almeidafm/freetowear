@@ -251,6 +251,16 @@ public class OrderService {
                 ));
     }
 
+    public List<OrderResponse> getActiveOrders(String idCustomer) {
+        return orderRepository
+                .findAllByCustomerId(idCustomer)
+                .stream()
+                .filter(o -> o.getStatus() == OrderStatus.PAID || o.getStatus() == OrderStatus.SHIPPED)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .map(OrderResponse::new)
+                .toList();
+    }
+
     public List<OrderResponse> getRecentOrders(String idCustomer) {
         return orderRepository
                 .findAllByCustomerId(idCustomer)

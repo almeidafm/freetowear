@@ -82,6 +82,45 @@
     <div>
         <h2>Orders</h2>
 
+        <h3>Active orders</h3>
+
+        <div th:if="${#lists.isEmpty(activeOrders)}">
+            <p>No active orders.</p>
+        </div>
+
+        <table th:if="${!#lists.isEmpty(activeOrders)}">
+            <thead>
+            <tr>
+                <th>Order</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="order : ${activeOrders}">
+                <td th:text="'#' + ${order.id}"></td>
+
+                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}">
+                </td>
+
+                <td th:text="${order.status}">
+                </td>
+
+                <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}">
+                </td>
+
+                <td>
+                    <a th:href="@{/orders/{id}(id=${order.id})}">
+                        View order
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
         <h3>Recent orders</h3>
 
         <div th:if="${#lists.isEmpty(recentOrders)}">
