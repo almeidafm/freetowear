@@ -205,6 +205,7 @@ public class WebController {
         String customerId = customerDetails.getId();
         model.addAttribute("customer", accountService.getAccount(customerId));
         model.addAttribute("addresses", accountService.getAddresses(customerId));
+        model.addAttribute("pendingOrders", orderService.getPendingOrders(customerId));
         model.addAttribute("activeOrders", orderService.getActiveOrders(customerId));
         model.addAttribute("recentOrders", orderService.getRecentOrders(customerId));
         return "account/profile";
