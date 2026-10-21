@@ -34,7 +34,7 @@ public class KpiMetricResponse {
             change = 0.0;
         }
 
-        Boolean increase = curr.compareTo(prev) >= 0;
+        Boolean increase = curr.compareTo(prev) > 0;
         return new KpiMetricResponse(curr, prev, change, increase);
     }
 
