@@ -7,6 +7,8 @@ import com.freetowear.service.ReviewService;
 import com.freetowear.enums.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +33,7 @@ public class ProductController {
     private ReviewService reviewService;
 
     @PostMapping("/create")
-    public String createProduct(
+    public ResponseEntity<String> createProduct(
             @RequestParam String name,
             @RequestParam(required = false) String description,
             @RequestParam BigDecimal price,
@@ -39,37 +41,27 @@ public class ProductController {
             @RequestParam Size size,
             @RequestParam Integer stock,
             @RequestParam String categoryId,
-            @RequestParam("image") MultipartFile image,
-            Model model
-    ) {
-        try {
-            productService.createProduct(new CreateProductRequest(
-                    name, description, price, color, size, stock, categoryId, image
-            ));
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "product-form";
-        } catch (IOException e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Failed to upload image, try again.");
-            return "product-form";
-        }
-        return "redirect:/";
+            @RequestParam("image") MultipartFile image
+    ) throws IOException {
+        productService.createProduct(new CreateProductRequest(
+                name, description, price, color, size, stock, categoryId, image
+        ));
+        return ResponseEntity.status(HttpStatus.CREATED).body("Product created successfully.");
     }
 
     @PostMapping("/variation/create")
-    public String createVariation(
+    public ResponseEntity<String> createVariation(
             @RequestParam String productId,
             @RequestParam String color,
             @RequestParam Size size,
             @RequestParam Integer stock
     ) {
         productService.createVariation(productId, color, size, stock);
-        return "redirect:/admin";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Variation created successfully.");
     }
 
     @PatchMapping("/{id}")
-    public String updateProduct(
+    public ResponseEntity<String> updateProduct(
             @PathVariable String id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
@@ -79,22 +71,12 @@ public class ProductController {
             @RequestParam(required = false) Integer stock,
             @RequestParam(required = false) String categoryId,
             @RequestParam(value = "image", required = false) MultipartFile image,
-            @RequestParam(required = false) Boolean active,
-            Model model
-    ) {
-        try {
-            productService.updateProduct(id, new UpdateProductRequest(
-                    name, description, price, color, size, stock, categoryId, image, active
-            ));
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "product-form";
-        } catch (IOException e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Failed to upload image, try again.");
-            return "product-form";
-        }
-        return "redirect:/product/" + id;
+            @RequestParam(required = false) Boolean active
+    ) throws IOException {
+        productService.updateProduct(id, new UpdateProductRequest(
+                name, description, price, color, size, stock, categoryId, image, active
+        ));
+        return ResponseEntity.ok("Product updated successfully.");
     }
 
     @GetMapping
