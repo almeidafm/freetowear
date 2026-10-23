@@ -141,5 +141,32 @@
         <button type="submit" class="btn btn-danger">Delete Account</button>
     </form>
 
+    <script>
+        document.getElementById('formUpdateAccount').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'PATCH',
+                    body: new FormData(this)
+                });
+                const message = await response.text();
+
+                if (!response.ok) throw new Error(message || `Error ${response.status}`);
+                alert(message || 'Account updated successfully');
+            } catch (error) {
+                alert(error.message || 'Could not update account');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        });
+    </script>
+
 </body>
 </html>

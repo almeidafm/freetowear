@@ -5,8 +5,6 @@ import com.freetowear.dto.response.account.*;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.AccountService;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -55,7 +54,8 @@ public class AccountController {
     }
 
     @PatchMapping
-    public String updateAccount(
+    @ResponseBody
+    public ResponseEntity<String> updateAccount(
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String cpf,
@@ -64,7 +64,7 @@ public class AccountController {
     ) {
         String id = customerDetails.getId();
         accountService.updateAccount(id, new UpdateAccountRequest(name, cpf, birthDate, phone));
-        return "redirect:/account/" + id;
+        return ResponseEntity.ok("Account updated successfully");
     }
 
     @PostMapping("/address")
