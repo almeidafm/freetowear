@@ -7,6 +7,8 @@ import com.freetowear.enums.DiscountType;
 import com.freetowear.service.CouponService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,7 @@ public class CouponController {
     private CouponService couponService;
 
     @PostMapping("/create")
-    public String createCoupon(
+    public ResponseEntity<String> createCoupon(
             @RequestParam String code,
             @RequestParam(required = false) String description,
             @RequestParam DiscountType discountType,
@@ -40,11 +42,11 @@ public class CouponController {
                 code, description, discountType, discountValue,
                 minimumOrderValue, startDate, endDate
         ));
-        return "redirect:/";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Coupon created successfully.");
     }
 
     @PatchMapping("/{id}")
-    public String updateCoupon(
+    public ResponseEntity<String> updateCoupon(
             @PathVariable String id,
             @RequestParam(required = false) String code,
             @RequestParam(required = false) String description,
@@ -59,7 +61,7 @@ public class CouponController {
                 code, description, discountType, discountValue,
                 minimumOrderValue, startDate, endDate, active
         ));
-        return "redirect:/";
+        return ResponseEntity.ok("Coupon updated successfully.");
     }
 
     @GetMapping
