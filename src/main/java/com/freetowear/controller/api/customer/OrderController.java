@@ -1,17 +1,13 @@
 package com.freetowear.controller.api.customer;
 
-import com.freetowear.dto.request.order.AddItemToCartRequest;
-import com.freetowear.dto.request.order.FinishOrderRequest;
-import com.freetowear.dto.response.order.OrderResponse;
-import com.freetowear.dto.response.order.OrderTrackingResponse;
-import com.freetowear.entity.Order;
+import com.freetowear.dto.request.order.*;
+import com.freetowear.dto.response.order.*;
+import com.freetowear.dto.response.coupon.*;
 import com.freetowear.enums.OrderStatus;
 import com.freetowear.enums.OrderTrackingStatus;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.repository.OrderRepository;
 import com.freetowear.service.OrderService;
-
-import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import com.freetowear.dto.response.coupon.CouponResponse;
 
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -55,19 +51,6 @@ public class OrderController {
             return ResponseEntity.ok(Map.of("message", "Item added to cart successfully"));
         } catch (IOException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
-    }
-
-    @PostMapping("/{id}/finish")
-    public ResponseEntity<?> finishOrder(
-            @PathVariable String id,
-            @Valid @ModelAttribute FinishOrderRequest request
-    ) {
-        try {
-            orderService.finishOrder(id, request);
-            return ResponseEntity.ok(Map.of("message", "Order finished successfully"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
