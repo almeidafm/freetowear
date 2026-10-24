@@ -42,7 +42,7 @@ public class OrderController {
     private OrderRepository orderRepository;
 
     @PostMapping("/item")
-    public String addItem(
+    public ResponseEntity<?> addItem(
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam String idProduct,
             @RequestParam String idVariation,
@@ -52,33 +52,42 @@ public class OrderController {
     ) {
         try {
             orderService.addItem(customerDetails.getId(), new AddItemToCartRequest(idProduct, idVariation, quantity, customerCustomization, description));
+            return ResponseEntity.ok(Map.of("message", "Item added to cart successfully"));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
-        return "redirect:/";
     }
 
     @PostMapping("/{id}/finish")
-    public String finishOrder(
+    public ResponseEntity<?> finishOrder(
             @PathVariable String id,
             @Valid @ModelAttribute FinishOrderRequest request
     ) {
-        orderService.finishOrder(id, request);
-        return "redirect:/";
+        try {
+            orderService.finishOrder(id, request);
+            return ResponseEntity.ok(Map.of("message", "Order finished successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/current/finish")
-    public String finishCurrentOrder(
+    public ResponseEntity<?> finishCurrentOrder(
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @Valid @ModelAttribute FinishOrderRequest request
     ) {
-        Order order = orderRepository
-                .findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.CART)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+        try {
+            orderRepository
+                    .findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.CART)
+                    .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        orderService.finishOrder(customerDetails.getId(), request);
-
-        return "redirect:/";
+            orderService.finishOrder(customerDetails.getId(), request);
+            return ResponseEntity.ok(Map.of("message", "Order finished successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")

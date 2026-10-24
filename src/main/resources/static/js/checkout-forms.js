@@ -1,6 +1,27 @@
 // ============================================
 // ADDRESS MANAGEMENT
 // ============================================
+document.getElementById('checkout-form')?.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    try {
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this)
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Could not finish order.');
+        }
+
+        alert(data.message || 'Order finished successfully.');
+        window.location.href = '/';
+    } catch (error) {
+        alert(error.message || 'Could not finish order.');
+    }
+});
+
 async function loadAddresses() {
     try {
         const response = await fetch('/account/address', {
