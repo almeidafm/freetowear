@@ -360,11 +360,24 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        boolean isOrderAlreadyFinalized = order.getStatus() == OrderStatus.PAID
-                || order.getStatus() == OrderStatus.CANCELLED;
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new RuntimeException("Order is already cancelled");
+        }
 
-        if (isOrderAlreadyFinalized) {
-            throw new RuntimeException("Order cannot be cancelled in status: " + order.getStatus());
+        List<OrderTracking> trackingEvents = orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(orderId);
+
+        boolean isPastCancellationWindow = trackingEvents.stream().anyMatch(e ->
+                e.getTrackingStatus() == OrderTrackingStatus.READY_TO_SHIP
+                || e.getTrackingStatus() == OrderTrackingStatus.SHIPPED
+                || e.getTrackingStatus() == OrderTrackingStatus.IN_TRANSIT
+                || e.getTrackingStatus() == OrderTrackingStatus.OUT_FOR_DELIVERY
+                || e.getTrackingStatus() == OrderTrackingStatus.DELIVERY_ATTEMPTED
+                || e.getTrackingStatus() == OrderTrackingStatus.AWAITING_PICKUP
+                || e.getTrackingStatus() == OrderTrackingStatus.DELIVERED
+        );
+
+        if (isPastCancellationWindow) {
+            throw new RuntimeException("Order cannot be cancelled once it is ready to ship or beyond");
         }
 
         order.setStatus(OrderStatus.CANCELLED);

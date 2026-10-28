@@ -4,6 +4,7 @@ import com.freetowear.entity.Order;
 import com.freetowear.entity.OrderItem;
 import com.freetowear.entity.OrderTracking;
 import com.freetowear.enums.OrderStatus;
+import com.freetowear.enums.OrderTrackingStatus;
 
 import lombok.Getter;
 
@@ -28,6 +29,8 @@ public class OrderResponse {
     private String trackingCode;
     private List<OrderTrackingResponse.TrackingEventResponse> trackingEvents;
     private OrderTrackingResponse.TrackingEventResponse latestTrackingEvent;
+    private boolean canCancel;
+    private boolean isPaid;
 
     public OrderResponse() {}
 
@@ -62,6 +65,24 @@ public class OrderResponse {
         this.latestTrackingEvent = this.trackingEvents.isEmpty()
                 ? null
                 : this.trackingEvents.get(this.trackingEvents.size() - 1);
+        this.isPaid = order.getStatus() == OrderStatus.PAID;
+        this.canCancel = computeCanCancel(order.getStatus(), tracking);
+    }
+
+    private static final List<OrderTrackingStatus> NON_CANCELLABLE_TRACKING_STATUSES = List.of(
+            OrderTrackingStatus.READY_TO_SHIP,
+            OrderTrackingStatus.SHIPPED,
+            OrderTrackingStatus.IN_TRANSIT,
+            OrderTrackingStatus.OUT_FOR_DELIVERY,
+            OrderTrackingStatus.DELIVERY_ATTEMPTED,
+            OrderTrackingStatus.AWAITING_PICKUP,
+            OrderTrackingStatus.DELIVERED
+    );
+
+    private static boolean computeCanCancel(OrderStatus status, List<OrderTracking> tracking) {
+        if (status == OrderStatus.CANCELLED || status == OrderStatus.DELIVERED) return false;
+        return tracking.stream()
+                .noneMatch(e -> NON_CANCELLABLE_TRACKING_STATUSES.contains(e.getTrackingStatus()));
     }
 
     @Getter
