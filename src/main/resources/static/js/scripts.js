@@ -12,19 +12,6 @@ fetch('/account/address')
         });
     });
 
-fetch('/category')
-    .then(res => res.json())
-    .then(categories => {
-        const select = document.querySelector('select[name="categoryId"]');
-
-        categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category.id;
-            option.text = category.name;
-            select.appendChild(option);
-        });
-    });
-
 fetch('/order/cart')
     .then(res => res.json())
     .then(order => {
