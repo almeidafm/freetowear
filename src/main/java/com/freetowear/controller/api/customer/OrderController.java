@@ -5,6 +5,8 @@ import com.freetowear.dto.response.order.*;
 import com.freetowear.dto.response.coupon.*;
 import com.freetowear.enums.OrderStatus;
 import com.freetowear.enums.OrderTrackingStatus;
+import com.freetowear.exception.BusinessException;
+import com.freetowear.exception.ResourceNotFoundException;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.repository.OrderRepository;
 import com.freetowear.service.OrderService;
@@ -45,15 +47,9 @@ public class OrderController {
             @RequestParam Integer quantity,
             @RequestParam(required = false) MultipartFile customerCustomization,
             @RequestParam(required = false) String description
-    ) {
-        try {
-            orderService.addItem(customerDetails.getId(), new AddItemToCartRequest(idProduct, idVariation, quantity, customerCustomization, description));
-            return ResponseEntity.ok(Map.of("message", "Item added to cart successfully"));
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
+    ) throws IOException {
+        orderService.addItem(customerDetails.getId(), new AddItemToCartRequest(idProduct, idVariation, quantity, customerCustomization, description));
+        return ResponseEntity.ok(Map.of("message", "Item added to cart successfully"));
     }
 
     @PostMapping("/current/finish")
@@ -61,16 +57,12 @@ public class OrderController {
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @Valid @ModelAttribute FinishOrderRequest request
     ) {
-        try {
-            orderRepository
-                    .findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.CART)
-                    .orElseThrow(() -> new RuntimeException("Cart not found"));
+        orderRepository
+                .findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.CART)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
-            orderService.finishOrder(customerDetails.getId(), request);
-            return ResponseEntity.ok(Map.of("message", "Order finished successfully"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
+        orderService.finishOrder(customerDetails.getId(), request);
+        return ResponseEntity.ok(Map.of("message", "Order finished successfully"));
     }
 
     @GetMapping("/{id}")
@@ -100,12 +92,8 @@ public class OrderController {
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam String orderId
     ) {
-        try {
-            orderService.cancelOrder(orderId);
-            return ResponseEntity.ok(Map.of("message", "Order cancelled successfully"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
+        orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(Map.of("message", "Order cancelled successfully"));
     }
 
     @PostMapping("/cart/update")
@@ -131,7 +119,7 @@ public class OrderController {
             @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
         return orderService.getCart(customerDetails.getId())
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
     }
 
     @PostMapping("/cart/remove")
@@ -168,12 +156,8 @@ public class OrderController {
         if (couponCode == null || couponCode.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Coupon code is required"));
         }
-        try {
-            CouponResponse coupon = orderService.validateCoupon(customerDetails.getId(), couponCode);
-            return ResponseEntity.ok(coupon);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
+        CouponResponse coupon = orderService.validateCoupon(customerDetails.getId(), couponCode);
+        return ResponseEntity.ok(coupon);
     }
     @PostMapping("/pay")
     public String payOrder(
@@ -182,7 +166,7 @@ public class OrderController {
         try {
             orderService.payOrder(customerDetails.getId());
             return "redirect:/order-success";
-        } catch (RuntimeException e) {
+        } catch (ResourceNotFoundException | BusinessException e) {
             return "redirect:/payment?error=no-active-order";
         }
     }
