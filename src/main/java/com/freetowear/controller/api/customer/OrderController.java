@@ -96,11 +96,16 @@ public class OrderController {
     }
 
     @PostMapping("/cancel")
-    public String cancelOrder(
-            @AuthenticationPrincipal CustomerDetails customerDetails
+    public ResponseEntity<?> cancelOrder(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            @RequestParam String orderId
     ) {
-        orderService.cancelOrder(customerDetails.getId());
-        return "redirect:/";
+        try {
+            orderService.cancelOrder(orderId);
+            return ResponseEntity.ok(Map.of("message", "Order cancelled successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/cart/update")
