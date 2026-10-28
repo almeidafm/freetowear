@@ -9,6 +9,7 @@ import com.freetowear.repository.AddressRepository;
 import com.freetowear.repository.CustomerRepository;
 import com.freetowear.dto.request.account.*;
 import com.freetowear.dto.response.account.CustomerResponse;
+import com.freetowear.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class AccountService {
 
     public CustomerResponse getAccount(String id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
         return new CustomerResponse(customer);
     }
@@ -119,7 +120,7 @@ public class AccountService {
 
     public void changeEmail(String id, ChangeEmailRequest request) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
         if (!customer.getEmail().equals(request.getCurrentEmail())) {
             throw new IllegalArgumentException("Current email does not match");
@@ -141,7 +142,7 @@ public class AccountService {
 
     public void changePassword(String id, ChangePasswordRequest request) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), customer.getPassword()))
             throw new IllegalArgumentException("Current password is incorrect");
@@ -199,7 +200,7 @@ public class AccountService {
     public String requestEmailVerification(String id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Account not found")
+                        new ResourceNotFoundException("Account not found with id: " + id)
                 );
 
         if (customer.isEmailVerified()) {
@@ -215,7 +216,7 @@ public class AccountService {
     public void verifyEmail(String id, String code) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Account not found")
+                        new ResourceNotFoundException("Account not found with id: " + id)
                 );
 
         if (customer.isEmailVerified()) {
