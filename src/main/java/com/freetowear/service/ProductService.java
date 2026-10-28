@@ -37,7 +37,7 @@ public class ProductService {
 
     public void createProduct(CreateProductRequest request) throws IOException {
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         String publicId = cloudinaryService.uploadPublic(request.getImage(), "products"); // 👈
 
@@ -88,7 +88,7 @@ public class ProductService {
 
     public void updateProduct(String id, UpdateProductRequest request) throws IOException {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         if (request.getName() != null) product.setName(request.getName());
         if (request.getDescription() != null) product.setDescription(request.getDescription());

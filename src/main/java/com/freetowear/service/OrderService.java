@@ -16,6 +16,8 @@ import com.freetowear.enums.DiscountType;
 import com.freetowear.enums.OrderStatus;
 import com.freetowear.enums.OrderTrackingStatus;
 import com.freetowear.enums.PaymentStatus;
+import com.freetowear.exception.BusinessException;
+import com.freetowear.exception.ResourceNotFoundException;
 import com.freetowear.infra.CloudinaryService;
 import com.freetowear.repository.AddressRepository;
 import com.freetowear.repository.CouponRepository;
@@ -90,14 +92,14 @@ public class OrderService {
     ) throws IOException {
 
         Customer customer = customerRepository.findById(idCustomer)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         Order order = orderRepository
                 .findByCustomerIdAndStatus(idCustomer, OrderStatus.CART)
                 .orElseGet(() -> createCart(customer));
 
         Product product = productRepository.findById(request.getIdProduct())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         ProductVariation variation = product.getVariations()
                 .stream()
@@ -105,7 +107,7 @@ public class OrderService {
                         productVariation.getId().equals(request.getIdVariation()))
                 .findFirst()
                 .orElseThrow(() ->
-                        new RuntimeException("Variation not found for this product"));
+                        new ResourceNotFoundException("Variation not found for this product"));
 
         OrderItem item = new OrderItem();
 
@@ -161,7 +163,7 @@ public class OrderService {
                 .isPresent();
 
         if (hasPendingOrder) {
-            throw new RuntimeException("Customer already has a pending order");
+            throw new BusinessException("Customer already has a pending order");
         }
 
         Order order = orderRepository
@@ -169,17 +171,17 @@ public class OrderService {
                         customerId,
                         OrderStatus.CART
                 )
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         Address address = addressRepository
                 .findById(request.getIdAddress())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
         boolean addressBelongsToCustomer =
                 address.getCustomer().getId().equals(customerId);
 
         if (!addressBelongsToCustomer) {
-            throw new RuntimeException("Address does not belong to customer");
+            throw new BusinessException("Address does not belong to customer");
         }
 
         order.setDeliveryAddress(address);
@@ -291,7 +293,7 @@ public class OrderService {
 
     public OrderResponse getOrderById(String orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         return new OrderResponse(order);
     }
@@ -299,7 +301,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderTrackingResponse getOrderTracking(String orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         return new OrderTrackingResponse(
                 order,
@@ -310,7 +312,7 @@ public class OrderService {
     @Transactional
     public void updateOrderTracking(String orderId, OrderTrackingStatus trackingStatus, String trackingCode) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         List<OrderTracking> trackingEvents = orderTrackingRepository
                 .findByOrderIdOrderByOccurredAtAsc(orderId);
@@ -358,10 +360,10 @@ public class OrderService {
     @Transactional
     public void cancelOrder(String orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         if (order.getStatus() == OrderStatus.CANCELLED) {
-            throw new RuntimeException("Order is already cancelled");
+            throw new BusinessException("Order is already cancelled");
         }
 
         List<OrderTracking> trackingEvents = orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(orderId);
@@ -377,7 +379,7 @@ public class OrderService {
         );
 
         if (isPastCancellationWindow) {
-            throw new RuntimeException("Order cannot be cancelled once it is ready to ship or beyond");
+            throw new BusinessException("Order cannot be cancelled once it is ready to ship or beyond");
         }
 
         order.setStatus(OrderStatus.CANCELLED);
@@ -394,20 +396,22 @@ public class OrderService {
     ) {
         boolean invalidQuantity = quantity == null || quantity < 1;
 
-        if (invalidQuantity) {throw new RuntimeException("Quantity must be at least 1");}
+        if (invalidQuantity) {
+            throw new BusinessException("Quantity must be at least 1");
+        }
 
         Order order = orderRepository
                 .findByCustomerIdAndStatus(
                         idCustomer,
                         OrderStatus.CART
                 )
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         OrderItem item = orderItemRepository.findAllByOrderId(order.getId())
                 .stream()
                 .filter(orderItem -> isMatchingCartItem(orderItem, idProduct, idVariation))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
 
         item.setQuantity(quantity);
 
@@ -432,14 +436,14 @@ public class OrderService {
                         idCustomer,
                         OrderStatus.CART
                 )
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         OrderItem item = orderItemRepository
                 .findAllByOrderId(order.getId())
                 .stream()
                 .filter(orderItem -> isMatchingCartItem(orderItem, idProduct, idVariation))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
 
         orderItemRepository.delete(item);
 
@@ -491,7 +495,7 @@ public class OrderService {
     public void payOrder(String customerId) {
         Order order = orderRepository
                 .findByCustomerIdAndStatus(customerId, OrderStatus.PENDING)
-                .orElseThrow(() -> new RuntimeException("No active order found for this customer"));
+                .orElseThrow(() -> new ResourceNotFoundException("No active order found for this customer"));
 
         order.setStatus(OrderStatus.PAID);
         order.setTrackingCode(generateTrackingCode());
@@ -518,26 +522,26 @@ public class OrderService {
 
     public Coupon getValidCoupon(String customerId, String code) {
         if (code == null || code.isBlank()) {
-            throw new RuntimeException("Coupon code is required");
+            throw new BusinessException("Coupon code is required");
         }
 
         String couponIdentifier = code.trim();
         Coupon coupon = couponRepository
                 .findByCodeIgnoreCase(couponIdentifier)
                 .or(() -> couponRepository.findById(couponIdentifier))
-                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Coupon not found"));
 
         if (Boolean.FALSE.equals(coupon.getActive())) {
-            throw new RuntimeException("Coupon is not active");
+            throw new BusinessException("Coupon is not active");
         }
 
         LocalDate today = LocalDate.now();
         if (coupon.getStartDate() != null && today.isBefore(coupon.getStartDate())) {
-            throw new RuntimeException("Coupon is not yet valid");
+            throw new BusinessException("Coupon is not yet valid");
         }
 
         if (coupon.getEndDate() != null && today.isAfter(coupon.getEndDate())) {
-            throw new RuntimeException("Coupon has expired");
+            throw new BusinessException("Coupon has expired");
         }
 
         if (coupon.getMinimumOrderValue() != null && customerId != null) {
@@ -546,7 +550,7 @@ public class OrderService {
                     .orElse(null);
             if (cart != null && cart.getProductsValue() != null
                     && cart.getProductsValue().compareTo(coupon.getMinimumOrderValue()) < 0) {
-                throw new RuntimeException("Order value does not meet minimum order value for this coupon");
+                throw new BusinessException("Order value does not meet minimum order value for this coupon");
             }
         }
 

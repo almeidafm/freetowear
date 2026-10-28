@@ -1,6 +1,7 @@
 package com.freetowear.service;
 
 import com.freetowear.entity.Coupon;
+import com.freetowear.exception.ResourceNotFoundException;
 import com.freetowear.repository.CouponRepository;
 import com.freetowear.dto.request.coupon.CreateCouponRequest;
 import com.freetowear.dto.request.coupon.UpdateCouponRequest;
@@ -48,14 +49,14 @@ public class CouponService {
 
     public CouponResponse getCouponById(String id) {
         Coupon coupon = couponRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Coupon not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Coupon not found: " + id));
         return new CouponResponse(coupon);
     }
 
     public CouponResponse getCouponByCode(String code) {
         Coupon coupon = couponRepository.findByCodeIgnoreCase(code)
                 .or(() -> couponRepository.findById(code))
-                .orElseThrow(() -> new RuntimeException("Coupon not found: " + code));
+                .orElseThrow(() -> new ResourceNotFoundException("Coupon not found: " + code));
         return new CouponResponse(coupon);
     }
 
