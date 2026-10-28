@@ -3,7 +3,6 @@ package com.freetowear.service;
 import com.freetowear.dto.response.account.AddressResponse;
 import com.freetowear.entity.Address;
 import com.freetowear.entity.Customer;
-import com.freetowear.entity.VerificationCode;
 import com.freetowear.enums.VerificationType;
 import com.freetowear.repository.AddressRepository;
 import com.freetowear.repository.CustomerRepository;
@@ -13,16 +12,13 @@ import com.freetowear.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -59,33 +55,35 @@ public class AccountService {
     }
 
     public void updateAccount(String id, UpdateAccountRequest request) {
-        customerRepository.findById(id).ifPresent(customer -> {
-            if (request.getName() != null && !request.getName().isEmpty())
-                customer.setName(request.getName());
-            if (request.getCpf() != null && !request.getCpf().isEmpty())
-                customer.setCpf(request.getCpf());
-            if (request.getBirthDate() != null && !request.getBirthDate().isEmpty())
-                customer.setBirthDate(parseAndValidateAge(request.getBirthDate()));
-            if (request.getPhone() != null && !request.getPhone().isEmpty())
-                customer.setPhone(request.getPhone());
-            customerRepository.save(customer);
-        });
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+
+        if (request.getName() != null && !request.getName().isEmpty())
+            customer.setName(request.getName());
+        if (request.getCpf() != null && !request.getCpf().isEmpty())
+            customer.setCpf(request.getCpf());
+        if (request.getBirthDate() != null && !request.getBirthDate().isEmpty())
+            customer.setBirthDate(parseAndValidateAge(request.getBirthDate()));
+        if (request.getPhone() != null && !request.getPhone().isEmpty())
+            customer.setPhone(request.getPhone());
+        customerRepository.save(customer);
     }
 
     public void addAddress(String id, AddAddressRequest request) {
-        customerRepository.findById(id).ifPresent(customer -> {
-            Address address = new Address();
-            address.setCustomer(customer);
-            address.setCep(request.getCep());
-            address.setStreet(request.getStreet());
-            address.setNumber(request.getNumber());
-            address.setComplement(request.getComplement());
-            address.setNeighborhood(request.getNeighborhood());
-            address.setCity(request.getCity());
-            address.setState(request.getState());
-            address.setDefaultAddress(request.getDefaultAddress());
-            addressRepository.save(address);
-        });
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+
+        Address address = new Address();
+        address.setCustomer(customer);
+        address.setCep(request.getCep());
+        address.setStreet(request.getStreet());
+        address.setNumber(request.getNumber());
+        address.setComplement(request.getComplement());
+        address.setNeighborhood(request.getNeighborhood());
+        address.setCity(request.getCity());
+        address.setState(request.getState());
+        address.setDefaultAddress(request.getDefaultAddress());
+        addressRepository.save(address);
     }
 
     public List<AddressResponse> getAddresses(String idCustomer) {
@@ -188,13 +186,14 @@ public class AccountService {
     }
 
     public void deleteAccount(String id, DeleteAccountRequest request) {
-        customerRepository.findById(id).ifPresent(customer -> {
-            if (!passwordEncoder.matches(request.getPassword(), customer.getPassword()))
-                throw new IllegalArgumentException("Invalid password");
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
-            customer.setActive(false);
-            customerRepository.save(customer);
-        });
+        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword()))
+            throw new IllegalArgumentException("Invalid password");
+
+        customer.setActive(false);
+        customerRepository.save(customer);
     }
 
     public String requestEmailVerification(String id) {
