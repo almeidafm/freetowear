@@ -243,6 +243,7 @@
 <script th:if="${checkoutAvailable}" th:src="@{/js/checkout-state.js}"></script>
 <script th:if="${checkoutAvailable}" th:src="@{/js/checkout-navigation.js}"></script>
 <script th:if="${checkoutAvailable}" th:src="@{/js/checkout-forms.js}"></script>
+<script th:if="${checkoutAvailable}" th:src="@{/js/cep.js}"></script>
 <script th:if="${checkoutAvailable}">
     loadAddresses();
     updateStep(1);
