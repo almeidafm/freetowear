@@ -33,13 +33,6 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/{id}")
-    public String getAccount(@PathVariable String id, Model model) {
-        CustomerResponse customer = accountService.getAccount(id);
-        model.addAttribute("customer", customer);
-        return "account/account";
-    }
-
     @PostMapping("/register")
     public String register(
             @Valid @ModelAttribute("request") RegisterRequest request,

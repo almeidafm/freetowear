@@ -3,7 +3,6 @@ package com.freetowear.controller.web;
 import com.freetowear.dto.request.account.RegisterRequest;
 import com.freetowear.dto.response.category.CategoryResponse;
 import com.freetowear.dto.response.product.ProductResponse;
-import com.freetowear.entity.Order;
 import com.freetowear.infra.security.CustomerDetails;
 import com.freetowear.service.AccountService;
 import com.freetowear.service.CategoryService;
@@ -13,14 +12,12 @@ import com.freetowear.service.ProductService;
 import com.freetowear.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -78,8 +75,8 @@ public class WebController {
         return "auth/login";
     }
 
-    @GetMapping("/account")
-    public String account() { return "account/account"; }
+    @GetMapping("/account/edit")
+    public String editAccount() { return "account/account"; }
 
     @GetMapping("/cart")
     public String cart(
@@ -197,8 +194,8 @@ public class WebController {
         return "account/order-details";
     }
 
-    @GetMapping("/account/profile")
-    public String accountProfile(
+    @GetMapping("/account")
+    public String account(
             @AuthenticationPrincipal CustomerDetails customerDetails,
             Model model
     ) {
