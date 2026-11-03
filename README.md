@@ -46,7 +46,7 @@ FreeToWear provides an online storefront for customers to discover products, man
 
 - Account registration, login, profile updates, email changes, and account deactivation
 - Email verification and password recovery by email
-- Multiple delivery addresses
+- Multiple delivery addresses with automatic address autocompletion via CEP (using ViaCEP with BrasilAPI fallback)
 - Product browsing by category, product search, and product details
 - Product ratings and reviews, including review images
 - Cart management, quantity updates, checkout, and order history
