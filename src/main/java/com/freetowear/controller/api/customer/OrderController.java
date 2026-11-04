@@ -67,14 +67,16 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public OrderResponse getOrderById(@PathVariable String id) {
-        return orderService.getOrderById(id);
+    public OrderResponse getOrderById(@AuthenticationPrincipal CustomerDetails customerDetails,
+                                     @PathVariable String id) {
+        return orderService.getOrderById(id, customerDetails.getId());
     }
 
     @GetMapping("/{id}/tracking")
     @ResponseBody
-    public OrderTrackingResponse getOrderTracking(@PathVariable String id) {
-        return orderService.getOrderTracking(id);
+    public OrderTrackingResponse getOrderTracking(@AuthenticationPrincipal CustomerDetails customerDetails,
+                                                  @PathVariable String id) {
+        return orderService.getOrderTracking(id, customerDetails.getId());
     }
 
     @PostMapping("/{id}/tracking")
@@ -92,7 +94,7 @@ public class OrderController {
             @AuthenticationPrincipal CustomerDetails customerDetails,
             @RequestParam String orderId
     ) {
-        orderService.cancelOrder(orderId);
+        orderService.cancelOrder(orderId, customerDetails.getId());
         return ResponseEntity.ok(Map.of("message", "Order cancelled successfully"));
     }
 

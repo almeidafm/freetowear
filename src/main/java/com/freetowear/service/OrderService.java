@@ -39,6 +39,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class OrderService {
@@ -101,7 +102,14 @@ public class OrderService {
         Product product = productRepository.findById(request.getIdProduct())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        ProductVariation variation = product.getVariations()
+        if (!Boolean.TRUE.equals(product.getActive())) {
+            throw new BusinessException("Product is not active");
+        }
+        if (request.getQuantity() == null || request.getQuantity() < 1) {
+            throw new BusinessException("Quantity must be at least 1");
+        }
+
+        ProductVariation variation = Optional.ofNullable(product.getVariations()).orElse(List.of())
                 .stream()
                 .filter(productVariation ->
                         productVariation.getId().equals(request.getIdVariation()))
@@ -109,17 +117,27 @@ public class OrderService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Variation not found for this product"));
 
-        OrderItem item = new OrderItem();
+        int availableStock = Optional.ofNullable(variation.getStock()).orElse(0);
+        OrderItem existingItem = orderItemRepository.findAllByOrderId(order.getId()).stream()
+                .filter(item -> isMatchingCartItem(item, product.getId(), variation.getId()))
+                .findFirst().orElse(null);
+        if (request.getQuantity() > availableStock) {
+            throw new BusinessException("Insufficient stock");
+        }
+
+        OrderItem item = existingItem != null ? existingItem : new OrderItem();
 
         item.setOrder(order);
         item.setProduct(product);
         item.setProductVariation(variation);
-        item.setQuantity(request.getQuantity());
+        int newQuantity = (existingItem == null ? 0 : Optional.ofNullable(existingItem.getQuantity()).orElse(0))
+                + request.getQuantity();
+        item.setQuantity(newQuantity);
         item.setUnitPrice(product.getPrice());
 
         item.setSubtotal(
                 product.getPrice()
-                        .multiply(BigDecimal.valueOf(request.getQuantity()))
+                        .multiply(BigDecimal.valueOf(newQuantity))
         );
 
         boolean hasDescription = request.getDescription() != null;
@@ -132,20 +150,34 @@ public class OrderService {
                 request.getCustomerCustomization() != null
                         && !request.getCustomerCustomization().isEmpty();
 
+        String uploadedCustomizationId = null;
         if (hasCustomization) {
-            String privateId = cloudinaryService.uploadPrivate(
+            uploadedCustomizationId = cloudinaryService.uploadPrivate(
                     request.getCustomerCustomization(),
                     "customization"
             );
 
-            item.setCustomerCustomizationId(privateId);
+            item.setCustomerCustomizationId(uploadedCustomizationId);
         }
 
-        orderItemRepository.save(item);
+        try {
+            orderItemRepository.save(item);
+        } catch (RuntimeException exception) {
+            if (uploadedCustomizationId != null) cloudinaryService.delete(uploadedCustomizationId);
+            throw exception;
+        }
 
-        order.setProductsValue(
-                order.getProductsValue().add(item.getSubtotal())
-        );
+        variation.setStock(availableStock - request.getQuantity());
+
+        BigDecimal currentProductsValue = Optional.ofNullable(order.getProductsValue())
+                .orElse(BigDecimal.ZERO);
+        order.setProductsValue(currentProductsValue.add(
+                product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))));
+        if (order.getCoupon() != null) {
+            order.setDiscountValue(calculateDiscount(order.getCoupon(), order.getProductsValue()));
+        } else {
+            order.setDiscountValue(BigDecimal.ZERO);
+        }
 
         orderRepository.save(order);
     }
@@ -173,6 +205,14 @@ public class OrderService {
                 )
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
+        if (orderItemRepository.findAllByOrderId(order.getId()).isEmpty()) {
+            throw new BusinessException("Cart cannot be empty");
+        }
+        if (request.getMethod() == null) throw new BusinessException("Payment method is required");
+        if (request.getInstallments() != null && (request.getInstallments() < 1 || request.getInstallments() > 12)) {
+            throw new BusinessException("Installments must be between 1 and 12");
+        }
+
         Address address = addressRepository
                 .findById(request.getIdAddress())
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
@@ -185,8 +225,6 @@ public class OrderService {
         }
 
         order.setDeliveryAddress(address);
-
-        recalculateProductsValue(order);
 
         if (request.getIdCoupon() != null && !request.getIdCoupon().isBlank()) {
             Coupon coupon = getValidCoupon(customerId, request.getIdCoupon());
@@ -202,6 +240,10 @@ public class OrderService {
         payment.setMethod(request.getMethod());
         payment.setAmountPaid(order.getTotalValue());
         payment.setStatus(PaymentStatus.PENDING);
+
+        if (paymentRepository.findByOrderId(order.getId()).isPresent()) {
+            throw new BusinessException("Order already has a payment");
+        }
 
         if (request.getInstallments() != null) {
             payment.setInstallments(request.getInstallments());
@@ -298,6 +340,14 @@ public class OrderService {
         return new OrderResponse(order);
     }
 
+    public OrderResponse getOrderById(String orderId, String customerId) {
+        Order order = orderRepository.findById(orderId)
+                .filter(o -> o.getCustomer() != null && Objects.equals(o.getCustomer().getId(), customerId))
+                .filter(o -> o.getStatus() != OrderStatus.CART)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        return new OrderResponse(order);
+    }
+
     @Transactional(readOnly = true)
     public OrderTrackingResponse getOrderTracking(String orderId) {
         Order order = orderRepository.findById(orderId)
@@ -307,6 +357,15 @@ public class OrderService {
                 order,
                 orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(orderId)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTrackingResponse getOrderTracking(String orderId, String customerId) {
+        Order order = orderRepository.findById(orderId)
+                .filter(o -> o.getCustomer() != null && Objects.equals(o.getCustomer().getId(), customerId))
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        return new OrderTrackingResponse(order,
+                orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(orderId));
     }
 
     @Transactional
@@ -319,6 +378,8 @@ public class OrderService {
         OrderTrackingStatus currentStatus = trackingEvents.isEmpty()
                 ? null
                 : trackingEvents.get(trackingEvents.size() - 1).getTrackingStatus();
+
+        if (trackingStatus == null) throw new BusinessException("Tracking status is required");
 
         if (currentStatus == null) {
             throw new IllegalArgumentException("Order has no current tracking status");
@@ -365,6 +426,9 @@ public class OrderService {
         if (order.getStatus() == OrderStatus.CANCELLED) {
             throw new BusinessException("Order is already cancelled");
         }
+        if (order.getStatus() == OrderStatus.DELIVERED || order.getStatus() == OrderStatus.ABANDONED) {
+            throw new BusinessException("Order cannot be cancelled in its current state");
+        }
 
         List<OrderTracking> trackingEvents = orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(orderId);
 
@@ -383,8 +447,17 @@ public class OrderService {
         }
 
         order.setStatus(OrderStatus.CANCELLED);
+        restoreStock(order);
         orderRepository.save(order);
         saveTracking(order, OrderTrackingStatus.CANCELLED);
+    }
+
+    @Transactional
+    public void cancelOrder(String orderId, String customerId) {
+        Order order = orderRepository.findById(orderId)
+                .filter(o -> o.getCustomer() != null && Objects.equals(o.getCustomer().getId(), customerId))
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        cancelOrder(orderId);
     }
 
     @Transactional
@@ -413,6 +486,14 @@ public class OrderService {
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
 
+        ProductVariation variation = item.getProductVariation();
+        int oldQuantity = Optional.ofNullable(item.getQuantity()).orElse(0);
+        int currentStock = Optional.ofNullable(variation.getStock()).orElse(0);
+        int quantityDelta = quantity - oldQuantity;
+        if (quantityDelta > currentStock) {
+            throw new BusinessException("Insufficient stock");
+        }
+        variation.setStock(currentStock - quantityDelta);
         item.setQuantity(quantity);
 
         item.setSubtotal(
@@ -447,6 +528,8 @@ public class OrderService {
 
         orderItemRepository.delete(item);
 
+        restoreStock(item);
+
         recalculateProductsValue(order);
     }
 
@@ -455,7 +538,7 @@ public class OrderService {
         BigDecimal productsValue = orderItemRepository
                 .findAllByOrderId(order.getId())
                 .stream()
-                .map(OrderItem::getSubtotal)
+                .map(item -> Optional.ofNullable(item.getSubtotal()).orElse(BigDecimal.ZERO))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         order.setProductsValue(productsValue);
@@ -475,12 +558,19 @@ public class OrderService {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal discount = BigDecimal.ZERO;
+        if (coupon.getDiscountType() == null || coupon.getDiscountValue().signum() < 0) {
+            throw new BusinessException("Invalid coupon discount");
+        }
+        if (coupon.getDiscountType() == DiscountType.PERCENTAGE
+                && coupon.getDiscountValue().compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new BusinessException("Percentage discount cannot exceed 100");
+        }
+        BigDecimal discount;
         if (coupon.getDiscountType() == DiscountType.PERCENTAGE) {
             discount = productsValue
                     .multiply(coupon.getDiscountValue())
                     .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-        } else if (coupon.getDiscountType() == DiscountType.FIXED) {
+        } else {
             discount = coupon.getDiscountValue();
         }
 
@@ -535,6 +625,8 @@ public class OrderService {
             throw new BusinessException("Coupon is not active");
         }
 
+        validateCouponDiscount(coupon);
+
         LocalDate today = LocalDate.now();
         if (coupon.getStartDate() != null && today.isBefore(coupon.getStartDate())) {
             throw new BusinessException("Coupon is not yet valid");
@@ -548,12 +640,34 @@ public class OrderService {
             Order cart = orderRepository
                     .findByCustomerIdAndStatus(customerId, OrderStatus.CART)
                     .orElse(null);
-            if (cart != null && cart.getProductsValue() != null
-                    && cart.getProductsValue().compareTo(coupon.getMinimumOrderValue()) < 0) {
+            if (cart == null) throw new BusinessException("Cart not found");
+            if (cart.getProductsValue() == null
+                    || cart.getProductsValue().compareTo(coupon.getMinimumOrderValue()) < 0) {
                 throw new BusinessException("Order value does not meet minimum order value for this coupon");
             }
         }
 
         return coupon;
+    }
+
+    private void validateCouponDiscount(Coupon coupon) {
+        if (coupon.getDiscountType() == null || coupon.getDiscountValue() == null
+                || coupon.getDiscountValue().signum() < 0
+                || (coupon.getDiscountType() == DiscountType.PERCENTAGE
+                && coupon.getDiscountValue().compareTo(BigDecimal.valueOf(100)) > 0)) {
+            throw new BusinessException("Invalid coupon discount");
+        }
+    }
+
+    private void restoreStock(Order order) {
+        orderItemRepository.findAllByOrderId(order.getId()).forEach(this::restoreStock);
+    }
+
+    private void restoreStock(OrderItem item) {
+        if (item.getProductVariation() != null) {
+            ProductVariation variation = item.getProductVariation();
+            variation.setStock(Optional.ofNullable(variation.getStock()).orElse(0)
+                    + Optional.ofNullable(item.getQuantity()).orElse(0));
+        }
     }
 }
