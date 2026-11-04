@@ -83,13 +83,39 @@ class CouponServiceTest {
         }
 
         @Test
-        @DisplayName("Should propagate date parsing failure and not save coupon")
+        @DisplayName("Should reject invalid dates and not save coupon")
         void shouldNotCreateCouponWhenDateIsInvalid() {
             CreateCouponRequest request = new CreateCouponRequest("SAVE10", null,
                     DiscountType.FIXED, BigDecimal.TEN, null, "invalid", "2026-12-31");
 
             assertThatThrownBy(() -> couponService.createCoupon(request))
-                    .isInstanceOf(java.time.format.DateTimeParseException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Invalid coupon date");
+            verify(couponRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldNormalizeCodeAndRejectInvalidDiscount() {
+            CreateCouponRequest request = new CreateCouponRequest(" save10 ", null,
+                    DiscountType.PERCENTAGE, new BigDecimal("101"), null,
+                    "2026-01-01", "2026-12-31");
+
+            assertThatThrownBy(() -> couponService.createCoupon(request))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Percentage discount cannot exceed 100");
+            verify(couponRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldRejectDuplicateCouponCode() {
+            Coupon existing = aCoupon().withId("coupon-1").withCode("SAVE10").build();
+            when(couponRepository.findByCodeIgnoreCase("SAVE10")).thenReturn(Optional.of(existing));
+            CreateCouponRequest request = new CreateCouponRequest(" save10 ", null,
+                    DiscountType.FIXED, BigDecimal.TEN, null, "2026-01-01", "2026-12-31");
+
+            assertThatThrownBy(() -> couponService.createCoupon(request))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Coupon code already in use");
             verify(couponRepository, never()).save(any());
         }
     }
@@ -146,11 +172,13 @@ class CouponServiceTest {
         }
 
         @Test
-        @DisplayName("Should not save when coupon does not exist")
+        @DisplayName("Should throw when coupon does not exist")
         void shouldNotUpdateCouponWhenCouponDoesNotExist() {
             when(couponRepository.findById("missing")).thenReturn(Optional.empty());
 
-            couponService.updateCoupon("missing", new UpdateCouponRequest("NEW", null, null, null, null, null, null, null));
+            assertThatThrownBy(() -> couponService.updateCoupon("missing", new UpdateCouponRequest("NEW", null, null, null, null, null, null, null)))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessage("Coupon not found: missing");
 
             verify(couponRepository, never()).save(any());
         }
