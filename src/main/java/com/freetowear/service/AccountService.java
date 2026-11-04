@@ -19,9 +19,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class AccountService {
+
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d]).{8,}$");
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -43,13 +47,15 @@ public class AccountService {
     }
 
     public void register(RegisterRequest request) {
+        validateRegistration(request);
+        if (customerRepository.existsByEmail(request.getEmail().trim())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
         Customer customer = new Customer();
         customer.setName(request.getName());
-        customer.setEmail(request.getEmail());
+        customer.setEmail(request.getEmail().trim());
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
-        if (Boolean.TRUE.equals(request.getTermsAccepted())) {
-            customer.setTermsAndConditionsAcceptedAt(LocalDateTime.now());
-        }
+        customer.setTermsAndConditionsAcceptedAt(LocalDateTime.now());
         customer.setActive(true);
         customerRepository.save(customer);
     }
@@ -72,6 +78,7 @@ public class AccountService {
     public void addAddress(String id, AddAddressRequest request) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+        validateAddress(request);
 
         Address address = new Address();
         address.setCustomer(customer);
@@ -82,11 +89,20 @@ public class AccountService {
         address.setNeighborhood(request.getNeighborhood());
         address.setCity(request.getCity());
         address.setState(request.getState());
-        address.setDefaultAddress(request.getDefaultAddress());
+        boolean isDefault = Boolean.TRUE.equals(request.getDefaultAddress());
+        if (isDefault) {
+            List<Address> addresses = addressRepository.findAllByCustomerId(id);
+            addresses.forEach(existing -> existing.setDefaultAddress(false));
+            addressRepository.saveAll(addresses);
+        }
+        address.setDefaultAddress(isDefault);
         addressRepository.save(address);
     }
 
     public List<AddressResponse> getAddresses(String idCustomer) {
+        if (!customerRepository.existsById(idCustomer)) {
+            throw new ResourceNotFoundException("Account not found with id: " + idCustomer);
+        }
         return addressRepository.findAllByCustomerId(idCustomer)
                 .stream()
                 .map(AddressResponse::new)
@@ -120,8 +136,14 @@ public class AccountService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
-        if (!customer.getEmail().equals(request.getCurrentEmail())) {
+        if (request == null || !customer.getEmail().equals(request.getCurrentEmail())) {
             throw new IllegalArgumentException("Current email does not match");
+        }
+
+        if (!isValidEmail(request.getCurrentEmail())
+                || request.getPassword() == null || request.getPassword().isBlank()
+                || !isValidEmail(request.getNewEmail())) {
+            throw new IllegalArgumentException("Invalid email change request");
         }
 
         if (!passwordEncoder.matches(
@@ -142,8 +164,18 @@ public class AccountService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
+        if (request == null || request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
+            throw new IllegalArgumentException("Current password is required");
+        }
+
         if (!passwordEncoder.matches(request.getCurrentPassword(), customer.getPassword()))
             throw new IllegalArgumentException("Current password is incorrect");
+
+        validateNewPassword(request.getNewPassword());
+
+        if (passwordEncoder.matches(request.getNewPassword(), customer.getPassword())) {
+            throw new IllegalArgumentException("New password must be different");
+        }
 
         customer.setPassword(passwordEncoder.encode(request.getNewPassword()));
         customerRepository.save(customer);
@@ -151,9 +183,11 @@ public class AccountService {
 
     @Transactional
     public void resetPassword(ForgotPasswordRequest request) {
-
+        if (request == null) throw new IllegalArgumentException("Contato ou código inválido");
         Customer customer = customerRepository.findByEmail(request.getContact())
                 .orElseThrow(() -> new IllegalArgumentException("Contato ou código inválido"));
+
+        validateNewPassword(request.getNewPassword());
 
         verificationCodeService.verify(customer, VerificationType.PASSWORD_RESET, request.getCode());
 
@@ -179,6 +213,8 @@ public class AccountService {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("E-mail ou código inválido"));
 
+        validateNewPassword(newPassword);
+
         verificationCodeService.verify(customer, VerificationType.PASSWORD_RESET, code);
 
         customer.setPassword(passwordEncoder.encode(newPassword));
@@ -189,6 +225,9 @@ public class AccountService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
 
+        if (!Boolean.TRUE.equals(customer.getActive())) {
+            throw new IllegalArgumentException("Account is already inactive");
+        }
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword()))
             throw new IllegalArgumentException("Invalid password");
 
@@ -212,6 +251,7 @@ public class AccountService {
         );
     }
 
+    @Transactional
     public void verifyEmail(String id, String code) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() ->
@@ -230,5 +270,42 @@ public class AccountService {
 
         customer.setEmailVerified(true);
         customerRepository.save(customer);
+    }
+
+    private void validateRegistration(RegisterRequest request) {
+        if (request == null || request.getName() == null || request.getName().isBlank()
+                || !isValidEmail(request.getEmail()) || !isValidPassword(request.getPassword())
+                || !Boolean.TRUE.equals(request.getTermsAccepted())) {
+            throw new IllegalArgumentException("Invalid registration data");
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        return email != null && EMAIL_PATTERN.matcher(email.trim()).matches();
+    }
+
+    private boolean isValidPassword(String password) {
+        return password != null && PASSWORD_PATTERN.matcher(password).matches();
+    }
+
+    private void validateNewPassword(String password) {
+        if (!isValidPassword(password)) throw new IllegalArgumentException("Invalid password");
+    }
+
+    private void validatePasswordChange(ChangePasswordRequest request) {
+        if (request == null || request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
+            throw new IllegalArgumentException("Current password is required");
+        }
+        validateNewPassword(request.getNewPassword());
+    }
+
+    private void validateAddress(AddAddressRequest request) {
+        if (request == null || request.getCep() == null || !request.getCep().matches("\\d{8}")
+                || request.getStreet() == null || request.getStreet().isBlank()
+                || request.getNeighborhood() == null || request.getNeighborhood().isBlank()
+                || request.getCity() == null || request.getCity().isBlank()
+                || request.getState() == null) {
+            throw new IllegalArgumentException("Invalid address data");
+        }
     }
 }
