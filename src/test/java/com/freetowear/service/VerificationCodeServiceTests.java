@@ -86,6 +86,26 @@ class VerificationCodeServiceTest {
     }
 
     @Test
+    void shouldSendPasswordResetCode() {
+        Customer customer = customer();
+        when(verificationCodeRepository.findByCustomerAndTypeAndUsedFalseAndInvalidatedFalse(
+                customer, VerificationType.PASSWORD_RESET)).thenReturn(List.of());
+
+        verificationCodeService.sendPasswordResetCode(customer);
+
+        verify(emailService).sendPasswordResetEmail(org.mockito.ArgumentMatchers.eq(customer.getEmail()), any());
+    }
+
+    @Test
+    void shouldRejectMissingCustomerOrTypeWhenGenerating() {
+        assertThatThrownBy(() -> verificationCodeService.generate(null, VerificationType.EMAIL))
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Customer is required");
+        assertThatThrownBy(() -> verificationCodeService.generate(customer(), null))
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Verification type is required");
+        verifyNoInteractions(verificationCodeRepository);
+    }
+
+    @Test
     void shouldIncreaseAttemptsAndRejectWrongCode() {
         Customer customer = customer();
         VerificationCode verificationCode = code("123456", 1);
@@ -112,8 +132,9 @@ class VerificationCodeServiceTest {
 
         verificationCodeService.verify(customer, VerificationType.EMAIL, "123456");
 
-        assertThat(verificationCode.getAttempts()).isEqualTo(1);
+        assertThat(verificationCode.getAttempts()).isZero();
         assertThat(verificationCode.isUsed()).isTrue();
+        assertThat(verificationCode.isInvalidated()).isTrue();
         verify(verificationCodeRepository).save(verificationCode);
     }
 
@@ -157,5 +178,13 @@ class VerificationCodeServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Número máximo de tentativas excedido");
         verify(verificationCodeRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldDeleteExpiredCodes() {
+        when(verificationCodeRepository.deleteByExpiresAtBefore(any())).thenReturn(3);
+
+        assertThat(verificationCodeService.cleanupExpiredCodes()).isEqualTo(3);
+        verify(verificationCodeRepository).deleteByExpiresAtBefore(any());
     }
 }
