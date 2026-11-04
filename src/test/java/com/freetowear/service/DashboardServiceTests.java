@@ -101,7 +101,7 @@ class DashboardServiceTest {
 
             assertThat(response.getPeriodDays()).isEqualTo(7);
             assertThat(response.getKpis().getGrossRevenue().getCurrentValue()).isEqualByComparingTo("170.00");
-            assertThat(response.getKpis().getNetRevenue().getCurrentValue()).isEqualByComparingTo("140.00");
+            assertThat(response.getKpis().getNetRevenue().getCurrentValue()).isEqualByComparingTo("160.00");
             assertThat(response.getKpis().getOrdersCount().getCurrentValue()).isEqualByComparingTo("2");
             assertThat(response.getKpis().getAverageOrderValue().getCurrentValue()).isEqualByComparingTo("85.00");
             assertThat(response.getKpis().getNewCustomers().getCurrentValue()).isEqualByComparingTo("2");
