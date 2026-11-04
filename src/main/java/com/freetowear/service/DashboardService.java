@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 @Service
 public class DashboardService {
 
+    private static final int DEFAULT_WINDOW_DAYS = 30;
+    private static final int MAX_WINDOW_DAYS = 3650;
+
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final ReviewRepository reviewRepository;
@@ -49,7 +52,7 @@ public class DashboardService {
     }
 
     public DashboardResponse getDashboardMetrics(int days) {
-        int windowDays = days > 0 ? days : 30;
+        int windowDays = days <= 0 ? DEFAULT_WINDOW_DAYS : Math.min(days, MAX_WINDOW_DAYS);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime currentStart = now.minusDays(windowDays);
         LocalDateTime currentEnd = now;
@@ -60,9 +63,11 @@ public class DashboardService {
         List<Order> prevOrders = orderRepository.findByCreatedAtBetween(prevStart, prevEnd);
 
         List<Order> validCurrent = currentOrders.stream()
+                .filter(Objects::nonNull)
                 .filter(o -> !EXCLUDED_STATUSES.contains(o.getStatus()))
                 .toList();
         List<Order> validPrev = prevOrders.stream()
+                .filter(Objects::nonNull)
                 .filter(o -> !EXCLUDED_STATUSES.contains(o.getStatus()))
                 .toList();
 
@@ -80,7 +85,7 @@ public class DashboardService {
                 .map(o -> {
                     BigDecimal p = safe(o.getProductsValue());
                     BigDecimal d = safe(o.getDiscountValue());
-                    BigDecimal net = p.subtract(d);
+                    BigDecimal net = p.add(safe(o.getShippingPrice())).subtract(d);
                     return net.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : net;
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -131,8 +136,8 @@ public class DashboardService {
         // 9. Avg Rating
         List<Review> currentReviews = reviewRepository.findByCreatedAtBetween(currentStart, currentEnd);
         List<Review> prevReviews = reviewRepository.findByCreatedAtBetween(prevStart, prevEnd);
-        Double avgRatingCurrent = currentReviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
-        Double avgRatingPrev = prevReviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
+        Double avgRatingCurrent = averageRating(currentReviews);
+        Double avgRatingPrev = averageRating(prevReviews);
         KpiMetricResponse avgRatingKpi = KpiMetricResponse.of(avgRatingCurrent, avgRatingPrev);
 
         DashboardKpisResponse kpis = DashboardKpisResponse.builder()
@@ -173,7 +178,7 @@ public class DashboardService {
 
     private Double calculateRepeatRate(List<Order> orders) {
         Map<String, Long> customerOrders = orders.stream()
-                .filter(o -> o.getCustomer() != null && o.getCustomer().getId() != null)
+                .filter(o -> o != null && o.getCustomer() != null && o.getCustomer().getId() != null)
                 .collect(Collectors.groupingBy(o -> o.getCustomer().getId(), Collectors.counting()));
         if (customerOrders.isEmpty()) {
             return 0.0;
@@ -184,7 +189,8 @@ public class DashboardService {
 
     private Double calculateCancellationRate(List<Order> orders) {
         List<Order> placedOrders = orders.stream()
-                .filter(o -> o.getStatus() != OrderStatus.CART && o.getStatus() != OrderStatus.ABANDONED)
+                .filter(o -> o != null && o.getStatus() != null
+                        && o.getStatus() != OrderStatus.CART && o.getStatus() != OrderStatus.ABANDONED)
                 .toList();
         if (placedOrders.isEmpty()) {
             return 0.0;
@@ -217,8 +223,9 @@ public class DashboardService {
         List<Object[]> raw = orderItemRepository.findRevenueByCategory(start, end, EXCLUDED_STATUSES);
         List<CategoryRevenueResponse> result = new ArrayList<>();
         for (Object[] row : raw) {
+            if (row == null || row.length < 3) continue;
             String category = row[0] != null ? row[0].toString() : "Geral";
-            BigDecimal rev = row[1] instanceof BigDecimal b ? b : (row[1] != null ? new BigDecimal(row[1].toString()) : BigDecimal.ZERO);
+            BigDecimal rev = toBigDecimal(row[1]);
             Long qty = row[2] instanceof Number n ? n.longValue() : 0L;
             result.add(new CategoryRevenueResponse(category, rev, qty));
         }
@@ -227,6 +234,7 @@ public class DashboardService {
 
     private List<StateRevenueResponse> calculateStateRevenue(List<Order> orders) {
         Map<String, List<Order>> ordersByState = orders.stream()
+                .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(o -> {
                     if (o.getDeliveryAddress() != null && o.getDeliveryAddress().getState() != null) {
                         return o.getDeliveryAddress().getState().name();
@@ -272,6 +280,7 @@ public class DashboardService {
 
         LocalDateTime start12m = currentYearMonth.minusMonths(11).atDay(1).atStartOfDay();
         List<Order> orders = orderRepository.findByCreatedAtGreaterThanEqual(start12m).stream()
+                .filter(Objects::nonNull)
                 .filter(o -> !EXCLUDED_STATUSES.contains(o.getStatus()))
                 .toList();
 
@@ -279,8 +288,8 @@ public class DashboardService {
             YearMonth targetMonth = currentYearMonth.minusMonths(i);
             labels.add(targetMonth.format(formatter));
             BigDecimal monthRev = orders.stream()
-                    .filter(o -> YearMonth.from(o.getCreatedAt()).equals(targetMonth))
-                    .map(o -> safe(o.getTotalValue()))
+                    .filter(o -> o.getCreatedAt() != null && YearMonth.from(o.getCreatedAt()).equals(targetMonth))
+                    .map(this::grossRevenue)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             data.add(monthRev);
         }
@@ -300,10 +309,8 @@ public class DashboardService {
             YearMonth targetMonth = currentYearMonth.minusMonths(i);
             labels.add(targetMonth.format(formatter));
             Double avg = reviews.stream()
-                    .filter(r -> YearMonth.from(r.getCreatedAt()).equals(targetMonth))
-                    .mapToInt(Review::getRating)
-                    .average()
-                    .orElse(0.0);
+                    .filter(r -> r != null && r.getCreatedAt() != null && r.getRating() != null)
+                    .mapToInt(Review::getRating).average().orElse(0.0);
             data.add(BigDecimal.valueOf(avg).setScale(1, RoundingMode.HALF_UP));
         }
         return new MonthlyTrendResponse(labels, data);
@@ -317,5 +324,22 @@ public class DashboardService {
 
     private BigDecimal safe(BigDecimal value) {
         return value != null ? value : BigDecimal.ZERO;
+    }
+
+    private BigDecimal grossRevenue(Order order) {
+        return safe(order.getProductsValue()).add(safe(order.getShippingPrice()));
+    }
+
+    private Double averageRating(List<Review> reviews) {
+        return reviews.stream().filter(Objects::nonNull).map(Review::getRating)
+                .filter(Objects::nonNull).mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+
+    private BigDecimal toBigDecimal(Object value) {
+        if (value == null) return BigDecimal.ZERO;
+        if (value instanceof BigDecimal decimal) return decimal;
+        if (value instanceof Number number) return BigDecimal.valueOf(number.doubleValue());
+        try { return new BigDecimal(value.toString()); }
+        catch (NumberFormatException exception) { return BigDecimal.ZERO; }
     }
 }
