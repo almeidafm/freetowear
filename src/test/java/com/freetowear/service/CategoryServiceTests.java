@@ -4,6 +4,7 @@ import com.freetowear.dto.request.category.CreateCategoryRequest;
 import com.freetowear.dto.request.category.UpdateCategoryRequest;
 import com.freetowear.dto.response.category.CategoryResponse;
 import com.freetowear.entity.Category;
+import com.freetowear.exception.ResourceNotFoundException;
 import com.freetowear.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -72,6 +74,26 @@ class CategoryServiceTest {
             verify(categoryRepository).save(captor.capture());
             assertThat(captor.getValue().getName()).isEqualTo("Shirts");
         }
+
+        @Test
+        void shouldRejectBlankOrOversizedNames() {
+            assertThatThrownBy(() -> categoryService.createCategory(new CreateCategoryRequest(" ")))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Category name is required");
+            assertThatThrownBy(() -> categoryService.createCategory(new CreateCategoryRequest("x".repeat(101))))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Category name cannot exceed 100 characters");
+            verify(categoryRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldRejectDuplicateName() {
+            when(categoryRepository.findByNameIgnoreCase("shirts"))
+                    .thenReturn(Optional.of(aCategory().withId("other").withName("Shirts").build()));
+
+            assertThatThrownBy(() -> categoryService.createCategory(new CreateCategoryRequest(" shirts ")))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Category name already in use");
+            verify(categoryRepository, never()).save(any());
+        }
     }
 
     @Nested
@@ -93,16 +115,14 @@ class CategoryServiceTest {
         }
 
         @Test
-        @DisplayName("Should update only active status when name is null or empty")
+        @DisplayName("Should reject blank category names")
         void shouldUpdateActiveWhenNameIsBlank() {
             Category category = aCategory().withName("Keep name").withActive(true).build();
             when(categoryRepository.findById("category-1")).thenReturn(Optional.of(category));
 
-            categoryService.updateCategory("category-1", new UpdateCategoryRequest("", false));
-
-            assertThat(category.getName()).isEqualTo("Keep name");
-            assertThat(category.getActive()).isFalse();
-            verify(categoryRepository).save(category);
+            assertThatThrownBy(() -> categoryService.updateCategory("category-1", new UpdateCategoryRequest("", false)))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Category name is required");
+            verify(categoryRepository, never()).save(any());
         }
 
         @Test
@@ -132,13 +152,13 @@ class CategoryServiceTest {
         }
 
         @Test
-        @DisplayName("Should not save when category does not exist")
+        @DisplayName("Should throw when category does not exist")
         void shouldNotUpdateCategoryWhenCategoryDoesNotExist() {
             when(categoryRepository.findById("missing")).thenReturn(Optional.empty());
 
-            categoryService.updateCategory("missing", new UpdateCategoryRequest("New name", false));
-
-            verify(categoryRepository, never()).save(any());
+            assertThatThrownBy(() -> categoryService.updateCategory("missing", new UpdateCategoryRequest("New name", false)))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessage("Category not found: missing");
         }
     }
 
