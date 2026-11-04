@@ -60,6 +60,7 @@ class OrderServiceTest {
         product.setPrice(new BigDecimal("25.00"));
         product.setVariations(List.of(variation));
         variation.setId("variation-1");
+        variation.setStock(10);
         variation.setProduct(product);
         return product;
     }
@@ -107,6 +108,56 @@ class OrderServiceTest {
             when(customerRepository.findById("missing")).thenReturn(Optional.empty());
             assertThatThrownBy(() -> orderService.addItem("missing", new AddItemToCartRequest()))
                     .isInstanceOf(ResourceNotFoundException.class).hasMessage("Customer not found");
+        }
+
+        @Test
+        void shouldRejectInvalidQuantityInactiveProductAndInsufficientStock() {
+            Customer customer = customer();
+            ProductVariation variation = new ProductVariation();
+            Product product = product(variation);
+            product.setActive(false);
+            when(customerRepository.findById("customer-1")).thenReturn(Optional.of(customer));
+            when(orderRepository.findByCustomerIdAndStatus("customer-1", OrderStatus.CART))
+                    .thenReturn(Optional.of(cart(customer)));
+            when(productRepository.findById("product-1")).thenReturn(Optional.of(product));
+
+            assertThatThrownBy(() -> orderService.addItem("customer-1",
+                    new AddItemToCartRequest("product-1", "variation-1", 0, null, null)))
+                    .isInstanceOf(BusinessException.class).hasMessage("Product is not active");
+
+            product.setActive(true);
+            assertThatThrownBy(() -> orderService.addItem("customer-1",
+                    new AddItemToCartRequest("product-1", "variation-1", 11, null, null)))
+                    .isInstanceOf(BusinessException.class).hasMessage("Insufficient stock");
+        }
+
+        @Test
+        void shouldMergeDuplicateCartItemAndReserveOnlyRequestedStock() throws IOException {
+            Customer customer = customer();
+            ProductVariation variation = new ProductVariation();
+            Product product = product(variation);
+            Order order = cart(customer);
+            OrderItem existing = new OrderItem();
+            existing.setProduct(product);
+            existing.setProductVariation(variation);
+            existing.setQuantity(2);
+            existing.setUnitPrice(product.getPrice());
+            existing.setSubtotal(new BigDecimal("50.00"));
+            variation.setStock(8);
+            when(customerRepository.findById("customer-1")).thenReturn(Optional.of(customer));
+            when(orderRepository.findByCustomerIdAndStatus("customer-1", OrderStatus.CART))
+                    .thenReturn(Optional.of(order));
+            when(productRepository.findById("product-1")).thenReturn(Optional.of(product));
+            when(orderItemRepository.findAllByOrderId("order-1")).thenReturn(List.of(existing));
+
+            orderService.addItem("customer-1",
+                    new AddItemToCartRequest("product-1", "variation-1", 3, null, null));
+
+            verify(orderItemRepository).save(existing);
+            verify(orderItemRepository, never()).delete(any());
+            assertThat(existing.getQuantity()).isEqualTo(5);
+            assertThat(existing.getSubtotal()).isEqualByComparingTo("125.00");
+            assertThat(variation.getStock()).isEqualTo(5);
         }
     }
 
@@ -229,6 +280,19 @@ class OrderServiceTest {
         }
 
         @Test
+        void shouldRejectNullTrackingStatus() {
+            Order order = cart(customer());
+            OrderTracking event = new OrderTracking();
+            event.setTrackingStatus(OrderTrackingStatus.SHIPPED);
+            when(orderRepository.findById("order-1")).thenReturn(Optional.of(order));
+            when(orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc("order-1"))
+                    .thenReturn(List.of(event));
+
+            assertThatThrownBy(() -> orderService.updateOrderTracking("order-1", null, null))
+                    .isInstanceOf(BusinessException.class).hasMessage("Tracking status is required");
+        }
+
+        @Test
         @DisplayName("Should cancel order before cancellation window")
         void shouldCancelOrderBeforeCancellationWindow() {
             Order order = cart(customer()); order.setStatus(OrderStatus.PAID);
@@ -241,6 +305,18 @@ class OrderServiceTest {
             verify(orderRepository).save(order);
             verify(orderTrackingRepository).save(any(OrderTracking.class));
         }
+
+        @Test
+        void shouldRejectCancellationOfDeliveredOrder() {
+            Order order = cart(customer());
+            order.setStatus(OrderStatus.DELIVERED);
+            when(orderRepository.findById("order-1")).thenReturn(Optional.of(order));
+
+            assertThatThrownBy(() -> orderService.cancelOrder("order-1"))
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage("Order cannot be cancelled in its current state");
+            verify(orderRepository, never()).save(any());
+        }
     }
 
     @Nested
@@ -250,6 +326,8 @@ class OrderServiceTest {
         @DisplayName("Should validate active coupon and map response")
         void shouldValidateCouponWhenCouponIsActive() {
             Coupon coupon = new Coupon(); coupon.setCode("SAVE10"); coupon.setActive(true);
+            coupon.setDiscountType(DiscountType.PERCENTAGE);
+            coupon.setDiscountValue(new BigDecimal("10"));
             coupon.setStartDate(LocalDate.now().minusDays(1)); coupon.setEndDate(LocalDate.now().plusDays(1));
             when(couponRepository.findByCodeIgnoreCase("SAVE10")).thenReturn(Optional.of(coupon));
 
