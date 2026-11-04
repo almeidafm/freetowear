@@ -192,7 +192,7 @@ class AccountServiceTest {
         }
 
         @Test
-        @DisplayName("Should register without terms accepted date when termsAccepted is false")
+        @DisplayName("Should reject registration when terms are not accepted")
         void shouldRegisterWithoutTermsDateWhenTermsNotAccepted() {
             RegisterRequest request = new RegisterRequest();
             request.setName("Jane Doe");
@@ -200,20 +200,13 @@ class AccountServiceTest {
             request.setPassword("Secret@123");
             request.setTermsAccepted(false);
 
-            when(passwordEncoder.encode("Secret@123")).thenReturn("encodedPassword");
-
-            accountService.register(request);
-
-            ArgumentCaptor<Customer> captor = ArgumentCaptor.forClass(Customer.class);
-            verify(customerRepository).save(captor.capture());
-
-            Customer savedCustomer = captor.getValue();
-            assertThat(savedCustomer.getTermsAndConditionsAcceptedAt()).isNull();
-            assertThat(savedCustomer.getActive()).isTrue();
+            assertThatThrownBy(() -> accountService.register(request))
+                    .isInstanceOf(IllegalArgumentException.class);
+            verify(customerRepository, never()).save(any());
         }
 
         @Test
-        @DisplayName("Should register without terms accepted date when termsAccepted is null")
+        @DisplayName("Should reject registration when terms are null")
         void shouldRegisterWithoutTermsDateWhenTermsAreNull() {
             RegisterRequest request = new RegisterRequest();
             request.setName("Jane Doe");
@@ -221,13 +214,9 @@ class AccountServiceTest {
             request.setPassword("Secret@123");
             request.setTermsAccepted(null);
 
-            when(passwordEncoder.encode("Secret@123")).thenReturn("encodedPassword");
-
-            accountService.register(request);
-
-            ArgumentCaptor<Customer> captor = ArgumentCaptor.forClass(Customer.class);
-            verify(customerRepository).save(captor.capture());
-            assertThat(captor.getValue().getTermsAndConditionsAcceptedAt()).isNull();
+            assertThatThrownBy(() -> accountService.register(request))
+                    .isInstanceOf(IllegalArgumentException.class);
+            verify(customerRepository, never()).save(any());
         }
     }
 
@@ -470,6 +459,7 @@ class AccountServiceTest {
             address.setDefaultAddress(true);
 
             when(addressRepository.findAllByCustomerId(customerId)).thenReturn(List.of(address));
+            when(customerRepository.existsById(customerId)).thenReturn(true);
 
             List<AddressResponse> responses = accountService.getAddresses(customerId);
 
@@ -490,6 +480,7 @@ class AccountServiceTest {
         void shouldReturnEmptyListWhenNoAddresses() {
             String customerId = "cust-123";
             when(addressRepository.findAllByCustomerId(customerId)).thenReturn(Collections.emptyList());
+            when(customerRepository.existsById(customerId)).thenReturn(true);
 
             List<AddressResponse> responses = accountService.getAddresses(customerId);
 
@@ -608,11 +599,11 @@ class AccountServiceTest {
 
             ChangePasswordRequest request = new ChangePasswordRequest();
             request.setCurrentPassword("oldPlain");
-            request.setNewPassword("newPlain");
+            request.setNewPassword("NewPlain@123");
 
             when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
             when(passwordEncoder.matches("oldPlain", "oldEncoded")).thenReturn(true);
-            when(passwordEncoder.encode("newPlain")).thenReturn("newEncoded");
+            when(passwordEncoder.encode("NewPlain@123")).thenReturn("newEncoded");
 
             accountService.changePassword(customerId, request);
 
@@ -661,12 +652,12 @@ class AccountServiceTest {
             ForgotPasswordRequest request = new ForgotPasswordRequest();
             request.setContact("user@example.com");
             request.setCode("123456");
-            request.setNewPassword("brandNewPassword");
+            request.setNewPassword("BrandNewPassword@123");
 
             Customer customer = aCustomer().withEmail("user@example.com").build();
 
             when(customerRepository.findByEmail("user@example.com")).thenReturn(Optional.of(customer));
-            when(passwordEncoder.encode("brandNewPassword")).thenReturn("encodedNewPassword");
+            when(passwordEncoder.encode("BrandNewPassword@123")).thenReturn("encodedNewPassword");
 
             accountService.resetPassword(request);
 
@@ -678,7 +669,7 @@ class AccountServiceTest {
         @Test
         @DisplayName("Should not save password when verification code is rejected")
         void shouldNotSaveWhenVerificationCodeIsRejected() {
-            ForgotPasswordRequest request = new ForgotPasswordRequest("user@example.com", "bad-code", "brandNewPassword");
+            ForgotPasswordRequest request = new ForgotPasswordRequest("user@example.com", "bad-code", "BrandNewPassword@123");
             Customer customer = aCustomer().build();
             when(customerRepository.findByEmail("user@example.com")).thenReturn(Optional.of(customer));
             doThrow(new IllegalArgumentException("Código inválido"))
@@ -777,7 +768,7 @@ class AccountServiceTest {
         void shouldCompletePasswordResetSuccessfully() {
             String email = "user@example.com";
             String code = "123456";
-            String newPassword = "newPassword";
+            String newPassword = "NewPassword@123";
             Customer customer = aCustomer().build();
 
             when(customerRepository.findByEmail(email)).thenReturn(Optional.of(customer));
