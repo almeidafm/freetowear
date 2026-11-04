@@ -13,6 +13,7 @@ import com.freetowear.repository.ReviewRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,6 +25,10 @@ import com.freetowear.infra.CloudinaryService;
 
 @Service
 public class ReviewService {
+
+    private static final int MAX_REVIEW_TEXT_LENGTH = 2000;
+    private static final int MAX_IMAGES = 5;
+    private static final long MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
     private static final EnumSet<OrderStatus> COMPLETED_ORDER_STATUSES = EnumSet.of(
             OrderStatus.DELIVERED
@@ -51,6 +56,9 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public List<ReviewResponse> findAllByProductId(String productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new com.freetowear.exception.ResourceNotFoundException("Product not found");
+        }
         return reviewRepository.findAllByProductIdOrderByCreatedAtDesc(productId)
                 .stream()
                 .map(review -> {
@@ -73,25 +81,42 @@ public class ReviewService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = IOException.class)
     public Review createReview(String customerId, String productId, Integer rating, String text,
                                List<MultipartFile> images) throws IOException {
+        validateText(text);
+        validateImages(images);
         Review review = createReview(customerId, productId, rating, text);
-        for (MultipartFile image : images) {
+        List<String> uploadedIds = new java.util.ArrayList<>();
+        try {
+            for (MultipartFile image : images == null ? List.<MultipartFile>of() : images) {
             if (image == null || image.isEmpty()) continue;
             ReviewImage reviewImage = new ReviewImage();
             reviewImage.setReview(review);
-            reviewImage.setImagePublicId(cloudinaryService.uploadPublic(image, "reviews"));
+            String publicId = cloudinaryService.uploadPublic(image, "reviews");
+            uploadedIds.add(publicId);
+            reviewImage.setImagePublicId(publicId);
             reviewImage.setDisplayOrder(review.getImages() == null ? 0 : review.getImages().size());
             if (review.getImages() == null) review.setImages(new java.util.ArrayList<>());
             review.getImages().add(reviewImage);
+            }
+            return reviewRepository.save(review);
+        } catch (RuntimeException | IOException exception) {
+            for (String uploadedId : uploadedIds) {
+                try {
+                    cloudinaryService.delete(uploadedId);
+                } catch (IOException cleanupException) {
+                    exception.addSuppressed(cleanupException);
+                }
+            }
+            throw exception;
         }
-        return reviewRepository.save(review);
     }
 
     @Transactional
     public Review createReview(String customerId, String productId, Integer rating, String text) {
         validateRating(rating);
+        validateText(text);
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
@@ -116,7 +141,11 @@ public class ReviewService {
         review.setProduct(product);
         review.setRating(rating);
         review.setText(text);
-        reviewRepository.save(review);
+        try {
+            reviewRepository.save(review);
+        } catch (DataIntegrityViolationException exception) {
+            throw new IllegalStateException("Customer has already reviewed this product", exception);
+        }
 
         updateProductRating(product, rating);
         return review;
@@ -128,11 +157,34 @@ public class ReviewService {
         }
     }
 
-    private void updateProductRating(Product product, Integer rating) {
-        int previousCount = product.getRatingCount() == null ? 0 : product.getRatingCount();
+    private void validateText(String text) {
+        if (text != null && (text.isBlank() || text.length() > MAX_REVIEW_TEXT_LENGTH)) {
+            throw new IllegalArgumentException("Review text must be between 1 and 2000 characters");
+        }
+    }
+
+    private void validateImages(List<MultipartFile> images) {
+        if (images == null) return;
+        long imageCount = images.stream().filter(image -> image != null && !image.isEmpty()).count();
+        if (imageCount > MAX_IMAGES) throw new IllegalArgumentException("A review can contain at most 5 images");
+        for (MultipartFile image : images) {
+            if (image == null || image.isEmpty()) continue;
+            if (image.getSize() > MAX_IMAGE_BYTES) throw new IllegalArgumentException("Review image is too large");
+            if (image.getContentType() == null || !image.getContentType().startsWith("image/")) {
+                throw new IllegalArgumentException("Review images must be image files");
+            }
+        }
+    }
+
+    private synchronized void updateProductRating(Product product, Integer rating) {
+        int previousCount = product.getRatingCount() == null || product.getRatingCount() < 0
+                ? 0 : product.getRatingCount();
         BigDecimal previousAverage = product.getRatingAverage() == null
                 ? BigDecimal.ZERO
                 : product.getRatingAverage();
+        if (previousAverage.signum() < 0 || previousAverage.compareTo(BigDecimal.valueOf(5)) > 0) {
+            previousAverage = BigDecimal.ZERO;
+        }
         BigDecimal totalRating = previousAverage.multiply(BigDecimal.valueOf(previousCount))
                 .add(BigDecimal.valueOf(rating));
 
