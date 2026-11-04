@@ -29,6 +29,8 @@ public class VerificationCodeService {
 
     @Transactional
     public String generate(Customer customer, VerificationType type) {
+        if (customer == null) throw new IllegalArgumentException("Customer is required");
+        if (type == null) throw new IllegalArgumentException("Verification type is required");
         invalidatePreviousCodes(customer, type);
         String code = generateCode();
 
@@ -86,14 +88,14 @@ public class VerificationCodeService {
             throw new IllegalArgumentException("Número máximo de tentativas excedido");
         }
 
-        verificationCode.setAttempts(verificationCode.getAttempts() + 1);
-
         if (!verificationCode.getCode().equals(code)) {
+            verificationCode.setAttempts(verificationCode.getAttempts() + 1);
             verificationCodeRepository.save(verificationCode);
             throw new IllegalArgumentException("Código inválido");
         }
 
         verificationCode.setUsed(true);
+        verificationCode.setInvalidated(true);
         verificationCodeRepository.save(verificationCode);
     }
 
@@ -112,8 +114,13 @@ public class VerificationCodeService {
         verificationCodeRepository.saveAll(codes);
     }
 
+    @Transactional
+    public int cleanupExpiredCodes() {
+        return verificationCodeRepository.deleteByExpiresAtBefore(LocalDateTime.now());
+    }
+
     private String generateCode() {
-        int number = secureRandom.nextInt(1_000_000);
+        int number = secureRandom.nextInt(900_000) + 100_000;
         return String.format("%06d", number);
     }
 }

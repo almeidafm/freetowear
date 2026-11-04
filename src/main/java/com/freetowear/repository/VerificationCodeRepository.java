@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, String> {
 
+    int deleteByExpiresAtBefore(LocalDateTime expiresAt);
+
     Optional<VerificationCode>
     findFirstByCustomerAndTypeAndUsedFalseAndInvalidatedFalseOrderByCreatedAtDesc(
             Customer customer,
