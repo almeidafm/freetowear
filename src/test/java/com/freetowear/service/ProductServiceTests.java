@@ -33,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -120,6 +121,16 @@ class ProductServiceTest {
             verify(cloudinaryService, never()).uploadPublic(any(), any());
             verify(productRepository, never()).save(any());
         }
+
+        @Test
+        void shouldRejectInvalidProductInputBeforeUploadingImage() {
+            CreateProductRequest request = new CreateProductRequest("", null, new BigDecimal("-1"),
+                    "", null, -1, "category-1", null);
+
+            assertThatThrownBy(() -> productService.createProduct(request))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Name is required");
+            verifyNoInteractions(categoryRepository, cloudinaryService, productRepository);
+        }
     }
 
     @Nested
@@ -187,6 +198,17 @@ class ProductServiceTest {
             assertThat(productService.searchByName("shirt"))
                     .singleElement().extracting(ProductResponse::getName).isEqualTo("T-Shirt");
         }
+
+        @Test
+        void shouldNotBuildImageUrlWhenProductHasNoImage() {
+            Product product = product();
+            product.setImagePublicId(null);
+            when(productRepository.findByActiveTrue()).thenReturn(List.of(product));
+
+            assertThat(productService.listProducts()).singleElement()
+                    .extracting(ProductResponse::getImageUrl).isNull();
+            verify(cloudinaryService, never()).buildUrl(any());
+        }
     }
 
     @Nested
@@ -214,6 +236,18 @@ class ProductServiceTest {
             when(productRepository.findById("missing")).thenReturn(Optional.empty());
             assertThatThrownBy(() -> productService.createVariation("missing", "Red", Size.G, 4))
                     .isInstanceOf(IllegalArgumentException.class).hasMessage("Product not found");
+            verify(productVariationRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldRejectDuplicateOrInvalidVariation() {
+            Product product = product();
+            when(productRepository.findById("product-1")).thenReturn(Optional.of(product));
+
+            assertThatThrownBy(() -> productService.createVariation("product-1", "blue", Size.M, 4))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Variation already exists");
+            assertThatThrownBy(() -> productService.createVariation("product-1", "Red", Size.G, -1))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Stock must be non-negative");
             verify(productVariationRepository, never()).save(any());
         }
     }
@@ -269,6 +303,38 @@ class ProductServiceTest {
             assertThatThrownBy(() -> productService.updateProduct("missing", new UpdateProductRequest(
                     null, null, null, null, null, null, null, null, null)))
                     .isInstanceOf(ResourceNotFoundException.class);
+            verify(productRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldPreserveOldImageWhenNewUploadFails() throws IOException {
+            Product product = product();
+            when(productRepository.findById("product-1")).thenReturn(Optional.of(product));
+            when(cloudinaryService.uploadPublic(any(), eq("products")))
+                    .thenThrow(new IOException("upload failed"));
+
+            UpdateProductRequest request = new UpdateProductRequest(null, null, null, null, null,
+                    null, null, image(), null);
+
+            assertThatThrownBy(() -> productService.updateProduct("product-1", request))
+                    .isInstanceOf(IOException.class);
+            assertThat(product.getImagePublicId()).isEqualTo("products/shirt");
+            verify(cloudinaryService, never()).delete(any());
+            verify(productRepository, never()).save(any());
+        }
+
+        @Test
+        void shouldRejectVariationUpdateWhenProductHasNoVariations() throws IOException {
+            Product product = product();
+            product.setVariations(List.of());
+            when(productRepository.findById("product-1")).thenReturn(Optional.of(product));
+
+            UpdateProductRequest request = new UpdateProductRequest(null, null, null, "Red", null,
+                    null, null, null, null);
+
+            assertThatThrownBy(() -> productService.updateProduct("product-1", request))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Product has no variation to update");
             verify(productRepository, never()).save(any());
         }
     }
