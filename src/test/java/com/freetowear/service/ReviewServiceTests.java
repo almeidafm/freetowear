@@ -139,6 +139,7 @@ class ReviewServiceTest {
         variation.setSize(Size.M);
         when(reviewRepository.findAllByProductIdOrderByCreatedAtDesc("product-1"))
                 .thenReturn(List.of(review));
+        when(productRepository.existsById("product-1")).thenReturn(true);
         when(cloudinaryService.buildUrl("reviews/image-1")).thenReturn("https://image/1");
         when(orderItemRepository.findPurchasedVariationsByCustomerAndProduct(
                 eq("customer-1"), eq("product-1"), any())).thenReturn(List.of(variation));
