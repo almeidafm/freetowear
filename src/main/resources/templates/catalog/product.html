@@ -15,9 +15,39 @@
     <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
 </div><br>
 
-<img th:src="${product.imageUrl}"
-     th:alt="${product.name}"
-     width="300">
+<div class="product-carousel" id="product-carousel">
+    <div th:each="variation : ${product.variations}">
+        <div class="product-slide" th:each="imageUrl : ${variation.imageUrls}">
+            <img th:src="${imageUrl}" th:alt="${product.name}" width="300">
+        </div>
+    </div>
+    <button type="button" id="previous-image">‹</button>
+    <button type="button" id="next-image">›</button>
+</div>
+
+<style>
+    .product-carousel { position: relative; width: 300px; }
+    .product-slide { display: none; }
+    .product-slide.active { display: block; }
+    .product-carousel button { position: absolute; top: 45%; padding: .4rem .7rem; }
+    #previous-image { left: .25rem; }
+    #next-image { right: .25rem; }
+</style>
+
+<script>
+    (() => {
+        const slides = [...document.querySelectorAll('#product-carousel .product-slide')];
+        let current = 0;
+        const show = index => slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+        if (slides.length) {
+            show(current);
+            document.getElementById('previous-image').onclick = () => { current = (current - 1 + slides.length) % slides.length; show(current); };
+            document.getElementById('next-image').onclick = () => { current = (current + 1) % slides.length; show(current); };
+        } else {
+            document.getElementById('product-carousel').style.display = 'none';
+        }
+    })();
+</script>
 
 <p>
     <strong>ID:</strong>
