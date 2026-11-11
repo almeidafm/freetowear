@@ -5,7 +5,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Index;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
@@ -33,9 +32,6 @@ public class Product extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(length = 255)
-    private String imagePublicId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "category_id")
