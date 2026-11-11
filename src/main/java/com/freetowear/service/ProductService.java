@@ -3,6 +3,7 @@ package com.freetowear.service;
 import com.freetowear.entity.Category;
 import com.freetowear.entity.Product;
 import com.freetowear.entity.ProductVariation;
+import com.freetowear.entity.ProductVariationImage;
 import com.freetowear.enums.Size;
 import com.freetowear.repository.CategoryRepository;
 import com.freetowear.repository.ProductRepository;
@@ -41,13 +42,10 @@ public class ProductService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
-        String publicId = cloudinaryService.uploadPublic(request.getImage(), "products"); // 👈
-
         Product product = new Product();
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
-        product.setImagePublicId(publicId);
         product.setCategory(category);
 
         ProductVariation variation = new ProductVariation();
@@ -56,6 +54,15 @@ public class ProductService {
         variation.setStock(request.getStock());
         variation.setProduct(product);
 
+        for (int index = 0; index < request.getImages().size(); index++) {
+            String publicId = cloudinaryService.uploadPublic(request.getImages().get(index), "products");
+            ProductVariationImage variationImage = new ProductVariationImage();
+            variationImage.setProductVariation(variation);
+            variationImage.setImagePublicId(publicId);
+            variationImage.setDisplayOrder(index);
+            variation.getImages().add(variationImage);
+        }
+
         product.setVariations(List.of(variation));
         productRepository.save(product);
     }
@@ -63,14 +70,14 @@ public class ProductService {
     public List<ProductResponse> listProducts() {
         List<Product> products = productRepository.findByActiveTrue();
         return products.stream()
-                .map(product -> new ProductResponse(product, imageUrl(product.getImagePublicId())))
+                .map(product -> new ProductResponse(product, imageUrl(firstImagePublicId(product)), this::imageUrl))
                 .collect(Collectors.toList());
     }
 
     public ProductResponse findById(String id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        return new ProductResponse(product, imageUrl(product.getImagePublicId()));
+        return new ProductResponse(product, imageUrl(firstImagePublicId(product)), this::imageUrl);
     }
 
     public void createVariation(String productId, String color, Size size, Integer stock) {
@@ -106,12 +113,23 @@ public class ProductService {
         }
         if (request.getActive() != null) product.setActive(request.getActive());
 
+        ProductVariation variation = product.getVariations() == null ? null
+                : product.getVariations().stream().findFirst().orElse(null);
+
         boolean hasNewImage = request.getImage() != null && !request.getImage().isEmpty();
         if (hasNewImage) {
-            boolean hasExistingImage = product.getImagePublicId() != null;
+            if (variation == null) throw new IllegalArgumentException("Product has no variation to update");
             String publicId = cloudinaryService.uploadPublic(request.getImage(), "products");
-            if (hasExistingImage) cloudinaryService.delete(product.getImagePublicId());
-            product.setImagePublicId(publicId);
+            if (variation.getImages() != null && !variation.getImages().isEmpty()) {
+                for (ProductVariationImage image : variation.getImages()) {
+                    cloudinaryService.delete(image.getImagePublicId());
+                }
+                variation.getImages().clear();
+            }
+            ProductVariationImage variationImage = new ProductVariationImage();
+            variationImage.setProductVariation(variation);
+            variationImage.setImagePublicId(publicId);
+            variation.getImages().add(variationImage);
         }
 
         boolean hasVariationUpdates = request.getColor() != null
@@ -119,8 +137,6 @@ public class ProductService {
                 || request.getStock() != null;
 
         if (hasVariationUpdates) {
-            ProductVariation variation = product.getVariations() == null ? null
-                    : product.getVariations().stream().findFirst().orElse(null);
             if (variation == null) throw new IllegalArgumentException("Product has no variation to update");
             if (request.getStock() != null && request.getStock() < 0) throw new IllegalArgumentException("Stock cannot be negative");
             if (request.getColor() != null && request.getColor().isBlank()) throw new IllegalArgumentException("Color is required");
@@ -140,7 +156,7 @@ public class ProductService {
                 .map(product ->
                         new ProductResponse(
                                 product,
-                                imageUrl(product.getImagePublicId())
+                                imageUrl(firstImagePublicId(product)), this::imageUrl
                         )
                 )
                 .collect(Collectors.toList());
@@ -151,7 +167,7 @@ public class ProductService {
                 .stream()
                 .map(product -> new ProductResponse(
                         product,
-                        imageUrl(product.getImagePublicId())
+                        imageUrl(firstImagePublicId(product)), this::imageUrl
                 ))
                 .toList();
     }
@@ -160,7 +176,10 @@ public class ProductService {
         if (request == null) throw new IllegalArgumentException("Product request is required");
         if (request.getName() == null || request.getName().isBlank()) throw new IllegalArgumentException("Name is required");
         if (request.getPrice() == null || request.getPrice().compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Price must be non-negative");
-        if (request.getImage() == null || request.getImage().isEmpty()) throw new IllegalArgumentException("Image is required");
+        if (request.getImages() == null || request.getImages().isEmpty()
+                || request.getImages().stream().anyMatch(image -> image == null || image.isEmpty())) {
+            throw new IllegalArgumentException("At least one image is required");
+        }
         if (request.getCategoryId() == null || request.getCategoryId().isBlank()) throw new IllegalArgumentException("Category is required");
         validateVariationInput(request.getColor(), request.getSize(), request.getStock());
     }
@@ -174,5 +193,15 @@ public class ProductService {
     private String imageUrl(String imagePublicId) {
         return imagePublicId == null || imagePublicId.isBlank()
                 ? null : cloudinaryService.buildUrl(imagePublicId);
+    }
+
+    private String firstImagePublicId(Product product) {
+        if (product.getVariations() == null) return null;
+        return product.getVariations().stream()
+                .filter(variation -> variation.getImages() != null && !variation.getImages().isEmpty())
+                .flatMap(variation -> variation.getImages().stream())
+                .findFirst()
+                .map(ProductVariationImage::getImagePublicId)
+                .orElse(null);
     }
 }
