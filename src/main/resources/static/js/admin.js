@@ -37,7 +37,9 @@ async function submitAdminAction(containerId, action) {
 
     container.querySelectorAll('input, select, textarea').forEach(field => {
         if (field.name && (field.type !== 'file' || field.files.length > 0)) {
-            if (field.type === 'file') body.append(field.name, field.files[0]);
+            if (field.type === 'file') {
+                Array.from(field.files).forEach(file => body.append(field.name, file));
+            }
             else body.append(field.name, field.value);
         }
     });

@@ -14,6 +14,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,7 +44,7 @@ public class CreateProductRequest {
     private String categoryId;
 
     @NotNull
-    private MultipartFile image;
+    private List<MultipartFile> images;
 
     public CreateProductRequest() {}
 
@@ -57,6 +58,19 @@ public class CreateProductRequest {
             String categoryId,
             MultipartFile image
     ) {
+        this(name, description, price, color, size, stock, categoryId, List.of(image));
+    }
+
+    public CreateProductRequest(
+            String name,
+            String description,
+            BigDecimal price,
+            String color,
+            Size size,
+            Integer stock,
+            String categoryId,
+            List<MultipartFile> images
+    ) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -64,6 +78,6 @@ public class CreateProductRequest {
         this.size = size;
         this.stock = stock;
         this.categoryId = categoryId;
-        this.image = image;
+        this.images = images;
     }
 }

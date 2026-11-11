@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/products")
@@ -41,10 +42,10 @@ public class ProductController {
             @RequestParam Size size,
             @RequestParam Integer stock,
             @RequestParam String categoryId,
-            @RequestParam("image") MultipartFile image
+            @RequestParam("images") List<MultipartFile> images
     ) throws IOException {
         productService.createProduct(new CreateProductRequest(
-                name, description, price, color, size, stock, categoryId, image
+                name, description, price, color, size, stock, categoryId, images
         ));
         return ResponseEntity.status(HttpStatus.CREATED).body("Product created successfully.");
     }
