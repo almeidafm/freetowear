@@ -6,6 +6,7 @@ import com.freetowear.dto.response.product.ProductResponse;
 import com.freetowear.entity.Category;
 import com.freetowear.entity.Product;
 import com.freetowear.entity.ProductVariation;
+import com.freetowear.entity.ProductVariationImage;
 import com.freetowear.enums.Size;
 import com.freetowear.exception.ResourceNotFoundException;
 import com.freetowear.infra.CloudinaryService;
@@ -21,9 +22,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,11 +74,14 @@ class ProductServiceTest {
         product.setName("T-Shirt");
         product.setDescription("Cotton shirt");
         product.setPrice(new BigDecimal("49.90"));
-        product.setImagePublicId("products/shirt");
         product.setCategory(category());
         product.setActive(true);
         ProductVariation variation = variation();
         variation.setProduct(product);
+        ProductVariationImage image = new ProductVariationImage();
+        image.setProductVariation(variation);
+        image.setImagePublicId("products/shirt");
+        variation.setImages(new ArrayList<>(List.of(image)));
         product.setVariations(List.of(variation));
         return product;
     }
@@ -99,7 +105,7 @@ class ProductServiceTest {
             assertThat(saved.getName()).isEqualTo("T-Shirt");
             assertThat(saved.getDescription()).isEqualTo("Cotton shirt");
             assertThat(saved.getPrice()).isEqualByComparingTo("49.90");
-            assertThat(saved.getImagePublicId()).isEqualTo("products/shirt");
+            assertThat(saved.getVariations().get(0).getImages().get(0).getImagePublicId()).isEqualTo("products/shirt");
             assertThat(saved.getCategory().getId()).isEqualTo("category-1");
             assertThat(saved.getVariations()).singleElement().satisfies(v -> {
                 assertThat(v.getProduct()).isSameAs(saved);
@@ -107,6 +113,30 @@ class ProductServiceTest {
                 assertThat(v.getSize()).isEqualTo(Size.M);
                 assertThat(v.getStock()).isEqualTo(10);
             });
+        }
+
+        @Test
+        void shouldUploadAndPreserveOrderForMultipleImages() throws IOException {
+            when(categoryRepository.findById("category-1")).thenReturn(Optional.of(category()));
+            when(cloudinaryService.uploadPublic(any(), eq("products")))
+                    .thenReturn("products/front", "products/back", "products/detail");
+            List<MultipartFile> images = List.of(
+                    new MockMultipartFile("images", "front.png", "image/png", new byte[]{1}),
+                    new MockMultipartFile("images", "back.png", "image/png", new byte[]{2}),
+                    new MockMultipartFile("images", "detail.png", "image/png", new byte[]{3}));
+
+            productService.createProduct(new CreateProductRequest(
+                    "T-Shirt", null, BigDecimal.TEN, "Blue", Size.M, 1, "category-1", images));
+
+            ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+            verify(productRepository).save(captor.capture());
+            assertThat(captor.getValue().getVariations().get(0).getImages())
+                    .extracting(ProductVariationImage::getImagePublicId)
+                    .containsExactly("products/front", "products/back", "products/detail");
+            assertThat(captor.getValue().getVariations().get(0).getImages())
+                    .extracting(ProductVariationImage::getDisplayOrder)
+                    .containsExactly(0, 1, 2);
+            verify(cloudinaryService, org.mockito.Mockito.times(3)).uploadPublic(any(), eq("products"));
         }
 
         @Test
@@ -125,7 +155,7 @@ class ProductServiceTest {
         @Test
         void shouldRejectInvalidProductInputBeforeUploadingImage() {
             CreateProductRequest request = new CreateProductRequest("", null, new BigDecimal("-1"),
-                    "", null, -1, "category-1", null);
+                    "", null, -1, "category-1", List.of());
 
             assertThatThrownBy(() -> productService.createProduct(request))
                     .isInstanceOf(IllegalArgumentException.class).hasMessage("Name is required");
@@ -136,6 +166,27 @@ class ProductServiceTest {
     @Nested
     @DisplayName("product queries")
     class ProductQueryTests {
+        @Test
+        void shouldExposeAllVariationImageUrlsInDisplayOrder() {
+            Product product = product();
+            ProductVariation variation = product.getVariations().get(0);
+            ProductVariationImage second = new ProductVariationImage();
+            second.setProductVariation(variation);
+            second.setImagePublicId("products/back");
+            second.setDisplayOrder(1);
+            variation.getImages().get(0).setDisplayOrder(0);
+            variation.getImages().add(second);
+            when(productRepository.findById("product-1")).thenReturn(Optional.of(product));
+            when(cloudinaryService.buildUrl("products/shirt")).thenReturn("https://image/front");
+            when(cloudinaryService.buildUrl("products/back")).thenReturn("https://image/back");
+
+            ProductResponse response = productService.findById("product-1");
+
+            assertThat(response.getVariations()).singleElement()
+                    .extracting(ProductResponse.VariationResponse::getImageUrls)
+                    .isEqualTo(List.of("https://image/front", "https://image/back"));
+        }
+
         @Test
         @DisplayName("Should list active products with image URLs")
         void shouldListActiveProducts() {
@@ -202,7 +253,7 @@ class ProductServiceTest {
         @Test
         void shouldNotBuildImageUrlWhenProductHasNoImage() {
             Product product = product();
-            product.setImagePublicId(null);
+            product.getVariations().get(0).setImages(List.of());
             when(productRepository.findByActiveTrue()).thenReturn(List.of(product));
 
             assertThat(productService.listProducts()).singleElement()
@@ -270,7 +321,7 @@ class ProductServiceTest {
             assertThat(product.getDescription()).isEqualTo("New description");
             assertThat(product.getPrice()).isEqualByComparingTo("59.90");
             assertThat(product.getActive()).isFalse();
-            assertThat(product.getImagePublicId()).isEqualTo("products/new-shirt");
+            assertThat(product.getVariations().get(0).getImages().get(0).getImagePublicId()).isEqualTo("products/new-shirt");
             assertThat(product.getVariations().get(0).getColor()).isEqualTo("Green");
             assertThat(product.getVariations().get(0).getSize()).isEqualTo(Size.GG);
             assertThat(product.getVariations().get(0).getStock()).isEqualTo(20);
@@ -290,7 +341,7 @@ class ProductServiceTest {
 
             assertThat(product.getName()).isEqualTo("T-Shirt");
             assertThat(product.getPrice()).isEqualByComparingTo("49.90");
-            assertThat(product.getImagePublicId()).isEqualTo("products/shirt");
+            assertThat(product.getVariations().get(0).getImages().get(0).getImagePublicId()).isEqualTo("products/shirt");
             verify(productRepository).save(product);
             verify(cloudinaryService, never()).delete(any());
             verify(cloudinaryService, never()).uploadPublic(any(), any());
@@ -318,7 +369,7 @@ class ProductServiceTest {
 
             assertThatThrownBy(() -> productService.updateProduct("product-1", request))
                     .isInstanceOf(IOException.class);
-            assertThat(product.getImagePublicId()).isEqualTo("products/shirt");
+            assertThat(product.getVariations().get(0).getImages().get(0).getImagePublicId()).isEqualTo("products/shirt");
             verify(cloudinaryService, never()).delete(any());
             verify(productRepository, never()).save(any());
         }
