@@ -104,7 +104,10 @@ public class OrderResponse {
             this.idProduct = item.getProduct().getId();
             this.idVariation = item.getProductVariation().getId();
             this.productName = item.getProduct().getName();
-            this.imageUrl = imageUrlBuilder.apply(item.getProduct().getImagePublicId());
+            this.imageUrl = item.getProductVariation().getImages() == null
+                    || item.getProductVariation().getImages().isEmpty()
+                    ? null
+                    : imageUrlBuilder.apply(item.getProductVariation().getImages().get(0).getImagePublicId());
             this.variation = item.getProductVariation().getColor() + " / " + item.getProductVariation().getSize().name();
             this.quantity = item.getQuantity();
             this.unitPrice = item.getUnitPrice();

@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Function;
 
 @Getter
 public class ProductResponse {
@@ -25,6 +26,10 @@ public class ProductResponse {
     public ProductResponse() {}
 
     public ProductResponse(Product product, String imageUrl) {
+        this(product, imageUrl, Function.identity());
+    }
+
+    public ProductResponse(Product product, String imageUrl, Function<String, String> imageUrlBuilder) {
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
@@ -36,7 +41,7 @@ public class ProductResponse {
         this.active = product.getActive();
         this.variations = product.getVariations()
                 .stream()
-                .map(VariationResponse::new)
+                .map(variation -> new VariationResponse(variation, imageUrlBuilder))
                 .toList();
     }
 
@@ -46,12 +51,17 @@ public class ProductResponse {
         private String color;
         private String size;
         private Integer stock;
+        private List<String> imageUrls;
 
-        public VariationResponse(ProductVariation variation) {
+        public VariationResponse(ProductVariation variation, Function<String, String> imageUrlBuilder) {
             this.id = variation.getId();
             this.color = variation.getColor();
             this.size = variation.getSize().name();
             this.stock = variation.getStock();
+            this.imageUrls = variation.getImages() == null ? List.of() : variation.getImages().stream()
+                    .sorted((left, right) -> Integer.compare(left.getDisplayOrder(), right.getDisplayOrder()))
+                    .map(image -> imageUrlBuilder.apply(image.getImagePublicId()))
+                    .toList();
         }
     }
 }
