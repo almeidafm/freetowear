@@ -223,6 +223,24 @@ public class WebController {
         return "site/contact";
     }
 
+    @GetMapping("/how-it-works")
+    public String howItWorks() { return "site/how-it-works"; }
+
+    @GetMapping("/inspirations")
+    public String inspirations() { return "site/inspirations"; }
+
+    @GetMapping("/customizer")
+    public String customizer() { return "site/customizer"; }
+
+    @GetMapping("/universes")
+    public String universes() { return "site/universes"; }
+
+    @GetMapping("/artworks")
+    public String artworks() { return "site/artworks"; }
+
+    @GetMapping("/shop")
+    public String shop() { return "site/shop"; }
+
     @GetMapping("/privacy")
     public String privacy() {
         return "site/privacy";

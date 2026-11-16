@@ -39,9 +39,10 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/account/register").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/about", "/contact", "/privacy", "/terms", "/403").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/about", "/contact", "/privacy", "/terms",
+                                "/how-it-works", "/inspirations", "/shop", "/universes", "/customizer", "/artworks", "/403").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products", "/products/**", "/categories", "/categories/**").permitAll()
-                        .requestMatchers("/css/**", "/js/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/vendor/**", "/favicon.ico").permitAll()
                         .requestMatchers(HttpMethod.GET, "/password/forgot").permitAll()
                         .requestMatchers(HttpMethod.POST, "/password/request-code", "/password/verify-code", "/password/reset").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
