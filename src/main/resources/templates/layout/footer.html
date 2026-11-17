@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:fragment="footer-assets">
+        <link rel="stylesheet" th:href="@{/css/footer.css}"/>
+    </th:block>
+</head>
+<body>
+<footer class="footer" th:fragment="footer">
+    <div class="footer-grid">
+        <div>
+            <a aria-label="FREE TO WEAR, início" class="brand" th:href="@{/}">
+                <span class="brand-wordmark"><span>FREE</span><span>TO WEAR</span></span>
+                <span aria-hidden="true" class="brand-arrow">
+                    <svg aria-hidden="true" class="ftw-arrow" fill="none" viewBox="0 0 24 24">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"/>
+                    </svg>
+                </span>
+            </a>
+            <p>Tem um pouco de você em cada ideia.<br>Dê a ela uma camiseta.</p>
+        </div>
+        <div>
+            <h3>Explore</h3>
+            <a th:href="@{/inspirations}">Encontre sua inspiração</a>
+            <a th:href="@{/customizer}">Estúdio de criação 3D</a>
+            <a th:href="@{/shop}">Coleção de camisetas</a>
+            <a th:href="@{/universes}">Filmes e séries</a>
+            <a th:href="@{/artworks}">Artes para personalizar</a>
+        </div>
+        <div>
+            <h3>Seu próximo motivo</h3>
+            <a th:href="@{/inspirations}">Filmes, séries e paixões</a>
+            <a th:href="@{/inspirations}">Humor e criatividade</a>
+            <a th:href="@{/inspirations}">Equipes e empresas</a>
+            <a th:href="@{/inspirations}">Aniversários e presentes</a>
+        </div>
+        <div>
+            <h3>Ajuda</h3>
+            <a th:href="@{/how-it-works}">Como criar sua camiseta</a>
+            <a th:href="@{/faq}">Tire suas dúvidas nas perguntas frequentes</a>
+            <a th:href="@{/policies}">Compra, entrega, trocas e privacidade</a>
+            <a th:href="@{/contact}">Fale com a gente
+                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewBox="0 0 24 24">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 FREE TO WEAR · Livre para ser você.</span>
+        <span>Seu filme. Sua piada. Sua marca. Sua história.</span>
+    </div>
+</footer>
+</body>
+</html>
