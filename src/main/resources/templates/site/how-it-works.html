@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description"
+          content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Sua ideia. Sua camiseta.</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/how-it-works.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+<body>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<main id="view-howitworks">
+
+    <section class="how-hero section-wrap">
+        <span class="eyebrow">O processo é seu. O ritmo também.</span>
+        <h1>PERSONALIZAR<br>É <em>EXPERIMENTAR.</em></h1>
+        <p>
+            Você não precisa acertar de primeira. Pode trocar a cor, mover a arte, testar outra frase e olhar
+            de novo. A parte boa de criar é descobrir o que combina com você.
+        </p>
+        <a th:href="@{/customizer}" href="/customizer" class="button dark">
+            Quero experimentar
+            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            </svg>
+        </a>
+    </section>
+
+    <section class="process-section section-wrap">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">Você imagina. Você experimenta.</span>
+                <h2>Da sua cabeça<br>para a <em>camiseta.</em></h2>
+            </div>
+            <a class="inline-link" th:href="@{/how-it-works}" href="/how-it-works">
+                Veja o passo a passo
+                <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="process-grid">
+            <article>
+                <span>01 / IMAGINE</span>
+                <h3>Encontre o seu motivo.</h3>
+                <p>Uma paixão, uma piada, uma marca, um momento. Pode começar com uma frase ou com uma
+                   imagem que você já tem.</p>
+            </article>
+            <article>
+                <span>02 / EXPERIMENTE</span>
+                <h3>Monte a sua composição.</h3>
+                <p>Escolha a cor do tecido, envie a arte e ajuste o tamanho, a posição e a rotação. Crie na
+                   frente, nas costas ou nos dois lados.</p>
+            </article>
+            <article>
+                <span>03 / VEJA EM 3D</span>
+                <h3>Olhe de outro ângulo.</h3>
+                <p>Gire o modelo, aproxime os detalhes e compare combinações. É o seu espaço para testar
+                   antes de decidir.</p>
+            </article>
+            <article>
+                <span>04 / VISTA</span>
+                <h3>Leve sua criação adiante.</h3>
+                <p>Adicione sua peça ao carrinho, confira os dados de entrega e escolha como pagar. Frente,
+                   costas e ajustes acompanham o pedido.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="tips-section section-wrap">
+        <h2>Pequenos detalhes.<br><em>Uma ideia mais forte.</em></h2>
+        <div>
+            <article>
+                <h3>Dê espaço para a sua estampa.</h3>
+                <p>Uma arte bem posicionada chama atenção sem precisar ocupar tudo. Teste centralizada,
+                   pequena no peito ou com uma composição maior nas costas.</p>
+            </article>
+            <article>
+                <h3>Faça a cor trabalhar com você.</h3>
+                <p>Contraste ajuda a ler uma frase e destacar um desenho. Experimente uma arte clara sobre
+                   tecido escuro ou uma cor viva em uma camiseta neutra.</p>
+            </article>
+            <article>
+                <h3>Pense na frente e nas costas.</h3>
+                <p>Uma frase curta na frente pode conversar com uma ilustração atrás. No estúdio, cada lado
+                   recebe sua própria imagem.</p>
+            </article>
+            <article>
+                <h3>Guarde a arte original.</h3>
+                <p>O mockup ajuda a visualizar a ideia. Para imprimir depois, mantenha o arquivo original em
+                   boa resolução e confira tamanho, cores e acabamento com quem vai produzir.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="faq-section section-wrap">
+        <div>
+            <span class="eyebrow">Antes de começar</span>
+            <h2>Ideias livres.<br><em>Dúvidas resolvidas.</em></h2>
+            <p>O primeiro passo pode ser bem simples. Escolha uma direção e experimente.</p>
+        </div>
+
+        <div>
+            <details>
+                <summary>Preciso saber desenhar para personalizar?</summary>
+                <p>Não. Comece por uma frase no laboratório, escolha um dos exemplos ou envie uma imagem que
+                   você já tenha. Você pode testar cores e posições no estúdio até encontrar uma composição
+                   que goste.</p>
+            </details>
+            <details>
+                <summary>Posso criar algo inspirado em filmes e séries?</summary>
+                <p>Sim: explore o clima do seu universo favorito, referências e ideias autorais que contem a
+                   sua relação com a história. Para aplicar logos, personagens ou artes de outras pessoas,
+                   use arquivos que você tenha autorização para utilizar.</p>
+            </details>
+            <details>
+                <summary>Dá para fazer uma camiseta engraçada ou para uma festa?</summary>
+                <p>É um ótimo ponto de partida. Experimente bordões, apelidos, datas e piadas internas. No
+                   laboratório você transforma uma frase em imagem; no estúdio pode enviar suas próprias
+                   ilustrações e ajustar tudo na peça.</p>
+            </details>
+            <details>
+                <summary>Posso colocar a logo da minha empresa?</summary>
+                <p>Sim. Envie sua logo, de preferência em PNG com fundo transparente, escolha uma cor de
+                   tecido e ajuste a aplicação. Você pode testar uma mensagem ou outra arte nas costas
+                   também.</p>
+            </details>
+            <details>
+                <summary>Como vejo o resultado e salvo a ideia?</summary>
+                <p>No estúdio 3D você gira o modelo e ajusta frente e costas. O botão Baixar PNG salva a
+                   vista atual. Para reunir as configurações e as artes, adicione a peça ao carrinho e siga
+                   para a finalização do pedido.</p>
+            </details>
+            <details>
+                <summary>A criação já vira um pedido pago?</summary>
+                <p>Você escolhe a peça, informa a entrega, seleciona Pix, cartão ou boleto e confere tudo
+                   antes de concluir. Na demonstração, o pedido é registrado sem cobrança. Quando a loja
+                   habilita o pagamento integrado, a aprovação vem do provedor. Guarde as artes originais
+                   para produção.</p>
+            </details>
+        </div>
+    </section>
+
+    <section class="final-banner">
+        <span class="eyebrow">FREE TO WEAR / livre para ser você</span>
+        <h2>SUA PRÓXIMA<br>CAMISETA COMEÇA<br><em>COM VOCÊ.</em></h2>
+        <a th:href="@{/customizer}" href="/customizer" class="button lime">
+            Bora criar a minha
+            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            </svg>
+        </a>
+        <p>Uma ideia é tudo o que você precisa para começar.</p>
+    </section>
+
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
