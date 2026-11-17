@@ -12,12 +12,19 @@
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/how-it-works.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <th:block th:replace="~{layout/final-banner :: final-banner-assets}"></th:block>
 </head>
 <body>
 
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
 <div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 
 <main id="view-howitworks">
 
@@ -142,29 +149,12 @@
                    vista atual. Para reunir as configurações e as artes, adicione a peça ao carrinho e siga
                    para a finalização do pedido.</p>
             </details>
-            <details>
-                <summary>A criação já vira um pedido pago?</summary>
-                <p>Você escolhe a peça, informa a entrega, seleciona Pix, cartão ou boleto e confere tudo
-                   antes de concluir. Na demonstração, o pedido é registrado sem cobrança. Quando a loja
-                   habilita o pagamento integrado, a aprovação vem do provedor. Guarde as artes originais
-                   para produção.</p>
-            </details>
         </div>
     </section>
 
-    <section class="final-banner">
-        <span class="eyebrow">FREE TO WEAR / livre para ser você</span>
-        <h2>SUA PRÓXIMA<br>CAMISETA COMEÇA<br><em>COM VOCÊ.</em></h2>
-        <a th:href="@{/customizer}" href="/customizer" class="button lime">
-            Bora criar a minha
-            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
-            </svg>
-        </a>
-        <p>Uma ideia é tudo o que você precisa para começar.</p>
-    </section>
-
 </main>
+
+<div th:replace="~{layout/final-banner :: final-banner}"></div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 
