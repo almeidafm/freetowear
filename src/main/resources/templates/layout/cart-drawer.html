@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:fragment="cart-drawer-assets">
+        <link rel="stylesheet" th:href="@{/css/cart-drawer.css}">
+    </th:block>
+</head>
+<body>
+<dialog aria-labelledby="cart-title" id="cart-drawer" th:fragment="cart-drawer">
+    <script defer th:src="@{/js/cart-drawer.js}"></script>
+    <div class="drawer-header">
+        <h2 id="cart-title">
+            Carrinho de compras
+        </h2>
+        <button aria-label="Fechar carrinho" class="icon-button" id="close-cart">
+            &times;
+        </button>
+    </div>
+    <div class="cart-items" id="cart-items">
+    </div>
+    <div class="drawer-footer">
+        <div class="total">
+     <span>
+      Subtotal
+     </span>
+            <strong id="cart-total">
+                R$ 0,00
+            </strong>
+        </div>
+        <button class="button dark wide" id="checkout">
+            Finalizar minha compra
+        </button>
+        <a class="inline-link" href="/cart" th:href="@{/cart}" id="full-cart-link">
+            Ver e editar meu carrinho
+        </a>
+        <p class="small muted">
+            Confira seus itens, escolha a entrega e a forma de pagamento no pr&oacute;ximo passo.
+        </p>
+    </div>
+</dialog>
+</body>
+</html>
