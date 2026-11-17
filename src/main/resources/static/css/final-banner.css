@@ -1,0 +1,55 @@
+.final-banner {
+  background: var(--dark);
+  color: var(--cream);
+  text-align: center;
+  padding: 65px 25px 70px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #35362f;
+}
+
+.final-banner .eyebrow {
+  color: #b7bfaa;
+  font-size: 9px;
+}
+
+.final-banner h2 {
+  font-size: clamp(38px, 5.5vw, 75px);
+  line-height: 1.02;
+  font-weight: 850;
+  letter-spacing: -.065em;
+  margin: 25px 0 30px;
+}
+
+.final-banner em {
+  color: var(--lime);
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.final-banner > p {
+  font-size: 11px;
+  color: #a3aa98;
+  margin: 18px 0 0;
+}
+
+@media (max-width: 900px) {
+  .final-banner {
+    padding: 50px 22px;
+  }
+
+  .final-banner h2 {
+    font-size: 43px;
+  }
+
+  .final-banner .eyebrow {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 760px) {
+  .final-banner h2 {
+    font-size: 37px;
+  }
+}
