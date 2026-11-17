@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" type="image/svg+xml"/>
+    <th:block th:fragment="header-assets">
+        <link rel="stylesheet" th:href="@{/css/colors.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+    </th:block>
+</head>
+<body>
+<header class="header" th:fragment="header">
+    <script defer th:src="@{/js/header.js}"></script>
+    <div class="header-inner">
+        <a aria-label="FREE TO WEAR, início" class="brand" href="/" th:href="@{/}">
+            <span class="brand-wordmark"><span>FREE</span><span>TO WEAR</span></span>
+            <span aria-hidden="true" class="brand-arrow">
+                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewBox="0 0 24 24">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"/>
+                </svg>
+            </span>
+        </a>
+        <nav aria-label="Navegação principal">
+            <a href="/" th:href="@{/}">Início</a>
+            <a href="/artworks" th:href="@{/artworks}">Artes prontas</a>
+            <a href="/shop" th:href="@{/shop}">Coleção</a>
+            <a href="/universes" th:href="@{/universes}">Universos</a>
+            <a class="studio-link" href="/customizer" th:href="@{/customizer}">
+                Criar minha camiseta
+                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewBox="0 0 24 24">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"/>
+                </svg>
+            </a>
+        </nav>
+        <div class="header-actions">
+            <button type="button" aria-label="Abrir carrinho" class="cart-button" id="open-cart">
+                <svg aria-hidden="true" fill="none" height="21" stroke="currentColor" stroke-width="1.8"
+                     viewBox="0 0 24 24" width="21">
+                    <path d="M5 7h14l1 14H4L5 7Z"/>
+                    <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
+                </svg>
+                <span hidden id="cart-badge">0</span>
+            </button>
+            <div class="account-menu-container">
+                <button type="button" class="cart-button account-button" aria-label="Minha conta" aria-expanded="false"
+                        aria-controls="account-menu">
+                    <svg sec:authorize="isAnonymous()" aria-hidden="true" fill="none" height="21" stroke="currentColor"
+                         stroke-width="1.8" viewBox="0 0 24 24" width="21">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+                    </svg>
+                    <span sec:authorize="isAuthenticated()" class="account-avatar" aria-hidden="true"
+                          th:text="${#strings.toUpperCase(#authentication.principal.name.substring(0, 2))}">US</span>
+                    <span class="account-tooltip" role="status">
+                    <span aria-hidden="true">👤</span>
+                    <span sec:authorize="isAnonymous()">Visitante</span>
+                    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
+                </span>
+                </button>
+                <div id="account-menu" class="account-menu" hidden>
+                    <div sec:authorize="isAnonymous()">
+                        <a href="/register" th:href="@{/register}">Criar conta</a>
+                        <a href="/login" th:href="@{/login}">Entrar</a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <a href="/account" th:href="@{/account}">Minha conta</a>
+                        <a href="/account/edit" th:href="@{/account/edit}">Editar conta</a>
+                        <form method="post" action="/logout" th:action="@{/logout}">
+                            <button type="submit">Sair</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>
