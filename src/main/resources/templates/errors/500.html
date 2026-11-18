@@ -1,20 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>500 - Internal Server Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <title>500 - Erro Interno do Servidor | FreeToWear</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/institutional.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<main>
-    <section>
-        <h1>500 - Internal Server Error</h1>
-        <p>An unexpected error occurred on the server.</p>
-        <p>Please try again later or contact support if the problem persists.</p>
+<div th:replace="~{layout/header :: header}"></div>
+
+<main id="view-error">
+    <section class="how-hero section-wrap">
+        <span class="eyebrow">Erro 500</span>
+        <h1>ERRO INTERNO<br><em>DO SERVIDOR.</em></h1>
+        <p>Ocorreu um erro inesperado ao processar sua solicitação em nossos servidores. Nossa equipe já está trabalhando para resolver. Tente novamente mais tarde.</p>
+        <a th:href="@{/}" href="/" class="button dark">
+            Voltar ao Início
+            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            </svg>
+        </a>
     </section>
 </main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
 </body>
 </html>

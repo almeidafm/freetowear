@@ -1,20 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>403 - Access Forbidden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <title>403 - Acesso Negado | FreeToWear</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/institutional.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<main>
-    <section>
-        <h1>403 - Access Forbidden</h1>
-        <p>You do not have permission to access this resource.</p>
-        <p>If you believe this is an error, please contact support.</p>
+<div th:replace="~{layout/header :: header}"></div>
+
+<main id="view-error">
+    <section class="how-hero section-wrap">
+        <span class="eyebrow">Erro 403</span>
+        <h1>ACESSO<br><em>NEGADO.</em></h1>
+        <p>Você não tem permissão para acessar este recurso. Se você acredita que isso é um engano, entre em contato com nosso suporte.</p>
+        <a th:href="@{/}" href="/" class="button dark">
+            Voltar ao Início
+            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            </svg>
+        </a>
     </section>
 </main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
 </body>
 </html>
