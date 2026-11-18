@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description"
+          content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Sua ideia. Sua camiseta.</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/legal.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+
+<body>
+
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<div class="policies-content">
+    <section class="page-narrow">
+        <span class="eyebrow">Compra consciente, ideia livre</span>
+        <h1>Resumo legal.</h1>
+
+        <details open>
+            <summary>Entrega, produção e valores</summary>
+            <p>Os valores e prazos desta loja são demonstrativos. Confira o resumo antes de concluir.</p>
+            <p>
+                O prazo de transporte é contado após a produção. Não há consulta automática a transportadoras
+                nesta versão. No modo demonstração, as opções de entrega são exemplos para testar a experiência.
+            </p>
+        </details>
+
+        <details open>
+            <summary>Privacidade do pedido</summary>
+            <p>
+                Nome, contato, endereço e personalização são usados para registrar e atender sua compra. O
+                carrinho fica salvo neste navegador. Na demonstração local, a simulação permanece neste
+                navegador e pode ser apagada na tela de confirmação. Com o servidor ativo, os dados do pedido
+                são armazenados na loja; e-mail, itens e valor são enviados ao Mercado Pago apenas no
+                pagamento integrado.
+            </p>
+            <p>
+                Este site não coleta o número do cartão, validade ou código de segurança. O código de acesso ao
+                pedido fica apenas nesta sessão do navegador. Para solicitar atendimento ou a exclusão dos
+                dados, use o contato da loja abaixo.
+            </p>
+        </details>
+
+        <details>
+            <summary>Estampas e personalização</summary>
+            <p>
+                As imagens são prévias ilustrativas. Confira o tamanho, as cores e os posicionamentos; guarde
+                as artes originais em alta resolução. As composições com referências a filmes e séries são
+                autorais, sem vínculo oficial com as franquias.
+            </p>
+        </details>
+
+        <details>
+            <summary>Trocas, cancelamentos e atendimento</summary>
+            <p>
+                A loja precisa divulgar seus canais e condições de atendimento antes de habilitar vendas reais.
+                No modo demonstração, não existe cobrança ou envio de mercadorias. Para compras reais, consulte
+                o responsável pela loja sobre correções, cancelamentos ou trocas.
+            </p>
+        </details>
+
+        <details>
+            <summary>Pagamento, cupons e rastreamento</summary>
+            <p>
+                O pagamento usa o ambiente de testes (Sandbox) do Mercado Pago. Não informe cartão, CVV ou
+                dados bancários reais. Cupons e fretes são simulados e não geram desconto ou entrega reais.
+            </p>
+            <p>
+                Status como “pago”, comprovantes e códigos de rastreio são simulados e não comprovam
+                pagamento, postagem ou entrega. O pedido de teste pode ser cancelado até a etapa
+                “Pronto para envio”.
+            </p>
+        </details>
+
+        <details>
+            <summary>Conta, idade e segurança</summary>
+            <p>
+                Checkout e cadastro são para maiores de 18 anos, em acesso restrito a testadores autorizados.
+                Informe dados verdadeiros e não compartilhe sua conta.
+            </p>
+            <p>
+                Senhas são protegidas com BCrypt. Há verificação de e-mail por código temporário, recuperação
+                de senha, “lembrar-me”, uma sessão ativa por conta e expiração após 30 minutos de
+                inatividade. Nenhuma medida garante segurança absoluta.
+            </p>
+        </details>
+
+        <details>
+            <summary>Arquivos enviados e avaliações</summary>
+            <p>
+                Envie apenas imagens JPG, JPEG, WEBP ou PNG sobre as quais você tenha direitos. Não envie
+                documentos pessoais, imagens íntimas, dados sensíveis, nem conteúdo ilegal, ofensivo ou que
+                viole direitos de terceiros. Os arquivos ficam em armazenamento privado na nuvem.
+            </p>
+            <p>
+                Avaliações (nota de 1 a 5, texto e fotos) são liberadas após pedido com status de entrega.
+                Spam, ameaças, dados de terceiros e conteúdo falso são proibidos. A moderação pode ocultar ou
+                remover conteúdo, sem suprimir críticas legítimas.
+            </p>
+        </details>
+
+        <details>
+            <summary>Dados coletados, cookies e terceiros</summary>
+            <p>
+                Coletamos nome, e-mail, CPF, data de nascimento, telefone, endereços, itens do carrinho,
+                pedidos de teste, avaliações e histórico de acesso. Usamos apenas cookies de sessão e
+                autenticação; não há cookies de publicidade nem analytics.
+            </p>
+            <p>
+                Compartilhamos dados apenas com apoio técnico: Cloudinary (imagens), Mercado Pago Sandbox,
+                serviço SMTP (e-mails de código e senha) e ViaCEP/BrasilAPI (somente o CEP). Alguns
+                fornecedores podem processar dados fora do Brasil, conforme a LGPD.
+            </p>
+        </details>
+
+        <details>
+            <summary>Seus direitos, retenção e exclusão (LGPD)</summary>
+            <p>
+                Você pode pedir acesso, correção, anonimização, bloqueio ou eliminação, portabilidade,
+                informação sobre compartilhamentos, revogação de consentimento e revisão de decisões
+                automatizadas, pelo contato da loja. Podemos pedir confirmação de identidade.
+            </p>
+            <p>
+                A desativação da conta é um “soft delete” e não apaga tudo de imediato. Contas inativas por
+                três anos são excluídas, e dados sem justificativa legal são eliminados ou anonimizados.
+                Você também pode recorrer à ANPD em
+                <a href="https://www.gov.br/anpd" target="_blank" rel="noopener noreferrer">gov.br/anpd</a>.
+            </p>
+        </details>
+
+        <details>
+            <summary>Condutas proibidas</summary>
+            <p>
+                Não tente acessar contas ou áreas administrativas sem autorização, explorar vulnerabilidades,
+                enviar malware, usar dados de terceiros sem base legal nem simular pagamentos para enganar
+                outras pessoas.
+            </p>
+        </details>
+
+        <div class="store-identity">
+            <h2>FREE TO WEAR</h2>
+            <p>Para mais detalhes, consulte nossos <a th:href="@{/terms}">Termos de Uso</a> e nossa <a th:href="@{/privacy}">Política de Privacidade</a>.</p>
+        </div>
+
+        <a th:href="@{/}" class="button dark">Voltar para a compra</a>
+    </section>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
