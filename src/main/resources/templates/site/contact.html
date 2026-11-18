@@ -1,20 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Contato - FreeToWear</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description"
+          content="FREE TO WEAR. Entre em contato conosco pelo Instagram, e-mail ou telefone. Tire dúvidas frequentes e receba suporte para suas camisetas personalizadas.">
+    <title>FREE TO WEAR | Contato</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/institutional.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <th:block th:replace="~{layout/final-banner :: final-banner-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<h2>Entre em Contato</h2>
-<p>Tem dúvidas, sugestões ou precisa de ajuda com seu pedido personalizado? Fale conosco!</p>
+<div th:replace="~{layout/announcement :: announcement}"></div>
 
-<div>
-    <p><strong>E-mail:</strong> contato@mail.com.br</p>
-    <p><strong>Atendimento:</strong> Segunda a Sexta, das 09h às 18h</p>
-</div>
+<div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<main id="view-contact">
+
+    <section class="how-hero section-wrap">
+        <span class="eyebrow">Canais de Atendimento</span>
+        <h1>FALE COM A<br><em>FREE TO WEAR.</em></h1>
+        <p>
+            Dúvidas sobre o estúdio 3D, personalização, pedidos ou parcerias?
+            Escolha o canal mais conveniente para você e nossa equipe estará pronta para te ajudar.
+        </p>
+        <a th:href="@{/customizer}" href="/customizer" class="button dark">
+            Criar minha camiseta
+            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            </svg>
+        </a>
+    </section>
+
+    <section class="process-section section-wrap">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">Direto ao ponto</span>
+                <h2>Nossos canais<br>de <em>contato.</em></h2>
+            </div>
+        </div>
+
+        <div class="process-grid channels-3">
+            <article>
+                <div class="contact-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                    </svg>
+                </div>
+                <span>01 / INSTAGRAM</span>
+                <h3>@freetowear</h3>
+                <p>Acompanhe novidades, inspirações da comunidade, bastidores e tire dúvidas via direct.</p>
+            </article>
+
+            <article>
+                <div class="contact-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </div>
+                <span>02 / E-MAIL</span>
+                <h3>suporte@freetowear.com.br</h3>
+                <p>Para dúvidas sobre pedidos, artes, customização e solicitações gerais de suporte.</p>
+            </article>
+
+            <article>
+                <div class="contact-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                </div>
+                <span>03 / TELEFONE &amp; WHATSAPP</span>
+                <h3>0800 xxx xxx</h3>
+                <p>Atendimento telefônico humanizado para assistência rápida durante a sua compra.</p>
+                <span class="contact-card-meta">Segunda a Sexta, das 09h às 18h</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="tips-section">
+        <h2>Horários e<br><em>atendimento.</em></h2>
+        <div>
+            <article>
+                <h3>Segunda a Sexta-feira</h3>
+                <p>Nosso time de atendimento ao cliente opera das 09h às 18h (horário de Brasília) em dias úteis.</p>
+            </article>
+            <article>
+                <h3>Tempo de resposta por e-mail</h3>
+                <p>Respondemos a mensagens de suporte e dúvidas em até 1 dia útil com todas as orientações necessárias.</p>
+            </article>
+            <article>
+                <h3>Dúvidas antes de comprar?</h3>
+                <p>Consulte nossa central de perguntas frequentes para tirar dúvidas imediatas sobre o estúdio 3D e personalização.</p>
+            </article>
+            <article>
+                <h3>Privacidade e seus dados</h3>
+                <p>Todas as comunicações e informações fornecidas seguem nossas diretrizes e a LGPD. Saiba mais em Políticas.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="faq-section section-wrap">
+        <div>
+            <span class="eyebrow">Dúvidas Frequentes</span>
+            <h2>Perguntas<br><em>rápidas.</em></h2>
+            <p>
+                Precisa de ajuda imediata? Acesse também a nosso
+                <a class="inline-link" th:href="@{/faq}" href="/faq"> FAQ </a>.
+            </p>
+        </div>
+
+        <div>
+            <details open>
+                <summary>Como tirar dúvidas sobre minha arte ou estampa?</summary>
+                <p>Você pode testar sua estampa diretamente em 3D no estúdio. Se tiver dúvidas sobre resolução ou cores, nos envie o arquivo pelo e-mail de suporte para avaliarmos.</p>
+            </details>
+            <details>
+                <summary>Qual o prazo para retorno do atendimento?</summary>
+                <p>Mensagens por e-mail são respondidas em até 24 horas úteis. Pelo Instagram Direct, respondemos conforme a demanda durante o horário comercial.</p>
+            </details>
+            <details>
+                <summary>Onde encontro mais respostas sobre pagamento e entrega?</summary>
+                <p>Confira o nosso resumo completo na página de <a th:href="@{/policies}">Políticas da Loja</a> ou consulte as explicações detalhadas em <a th:href="@{/how-it-works}">Como Funciona</a>.</p>
+            </details>
+            <details>
+                <summary>Deseja fazer pedidos corporativos ou em lote?</summary>
+                <p>Entre em contato diretamente pelo e-mail suporte@freetowear.com.br com os detalhes do seu projeto, quantidade e prazo desejado.</p>
+            </details>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{layout/final-banner :: final-banner}"></div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

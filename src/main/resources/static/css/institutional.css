@@ -46,7 +46,7 @@ color:#537c10}
   margin:0 auto;
 padding:82px 30px}
 
-.section-wrap p {
+.section-wrap > p {
   width:100%;
   height:100%;
   display:block;
@@ -85,9 +85,20 @@ padding-bottom:66px}
   grid-template-columns:repeat(4,1fr);
 gap:30px}
 
+.process-grid.channels-3 {
+  grid-template-columns:repeat(3,1fr);
+}
+
 .process-grid article {
   border-top:1px solid #a9afa0;
-padding-top:20px}
+  padding-top:20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.process-grid article a {
+  margin-top: auto;
+}
 
 .process-grid article>span {
   font-size:9px;
@@ -141,7 +152,9 @@ color:var(--muted)}
   gap:80px;
   background:#e8ebdf;
   max-width:1236px;
-padding:45px}
+  margin:0 auto;
+  padding:45px;
+}
 
 .tips-section h2 {
   color:var(--text);
@@ -231,6 +244,27 @@ content:'−'}
   color:var(--muted);
 margin:13px 0 0}
 
+.faq-section details a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.faq-section details a:hover {
+  color: var(--hover);
+}
+
+.faq-section details code {
+  font-family: inherit;
+  font-size: 11px;
+  background: rgba(220, 222, 213, 0.45);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
 .final-banner {
   background:var(--dark);
   color:var(--cream);
@@ -262,12 +296,52 @@ font-weight:500}
   color:var(--footer-bottom-text);
 margin:18px 0 0}
 
+.contact-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--dark);
+  margin-bottom: 18px;
+}
+
+.contact-card-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.contact-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: color 0.15s ease;
+}
+
+.contact-card-link:hover {
+  color: #537c10;
+}
+
+.contact-card-meta {
+  font-size: 11px !important;
+  color: var(--muted);
+  margin-top: 6px !important;
+}
+
 @media(max-width:900px) {
   .section-wrap {
     padding-top:60px;
   padding-bottom:60px}
 
-  .process-grid {
+  .process-grid,
+  .process-grid.channels-3 {
     grid-template-columns:repeat(2,1fr);
   gap:35px}
 
@@ -321,7 +395,8 @@ margin:18px 0 0}
   .announcement span:last-child {
   display:none}
 
-  .process-grid {
+  .process-grid,
+  .process-grid.channels-3 {
     grid-template-columns:1fr;
   gap:24px}
 
