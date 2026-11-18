@@ -1,27 +1,206 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Política de Privacidade - FreeToWear</title>
-    <style>
-        body { min-height: 110vh; }
-    </style>
+    <meta name="description"
+          content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Política de Privacidade.</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/legal.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<h2>Política de Privacidade</h2>
-<p>Na FreeToWear, respeitamos e valorizamos a sua privacidade e a segurança dos seus dados pessoais.</p>
+<div th:replace="~{layout/announcement :: announcement}"></div>
 
-<h3>Coleta de Dados</h3>
-<p>Coletamos informações como nome, e-mail, telefone, CPF e endereço exclusivamente para viabilizar a entrega e personalização dos seus pedidos.</p>
+<div th:replace="~{layout/header :: header}"></div>
 
-<h3>Segurança e Armazenamento</h3>
-<p>Suas senhas são criptografadas e suas imagens enviadas para customização são armazenadas com segurança e acessadas apenas para processar suas encomendas.</p>
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 
-<h3>Compartilhamento</h3>
-<p>Não vendemos nem compartilhamos seus dados com terceiros, exceto quando estritamente necessário para transporte e processamento de pagamentos.</p>
+<div class="legal-content">
+    <h1>FreeToWear: Política de Privacidade</h1>
+    <p><strong>Transparência sobre coleta, uso, armazenamento e direitos relativos a dados pessoais</strong></p>
+    <p>
+        Projeto: FreeToWear, plataforma demonstrativa<br>
+        Território de referência: Brasil<br>
+        Versão: 1.0, 18 de novembro de 2026
+    </p>
+
+    <p><strong>AVISO:</strong> Os dados de identificação e contato aqui indicados, incluindo o CNPJ e o telefone, são fictícios e têm finalidade exclusivamente demonstrativa. Os dados exibidos na Plataforma (produtos, preços, estoque, pedidos, avaliações e demais registros) também são fictícios. Não utilize esses dados como registro real nem insira dados pessoais ou financeiros verdadeiros.</p>
+
+    <h2>1. Quem somos e a quem esta Política se aplica</h2>
+    <p>A FreeToWear é um projeto pessoal de demonstração de uma plataforma de comércio eletrônico de vestuário personalizado. Esta Política aplica-se aos usuários autorizados a testar a aplicação, incluindo visitantes, usuários cadastrados e administradores, na medida em que dados pessoais sejam tratados.</p>
+    <p>
+        Nome público: FreeToWear<br>
+        Responsável/controlador: @almeidafm<br>
+        CNPJ: xx.xxx.xxx/xxxx-xx<br>
+        Telefone: 0800 xxx xxx<br>
+        E-mail: suporte@freetowear.com.br
+    </p>
+    <p>O projeto não realiza vendas ou cobranças reais.</p>
+
+    <h2>2. Princípios e legislação</h2>
+    <p>O tratamento observa a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados Pessoais, LGPD), especialmente os princípios de finalidade, adequação, necessidade, livre acesso, qualidade, transparência, segurança, prevenção, não discriminação e responsabilização, além das normas aplicáveis ao ambiente digital.</p>
+    <p>A FreeToWear documenta as operações de tratamento, suas finalidades, categorias de dados, bases legais, compartilhamentos, prazos de retenção e medidas de segurança adotadas.</p>
+
+    <h2>3. Categorias de dados tratados</h2>
+
+    <h3>3.1. Dados de cadastro e identificação</h3>
+    <ul>
+        <li>Nome.</li>
+        <li>Endereço de e-mail.</li>
+        <li>Senha armazenada de forma protegida por HASH.</li>
+        <li>CPF.</li>
+        <li>Data de nascimento.</li>
+        <li>Telefone.</li>
+    </ul>
+
+    <h3>3.2. Dados de endereço e entrega simulada</h3>
+    <ul>
+        <li>CEP, logradouro, número, complemento, bairro, cidade e unidade federativa.</li>
+        <li>Endereço selecionado como padrão.</li>
+        <li>Dados necessários para preencher e testar formulários de endereço e cálculo demonstrativo de frete.</li>
+    </ul>
+
+    <h3>3.3. Dados de uso e transação demonstrativa</h3>
+    <ul>
+        <li>Itens do carrinho, produtos e variações selecionadas, quantidades e valores demonstrativos.</li>
+        <li>Cupons informados e resultados de validação.</li>
+        <li>Pedidos de teste, status, eventos de rastreamento e identificadores internos.</li>
+        <li>Histórico de acesso e autenticação registrado pelo sistema.</li>
+        <li>Avaliações, notas, comentários e imagens anexadas.</li>
+    </ul>
+
+    <h3>3.4. Conteúdo e arquivos enviados</h3>
+    <p>O usuário pode enviar instruções textuais e imagens de referência para personalização. Os formatos de imagem aceitos são JPG, JPEG, WEBP e PNG.</p>
+
+    <h3>3.5. Dados financeiros</h3>
+    <p>Nenhum dado de cartão, CVV, conta bancária ou credencial financeira é armazenado pela FreeToWear. A integração com Mercado Pago é realizada em ambiente Sandbox e não processa transações reais. Não insira dados financeiros verdadeiros no ambiente de teste.</p>
+
+    <h2>4. Dados pessoais sensíveis</h2>
+    <p>Os dados solicitados pela FreeToWear, como CPF, endereço, telefone, e-mail e data de nascimento, são dados pessoais, mas não se enquadram, por si só, na categoria de dados pessoais sensíveis definida pela Lei Geral de Proteção de Dados Pessoais (LGPD).</p>
+    <p>Imagens, comentários e demais conteúdos enviados pelos usuários podem conter dados pessoais sensíveis ou informações de terceiros. Por esse motivo, recomenda-se evitar o envio desse tipo de conteúdo, especialmente quando não for necessário para a utilização da plataforma.</p>
+    <p>Caso ocorra o tratamento incidental de dados pessoais sensíveis, a FreeToWear avaliará a finalidade, a necessidade e a hipótese legal aplicável, observando as disposições da LGPD.</p>
+    <p>A FreeToWear não solicita intencionalmente dados pessoais sensíveis como requisito para cadastro ou utilização de suas funcionalidades.</p>
+
+    <h2>5. Finalidades do tratamento</h2>
+    <p>Os dados são tratados, conforme as funcionalidades ativadas, para:</p>
+    <ul>
+        <li>Criar, autenticar e administrar contas de teste.</li>
+        <li>Verificar e-mail, enviar códigos temporários e permitir recuperação de senha.</li>
+        <li>Manter sessões, opção "lembrar-me", controles de segurança e prevenção de acesso indevido.</li>
+        <li>Permitir atualização de perfil e gerenciamento de endereços.</li>
+        <li>Exibir catálogo, manter carrinho e simular cupons, checkout, pedidos e rastreamento.</li>
+        <li>Receber e exibir instruções, imagens de personalização, avaliações e comentários.</li>
+        <li>Moderar conteúdo e responder a solicitações de suporte.</li>
+        <li>Manter registros técnicos, diagnosticar falhas, proteger a aplicação e investigar incidentes.</li>
+        <li>Cumprir obrigações legais e exercer ou defender direitos, quando aplicável.</li>
+    </ul>
+
+    <h2>6. Bases legais</h2>
+    <p>A base legal é definida para cada operação concreta. Conforme o contexto, poderão ser aplicáveis: procedimentos preliminares relacionados a contrato, a pedido do titular; execução de contrato, quando houver relação contratual real; cumprimento de obrigação legal ou regulatória; exercício regular de direitos; legítimo interesse, após avaliação de necessidade, expectativas e salvaguardas; e consentimento, quando exigido e obtido de forma livre, informada, inequívoca e específica.</p>
+    <p>A aceitação dos Termos não é tratada como consentimento genérico para toda e qualquer finalidade. O consentimento, quando utilizado como base legal, é destacado e separado de outras declarações, e pode ser revogado nos termos da lei.</p>
+
+    <h2>7. Cookies, sessões e tecnologias semelhantes</h2>
+    <p>A aplicação utiliza mecanismos de sessão e autenticação, incluindo cookies necessários à manutenção da sessão e a funcionalidade "remember-me". Esses recursos são utilizados para manter o usuário autenticado, proteger o acesso e permitir o funcionamento dos recursos solicitados.</p>
+    <p>Não são utilizados cookies publicitários, pixels de rastreamento, analytics ou tecnologias de publicidade comportamental. Caso venham a ser implementados, serão identificados, explicados por finalidade e, quando necessário, submetidos a mecanismo de escolha ou consentimento.</p>
+
+    <h2>8. Compartilhamento e operadores</h2>
+    <p>Os dados poderão ser compartilhados estritamente na medida necessária com prestadores de serviço que apoiem a operação técnica:</p>
+
+    <h3>8.1. Cloudinary</h3>
+    <p>Armazenamento de imagens públicas de produtos e avaliações e armazenamento privado de arquivos de personalização. O conteúdo e os metadados enviados podem ser processados pelo fornecedor.</p>
+
+    <h3>8.2. Mercado Pago</h3>
+    <p>A integração utiliza ambiente Sandbox para testes. Não há transações reais nem armazenamento de dados financeiros pela FreeToWear. O compartilhamento de dados com o Mercado Pago limita-se ao necessário para a operação de teste.</p>
+
+    <h3>8.3. SMTP</h3>
+    <p>Serviço utilizado para envio de mensagens transacionais, como códigos de verificação de e-mail e redefinição de senha. O endereço de e-mail e o conteúdo necessário ao envio poderão ser processados pelo serviço contratado.</p>
+
+    <h3>8.4. ViaCEP e BrasilAPI</h3>
+    <p>Serviços utilizados para consulta e preenchimento de endereço a partir do CEP, com ViaCEP como provedor principal e BrasilAPI como alternativa. A consulta pode transmitir o CEP informado ao serviço correspondente. Nenhum outro dado do perfil é compartilhado para essa finalidade.</p>
+
+    <p>A lista de fornecedores será atualizada se novos serviços forem integrados.</p>
+
+    <h2>9. Transferência internacional</h2>
+    <p>Alguns fornecedores de infraestrutura ou armazenamento podem processar dados fora do Brasil. Nesses casos, a transferência observará a LGPD e a regulamentação da ANPD.</p>
+
+    <h2>10. Armazenamento, segurança e controle de acesso</h2>
+    <p>A aplicação adota senhas protegidas com BCrypt, proteção CSRF, controle de acesso por papéis, sessão com limite de uma sessão ativa por usuário e expiração após 30 minutos de inatividade.</p>
+    <p>São mantidas medidas técnicas e administrativas proporcionais aos riscos, incluindo controle de acesso mínimo, gestão de credenciais e segredos, atualizações, validação de arquivos, proteção de tráfego e gestão de vulnerabilidades. Nenhuma medida garante segurança absoluta.</p>
+
+    <h2>11. Retenção e eliminação</h2>
+    <p>A retenção observa a finalidade e a necessidade de cada categoria de dado. A aplicação prevê desativação de conta por soft delete e exclusão de contas inativas após três anos sem qualquer atividade.</p>
+    <p>A desativação da conta não equivale à eliminação imediata de todos os dados. CPF, telefone, endereço e e-mail não são, por si só, dados sensíveis na classificação legal; continuam sendo dados pessoais e serão eliminados ou anonimizados quando não houver justificativa legal para conservá-los.</p>
+    <p>Alguns registros poderão ser conservados quando houver obrigação legal ou regulatória, necessidade de exercício regular de direitos, prevenção à fraude ou outra hipótese prevista em lei. Quando possível, os dados serão bloqueados, minimizados ou anonimizados para limitar o uso.</p>
+
+    <h2>12. Direitos dos titulares</h2>
+    <p>Nos termos da LGPD, o titular poderá solicitar, conforme aplicável:</p>
+    <ul>
+        <li>Confirmação da existência de tratamento e acesso aos dados.</li>
+        <li>Correção de dados incompletos, inexatos ou desatualizados.</li>
+        <li>Anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade.</li>
+        <li>Portabilidade, observadas a regulamentação e a proteção de segredos comercial e industrial.</li>
+        <li>Eliminação dos dados tratados com consentimento, ressalvadas as hipóteses legais de conservação.</li>
+        <li>Informação sobre entidades públicas e privadas com as quais houve uso compartilhado.</li>
+        <li>Informação sobre a possibilidade de não fornecer consentimento e suas consequências, quando o consentimento for a base legal.</li>
+        <li>Revogação do consentimento, quando aplicável.</li>
+        <li>Revisão de decisões tomadas unicamente com base em tratamento automatizado de dados pessoais, nos termos legais.</li>
+    </ul>
+    <p>O atendimento poderá exigir confirmação razoável de identidade para evitar divulgação de dados a terceiros. A solicitação será analisada e respondida nos prazos e condições previstos na legislação e na regulamentação aplicável.</p>
+
+    <h2>13. Como exercer seus direitos</h2>
+    <p>Para exercer seus direitos, entre em contato com o responsável:</p>
+    <p>
+        Responsável: @almeidafm<br>
+        Telefone: 0800 xxx xxx<br>
+        E-mail: suporte@freetowear.com.br
+    </p>
+    <p>Informe o pedido, a conta ou endereço de e-mail associado e os elementos mínimos necessários à localização dos dados.</p>
+
+    <h2>14. Crianças e adolescentes</h2>
+    <p>Os fluxos de compra e cadastro para checkout são destinados a pessoas com 18 anos completos ou mais. Se houver tratamento de dados de crianças ou adolescentes, serão observadas as regras específicas da LGPD, o melhor interesse e as salvaguardas aplicáveis.</p>
+
+    <h2>15. Avaliações, imagens e conteúdo de terceiros</h2>
+    <p>Avaliações, comentários e imagens poderão conter dados pessoais de quem publica ou de terceiros. O usuário deve possuir autorização e base legítima para publicar imagens identificáveis e não deve expor dados pessoais de terceiros sem necessidade ou autorização.</p>
+    <p>A moderação poderá revisar e remover conteúdo que viole as regras da Plataforma, direitos de terceiros ou a legislação. Denúncias e registros de moderação poderão ser mantidos pelo período necessário para análise, segurança e exercício regular de direitos.</p>
+
+    <h2>16. Incidentes de segurança</h2>
+    <p>Em caso de incidente de segurança que possa acarretar risco ou dano relevante aos titulares, o controlador avaliará o evento, documentará a análise e realizará as comunicações à ANPD e aos titulares nos prazos e condições estabelecidos pela LGPD e pela regulamentação aplicável.</p>
+
+    <h2>17. Alterações desta Política</h2>
+    <p>Esta Política poderá ser atualizada para refletir mudanças no sistema, nos fornecedores, nas finalidades ou na legislação. A versão vigente indicará a data de atualização e permanecerá acessível. Mudanças que alterem substancialmente o tratamento serão comunicadas de forma adequada e, quando necessário, submetidas a novo consentimento.</p>
+
+    <h2>18. Autoridade Nacional de Proteção de Dados</h2>
+    <p>O titular poderá apresentar petição ou denúncia à Autoridade Nacional de Proteção de Dados (ANPD), observados os canais e requisitos disponibilizados pela Autoridade.</p>
+    <p>Canal oficial de informações e atendimento da ANPD: <a href="https://www.gov.br/anpd" target="_blank" rel="noopener noreferrer">https://www.gov.br/anpd</a></p>
+
+    <h2>19. Contato</h2>
+    <p>
+        Responsável/controlador: @almeidafm<br>
+        CNPJ: xx.xxx.xxx/xxxx-xx<br>
+        Telefone: 0800 xxx xxx<br>
+        E-mail: suporte@freetowear.com.br
+    </p>
+
+    <h2>Referências normativas</h2>
+    <ul>
+        <li>Lei nº 13.709/2018, Lei Geral de Proteção de Dados Pessoais (LGPD).</li>
+        <li>Lei nº 8.078/1990, Código de Defesa do Consumidor, quando houver relação de consumo.</li>
+        <li>Decreto nº 7.962/2013, contratação no comércio eletrônico, quando houver oferta/contratação de consumo.</li>
+        <li>Resolução CD/ANPD nº 2/2022, regulamento de aplicação da LGPD para agentes de tratamento de pequeno porte, quando aplicável.</li>
+        <li>ANPD: <a href="https://www.gov.br/anpd" target="_blank" rel="noopener noreferrer">https://www.gov.br/anpd</a></li>
+    </ul>
+
+    <p>Versão 1.0, 18 de novembro de 2026.</p>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

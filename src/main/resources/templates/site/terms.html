@@ -1,29 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Termos de Uso - FreeToWear</title>
-    <style>
-        body { min-height: 110vh; }
-    </style>
+    <meta name="description"
+          content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Termos de Uso.</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/legal.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<h2>Termos de Uso</h2>
+<div th:replace="~{layout/announcement :: announcement}"></div>
 
-<h3>1. Visão Geral</h3>
-<p>Ao utilizar os serviços e adquirir produtos na FreeToWear, você concorda com os termos e condições aqui estabelecidos.</p>
+<div th:replace="~{layout/header :: header}"></div>
 
-<h3>2. Produtos Personalizados</h3>
-<p>As camisetas personalizadas são confeccionadas de acordo com as especificações e imagens fornecidas pelo cliente no momento da compra. O cliente declara deter os direitos ou autorização para o uso das estampas enviadas.</p>
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 
-<h3>3. Pedidos e Pagamentos</h3>
-<p>O processamento do pedido tem início após a confirmação do pagamento. Cupons de desconto devem ser aplicados antes da finalização do pedido no checkout.</p>
+<div class="legal-content">
+    <h1>FreeToWear: Termos de Uso e Condições</h1>
+    <p><strong>Regras de acesso e utilização da plataforma</strong></p>
+    <p>
+        Projeto: FreeToWear, plataforma demonstrativa<br>
+        Território de referência: Brasil<br>
+        Versão: 1.0, 18 de novembro de 2026
+    </p>
 
-<h3>4. Prazos e Entregas</h3>
-<p>O prazo de entrega inclui o período de confecção da peça personalizada somado ao tempo de transporte para o endereço cadastrado.</p>
+    <p><strong>AVISO:</strong> Os dados de identificação e contato aqui indicados, incluindo o CNPJ e o telefone, são fictícios e têm finalidade exclusivamente demonstrativa. Os dados exibidos na Plataforma (produtos, preços, estoque, pedidos, avaliações e demais registros) também são fictícios. Não utilize esses dados como registro real nem insira dados pessoais ou financeiros verdadeiros.</p>
+
+    <h2>1. Identificação da plataforma e informações institucionais</h2>
+    <p>A plataforma denominada FreeToWear ("Plataforma") é um projeto demonstrativo de comércio eletrônico de vestuário personalizado, desenvolvido para apresentar funcionalidades de catálogo, conta de usuário, carrinho, personalização, cupons, checkout simulado, acompanhamento de pedidos, avaliações e administração.</p>
+    <p>
+        Nome público: FreeToWear<br>
+        Responsável: @almeidafm<br>
+        CNPJ: xx.xxx.xxx/xxxx-xx<br>
+        Telefone: 0800 xxx xxx<br>
+        E-mail: suporte@freetowear.com.br
+    </p>
+    <p>A FreeToWear é um ambiente de demonstração. Não constitui loja em operação comercial, não oferta venda efetiva de produtos e não realiza cobranças ou liquidações reais. Os fluxos de carrinho, checkout, pagamento, pedido, frete e rastreamento existem para teste e demonstração.</p>
+
+    <h2>2. Aceitação e abrangência</h2>
+    <p>Ao acessar ou utilizar a Plataforma em ambiente de demonstração, o usuário declara que leu este documento e concorda em observar as regras de uso compatíveis com a finalidade de teste. O aceite eletrônico poderá ser registrado no cadastro, com armazenamento da versão e da data do aceite.</p>
+    <p>Este documento regula apenas a utilização demonstrativa descrita nesta versão. Ele não cria, por si só, contrato de compra e venda, promessa de fornecimento, obrigação de entrega ou obrigação de pagamento.</p>
+
+    <h2>3. Elegibilidade e idade</h2>
+    <p>A criação e utilização de conta para executar fluxos de checkout e simulação de compra são destinadas exclusivamente a pessoas com 18 (dezoito) anos completos ou mais. A Plataforma poderá solicitar confirmação de idade e restringir ou encerrar acesso quando houver indícios de informação falsa.</p>
+    <p>A navegação pública ou o acesso de visitantes poderá ser limitado conforme a configuração do ambiente de testes. O cenário atualmente definido é de acesso restrito a pessoas autorizadas a testar a aplicação.</p>
+
+    <h2>4. Cadastro, conta e segurança</h2>
+    <p>O cadastro pode solicitar nome, e-mail e senha e, no gerenciamento do perfil, CPF, data de nascimento e telefone. O usuário deve fornecer informações verdadeiras, atuais e próprias, manter seus dados atualizados e proteger suas credenciais.</p>
+    <p>As senhas são armazenadas mediante BCrypt. A aplicação prevê verificação de e-mail por código temporário, recuperação de senha, opção "lembrar-me", limite de uma sessão ativa por conta e expiração de sessão após 30 minutos de inatividade. Essas medidas são características técnicas do projeto e não constituem garantia absoluta contra incidentes.</p>
+    <p>O usuário deve comunicar ao suporte da Plataforma qualquer suspeita de acesso não autorizado. A conta é pessoal e não deve ser compartilhada, cedida ou utilizada para se passar por outra pessoa.</p>
+
+    <h2>5. Natureza demonstrativa: ausência de venda e cobrança reais</h2>
+    <p>Os produtos, preços, variações, estoque, cupons, descontos, frete, pedidos, pagamentos e eventos de entrega exibidos no ambiente são elementos de simulação. A integração com o Mercado Pago utiliza ambiente de testes (Sandbox). Não devem ser inseridos dados financeiros reais.</p>
+    <p>Nenhuma tela de aprovação, status "pago", comprovante, código de rastreio ou mensagem de sucesso no ambiente de demonstração comprova que houve pagamento, reserva de estoque, contratação de transporte, postagem ou entrega de mercadoria.</p>
+    <p>O usuário não deve interpretar o checkout como oferta comercial vinculante. A Plataforma não solicita nem deve receber cartão real, CVV, senha bancária ou credenciais financeiras reais. O projeto não armazena dados de pagamento.</p>
+    <p>Caso a FreeToWear passe a oferecer produtos reais, aceitar pagamentos ou realizar entregas, será publicada nova versão destes Termos, com identificação do fornecedor, preços e condições comerciais, meios de pagamento, prazos, frete, cancelamento, arrependimento, trocas, devoluções e atendimento.</p>
+
+    <h2>6. Catálogo, produtos e disponibilidade</h2>
+    <p>O catálogo demonstra produtos, categorias, imagens, descrições, cores, tamanhos e disponibilidade de variações. Como se trata de ambiente de teste, imagens, preços, descrições, avaliações e estoques podem ser fictícios, incompletos ou alterados sem aviso.</p>
+    <p>A exibição de um item não significa que exista produto físico disponível para venda. As referências a tamanhos e cores servem à demonstração das funcionalidades de catálogo e seleção de variação.</p>
+
+    <h2>7. Personalizações e arquivos enviados</h2>
+    <p>O projeto permite que usuários testadores anexem imagens de referência e instruções textuais para demonstrar a personalização de peças. Os formatos de imagem aceitos são JPG, JPEG, WEBP e PNG.</p>
+    <p>O usuário declara que possui os direitos, licenças e autorizações necessários para enviar e utilizar cada imagem, arte, marca, fotografia, ilustração ou outro conteúdo. É proibido enviar material que viole direitos autorais, marcas, imagem, privacidade ou outros direitos de terceiros, bem como conteúdo ilegal, discriminatório, abusivo, ameaçador, sexual envolvendo menores ou que promova violência.</p>
+    <p>O usuário é responsável pelo conteúdo e pelas instruções que fornece. A moderação poderá ocultar, rejeitar ou remover conteúdo inadequado, ilícito, ofensivo ou que apresente risco jurídico ou técnico. A remoção de conteúdo não impede a adoção de medidas cabíveis diante de indícios de ilícito.</p>
+    <p>Os arquivos de personalização são destinados à demonstração da funcionalidade. O ambiente pode utilizar armazenamento em nuvem privado para esses arquivos. O usuário não deve enviar documentos pessoais, imagens íntimas, dados sensíveis ou arquivos confidenciais.</p>
+
+    <h2>8. Carrinho, cupons e simulação de checkout</h2>
+    <p>O carrinho representa uma etapa de teste e pode manter itens, quantidades, variações, instruções e imagens. Os valores e subtotais são calculados para demonstrar a lógica da aplicação.</p>
+    <p>Cupons podem ser configurados com código, tipo de desconto, valor, período de validade e valor mínimo. A validação do cupom é funcionalidade demonstrativa e não gera direito a desconto em compra real.</p>
+    <p>O checkout pode apresentar endereço de entrega, método de pagamento (PIX, boleto ou cartão) e parcelamento. Essas opções são simuladas. A indicação de frete variável conforme localização, inclusive referência a atendimento em todo o Brasil, não representa cotação, contratação ou compromisso de entrega.</p>
+
+    <h2>9. Pedidos, status e rastreamento</h2>
+    <p>Os estados de pedido e eventos de rastreamento, incluindo recebimento de pagamento, preparação, pronto para envio, enviado, em trânsito, saiu para entrega, tentativa de entrega, aguardando retirada, entregue e cancelado, são estados simulados do fluxo de negócio.</p>
+    <p>A geração de identificador ou código de rastreamento não significa que exista remessa registrada em transportadora ou nos Correios. Não há promessa de prazo de entrega ou obrigação logística no ambiente atual.</p>
+
+    <h2>10. Cancelamento e suporte no ambiente de demonstração</h2>
+    <p>Como não há venda ou pagamento real, o cancelamento de um pedido demonstrativo apenas altera o estado interno do teste. O usuário pode cancelar o pedido antes de ele atingir a etapa "Pronto para envio" ou etapa posterior.</p>
+    <p>Se o usuário identificar um registro de teste que precise ser corrigido ou removido, poderá entrar em contato pelo e-mail suporte@freetowear.com.br, pelo telefone 0800 xxx xxx ou por @almeidafm.</p>
+    <p>Em uma futura operação comercial, as regras de cancelamento e contato após o envio do pedido não poderão afastar direitos legais do consumidor, inclusive o direito de arrependimento quando aplicável. As condições comerciais serão publicadas antes de aceitar pedidos reais.</p>
+
+    <h2>11. Avaliações, comentários e moderação</h2>
+    <p>O projeto prevê avaliações de produtos por usuários que tenham concluído um pedido com status de entrega, com nota de 1 a 5, texto e imagens opcionais. No ambiente de demonstração, a condição de comprador verificado decorre dos registros simulados.</p>
+    <p>O usuário é responsável por avaliações, comentários e fotografias que publicar. É proibido publicar conteúdo falso apresentado como experiência real, spam, discurso de ódio, ameaça, dados pessoais de terceiros, material protegido sem autorização ou conteúdo ilícito.</p>
+    <p>A Plataforma poderá moderar, ocultar ou remover avaliações e anexos, especialmente diante de denúncia, violação destas regras, risco a terceiros ou obrigação legal. A moderação observará critérios razoáveis e não será utilizada para suprimir críticas legítimas.</p>
+
+    <h2>12. Uso permitido e condutas proibidas</h2>
+    <ul>
+        <li>Utilizar a Plataforma apenas para fins lícitos e de teste autorizado.</li>
+        <li>Não tentar acessar contas, áreas administrativas, dados ou sistemas sem autorização.</li>
+        <li>Não explorar vulnerabilidades, interferir na disponibilidade, contornar controles de segurança ou realizar engenharia reversa abusiva.</li>
+        <li>Não enviar malware, código malicioso, arquivos corrompidos ou conteúdo que comprometa o serviço.</li>
+        <li>Não utilizar dados pessoais de terceiros sem base legal ou autorização aplicável.</li>
+        <li>Não simular pagamentos ou comprovantes com intenção de enganar terceiros.</li>
+    </ul>
+
+    <h2>13. Propriedade intelectual</h2>
+    <p>A marca FreeToWear, identidade visual, código, estrutura, textos, interfaces e demais elementos próprios da Plataforma são protegidos pela legislação aplicável, pertencendo aos respectivos titulares. O acesso de teste não concede licença de exploração comercial, reprodução ou distribuição, salvo autorização expressa.</p>
+    <p>O usuário mantém os direitos que eventualmente possua sobre os arquivos enviados, mas concede à Plataforma autorização limitada, não exclusiva e temporária para receber, armazenar, processar, exibir internamente e utilizar esses arquivos apenas na execução e avaliação das funcionalidades demonstrativas, observadas as finalidades informadas e a legislação.</p>
+
+    <h2>14. Serviços de terceiros</h2>
+    <p>A aplicação utiliza ou prevê integração com Mercado Pago em Sandbox, Cloudinary para armazenamento de imagens, serviço SMTP para mensagens transacionais, ViaCEP e BrasilAPI para consulta de CEP. A disponibilidade e as práticas desses serviços dependem de seus respectivos fornecedores e termos.</p>
+    <p>A menção a um fornecedor não significa endosso, parceria comercial ou garantia de disponibilidade. As informações sobre dados compartilhados e respectivas finalidades constam na Política de Privacidade.</p>
+
+    <h2>15. Segurança, disponibilidade e alterações</h2>
+    <p>A Plataforma é fornecida para demonstração "no estado em que se encontra". Podem ocorrer interrupções, perda de dados de teste, alterações de funcionalidades, manutenção ou indisponibilidade. Serão adotadas medidas técnicas razoáveis compatíveis com o projeto, sem promessa de disponibilidade contínua ou segurança absoluta.</p>
+    <p>A Plataforma poderá alterar, suspender ou encerrar funcionalidades de teste. Alterações relevantes destes Termos serão refletidas em nova versão, com indicação da data de atualização e, quando apropriado, novo aceite.</p>
+
+    <h2>16. Limites e preservação de direitos legais</h2>
+    <p>Nada nestes Termos pretende excluir ou limitar direitos que sejam indisponíveis por lei, nem afastar responsabilidade que não possa ser legalmente afastada. As disposições sobre ausência de venda e cobrança aplicam-se ao cenário demonstrativo descrito.</p>
+    <p>Se a Plataforma passar a ofertar produtos ou serviços a consumidores, serão observados o Código de Defesa do Consumidor, o Decreto nº 7.962/2013 e demais normas aplicáveis, inclusive deveres de informação, atendimento e direito de arrependimento.</p>
+
+    <h2>17. Privacidade e proteção de dados</h2>
+    <p>O tratamento de dados pessoais é explicado na Política de Privacidade da FreeToWear, que integra o conjunto documental da Plataforma. Em matéria de tratamento de dados pessoais, prevalece a Política de Privacidade, interpretada em conjunto com a legislação de proteção de dados.</p>
+
+    <h2>18. Encerramento, suspensão e exclusão de conta</h2>
+    <p>A conta poderá ser desativada pelo usuário mediante o fluxo de autenticação previsto. A desativação corresponde a soft delete e não equivale, por si só, à eliminação de todos os registros. A aplicação prevê exclusão de contas após três anos sem qualquer atividade.</p>
+    <p>A preservação de registros poderá ocorrer quando necessária para cumprimento de obrigação legal ou regulatória, exercício regular de direitos ou outra hipótese legal. Os dados que não possuam justificativa de conservação serão eliminados ou anonimizados, conforme a legislação.</p>
+
+    <h2>19. Lei aplicável e foro</h2>
+    <p>Estes Termos são interpretados de acordo com as leis da República Federativa do Brasil. Eventuais controvérsias serão submetidas ao foro competente segundo as regras legais aplicáveis, preservadas as normas de competência protetivas do consumidor quando incidentes.</p>
+
+    <h2>20. Contato e versão</h2>
+    <p>
+        Responsável: @almeidafm<br>
+        CNPJ: xx.xxx.xxx/xxxx-xx<br>
+        Telefone: 0800 xxx xxx<br>
+        E-mail: suporte@freetowear.com.br
+    </p>
+    <p>Versão 1.0, 18 de novembro de 2026.</p>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

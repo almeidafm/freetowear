@@ -1,0 +1,204 @@
+.legal-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.legal-content h1 {
+  font-size: clamp(32px, 4.5vw, 46px);
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.legal-content h2 {
+  font-size: clamp(20px, 2.5vw, 24px);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-top: 48px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.legal-content h3 {
+  font-size: clamp(16px, 1.8vw, 18px);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.legal-content p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #2b2e25;
+}
+
+.legal-content strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.legal-content p:has(strong:first-child:is(:contains("AVISO"), :contains("Aviso"))) {
+  background: rgba(220, 222, 213, 0.45);
+  border-left: 4px solid var(--primary);
+  padding: 16px 20px;
+  border-radius: 4px;
+  margin: 24px 0;
+}
+
+.legal-content > p:nth-of-type(3) {
+  background: rgba(220, 222, 213, 0.4);
+  border-left: 4px solid var(--primary);
+  padding: 16px 20px;
+  border-radius: 4px;
+  margin: 24px 0;
+}
+
+.legal-content > p:first-of-type {
+  font-size: 16px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.legal-content > p:nth-of-type(2) {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.legal-content ul,
+.legal-content ol {
+  margin: 16px 0 24px;
+  padding-left: 24px;
+}
+
+.legal-content li {
+  margin-bottom: 8px;
+  line-height: 1.65;
+  color: #2b2e25;
+}
+
+.legal-content li::marker {
+  color: var(--primary);
+}
+
+.legal-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.legal-content a:hover {
+  color: var(--hover);
+}
+
+.legal-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14px;
+}
+
+.legal-content th,
+.legal-content td {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.legal-content th {
+  background: rgba(220, 222, 213, 0.5);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.legal-content details {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.legal-content details[open] {
+  background: #ffffff;
+}
+
+.legal-content summary {
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.legal-content summary::-webkit-details-marker {
+  display: none;
+}
+
+.legal-content summary::after {
+  content: "+";
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.legal-content details[open] summary::after {
+  content: "−";
+}
+
+.legal-content details p {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.legal-content details p + p {
+  margin-top: 10px;
+}
+
+.legal-content .store-identity {
+  margin: 32px 0 24px;
+  padding: 20px;
+  background: rgba(220, 222, 213, 0.35);
+  border-radius: 6px;
+  border: 1px dashed var(--border);
+}
+
+.legal-content .store-identity h2 {
+  margin-top: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+  font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  .legal-content {
+    padding: 36px 18px 60px;
+    font-size: 14.5px;
+  }
+
+  .legal-content h2 {
+    margin-top: 36px;
+  }
+}
