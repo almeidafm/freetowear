@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#18191d">
-    <title>FreeToWear | Criar Conta</title>
+    <title>Criar Conta — FreeToWear</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <script defer th:src="@{/js/auth.js}"></script>
     <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
@@ -17,79 +17,49 @@
 <body>
 
 <div th:replace="~{layout/announcement :: announcement}"></div>
-
 <div th:replace="~{layout/header :: header}"></div>
 
 <main class="auth-page">
     <div class="auth-card">
-
         <div class="auth-header">
             <span class="eyebrow">Cadastro</span>
             <h1>CRIAR CONTA</h1>
             <p>Cadastre-se para salvar suas criações, acompanhar pedidos e personalizar camisetas.</p>
         </div>
 
-        <div th:if="${param.registered}" class="auth-alert success">
-            Conta criada com sucesso! Faça login para continuar.
-        </div>
+        <div th:if="${param.registered}" class="auth-alert success">Conta criada com sucesso! Faça login para continuar.</div>
+        <div th:if="${alreadyLoggedIn}" class="auth-alert">Você já está conectado. Encerre sua sessão antes de criar uma nova conta.</div>
 
-        <div th:if="${alreadyLoggedIn}" class="auth-alert">
-            Você já está conectado. Encerre sua sessão antes de criar uma nova conta.
-        </div>
-
-        <form th:unless="${alreadyLoggedIn}" method="post"
-              th:action="@{/account/register}"
-              th:object="${request}"
-              class="auth-form">
-            <input type="hidden"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}" />
+        <form th:unless="${alreadyLoggedIn}" method="post" th:action="@{/account/register}" th:object="${request}" class="auth-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div class="auth-form-group">
                 <label for="name">Nome completo</label>
-                <input id="name"
-                       type="text"
-                       th:field="*{name}"
-                       placeholder="Seu nome"
-                       required autofocus>
+                <input id="name" type="text" th:field="*{name}" placeholder="Seu nome" required autofocus>
                 <div class="auth-field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
             </div>
 
             <div class="auth-form-group">
                 <label for="email">E-mail</label>
-                <input id="email"
-                       type="email"
-                       th:field="*{email}"
-                       placeholder="seu@email.com"
-                       required>
+                <input id="email" type="email" th:field="*{email}" placeholder="seu@email.com" required>
                 <div class="auth-field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
 
             <div class="auth-form-group">
                 <label for="password">Senha</label>
-                <input id="password"
-                       type="password"
-                       th:field="*{password}"
-                       placeholder="••••••••"
-                       required>
+                <input id="password" type="password" th:field="*{password}" placeholder="••••••••" required>
                 <div class="auth-field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
 
             <div class="auth-form-group">
                 <label class="auth-form-checkbox" for="termsAccepted">
-                    <input id="termsAccepted"
-                           type="checkbox"
-                           th:field="*{termsAccepted}"
-                           required>
+                    <input id="termsAccepted" type="checkbox" th:field="*{termsAccepted}" required>
                     <span>Concordo com os <a href="#termsModal" id="termsLink">Termos de Uso</a></span>
                 </label>
                 <div class="auth-field-error" th:if="${#fields.hasErrors('termsAccepted')}" th:errors="*{termsAccepted}"></div>
 
                 <label class="auth-form-checkbox" for="privacyAccepted">
-                    <input id="privacyAccepted"
-                           type="checkbox"
-                           th:field="*{privacyAccepted}"
-                           required>
+                    <input id="privacyAccepted" type="checkbox" th:field="*{privacyAccepted}" required>
                     <span>Declaro estar ciente da <a href="#privacyModal" id="privacyLink">Política de Privacidade</a></span>
                 </label>
                 <div class="auth-field-error" th:if="${#fields.hasErrors('privacyAccepted')}" th:errors="*{privacyAccepted}"></div>
@@ -109,146 +79,28 @@
                 <a th:href="@{/login}">Entrar</a>
             </div>
         </div>
-
     </div>
 </main>
 
-<div id="termsModal" class="modal" role="dialog" aria-modal="true"
-     aria-labelledby="termsModalTitle" hidden>
+<div id="termsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle" hidden>
     <div class="modal-content">
-        <button type="button" class="modal-close" id="closeTermsModal"
-                aria-label="Fechar termos">&times;</button>
+        <button type="button" class="modal-close" id="closeTermsModal" aria-label="Fechar termos">&times;</button>
         <iframe th:src="@{/terms}" id="termsFrame" title="Termos e Condições"></iframe>
         <div class="modal-actions">
-            <button type="button" id="confirmTermsRead" disabled>
-                Confirmar leitura
-            </button>
+            <button type="button" id="confirmTermsRead" disabled>Confirmar leitura</button>
         </div>
     </div>
 </div>
 
-<div id="privacyModal" class="modal" role="dialog" aria-modal="true"
-     aria-labelledby="privacyModalTitle" hidden>
+<div id="privacyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle" hidden>
     <div class="modal-content">
-        <button type="button" class="modal-close" id="closePrivacyModal"
-                aria-label="Fechar política de privacidade">&times;</button>
-        <iframe th:src="@{/privacy}" id="privacyFrame"
-                title="Política de Privacidade"></iframe>
+        <button type="button" class="modal-close" id="closePrivacyModal" aria-label="Fechar política de privacidade">&times;</button>
+        <iframe th:src="@{/privacy}" id="privacyFrame" title="Política de Privacidade"></iframe>
         <div class="modal-actions">
-            <button type="button" id="confirmPrivacyRead" disabled>
-                Confirmar leitura
-            </button>
+            <button type="button" id="confirmPrivacyRead" disabled>Confirmar leitura</button>
         </div>
     </div>
 </div>
-
-<script>
-    (() => {
-        const termsLink = document.getElementById('termsLink');
-        const termsModal = document.getElementById('termsModal');
-        const closeTermsModal = document.getElementById('closeTermsModal');
-        const termsFrame = document.getElementById('termsFrame');
-        const termsCheckbox = document.getElementById('termsAccepted');
-        const confirmTermsRead = document.getElementById('confirmTermsRead');
-        const privacyLink = document.getElementById('privacyLink');
-        const privacyModal = document.getElementById('privacyModal');
-        const closePrivacyModal = document.getElementById('closePrivacyModal');
-        const privacyFrame = document.getElementById('privacyFrame');
-        const privacyCheckbox = document.getElementById('privacyAccepted');
-        const confirmPrivacyRead = document.getElementById('confirmPrivacyRead');
-
-        let termsConfirmed = false;
-        let privacyConfirmed = false;
-
-        termsCheckbox.addEventListener('click', (event) => {
-            if (!termsConfirmed) {
-                event.preventDefault();
-                alert('Você precisa ler e confirmar os Termos de Uso antes de aceitá-los.');
-                termsLink.focus();
-            }
-        });
-
-        termsLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            termsModal.hidden = false;
-            closeTermsModal.focus();
-        });
-
-        closeTermsModal.addEventListener('click', () => {
-            termsModal.hidden = true;
-        });
-
-        termsModal.addEventListener('click', (event) => {
-            if (event.target === termsModal) {
-                termsModal.hidden = true;
-            }
-        });
-
-        termsFrame.addEventListener('load', () => {
-            const termsDocument = termsFrame.contentDocument;
-            const termsWindow = termsFrame.contentWindow;
-
-            termsDocument.addEventListener('scroll', () => {
-                const reachedBottom = termsWindow.scrollY + termsWindow.innerHeight
-                    >= termsDocument.documentElement.scrollHeight - 8;
-
-                if (reachedBottom) {
-                    confirmTermsRead.disabled = false;
-                }
-            });
-        });
-
-        confirmTermsRead.addEventListener('click', () => {
-            termsConfirmed = true;
-            termsModal.hidden = true;
-            termsCheckbox.focus();
-        });
-
-        privacyCheckbox.addEventListener('click', (event) => {
-            if (!privacyConfirmed) {
-                event.preventDefault();
-                alert('Você precisa ler e confirmar a Política de Privacidade antes de aceitá-la.');
-                privacyLink.focus();
-            }
-        });
-
-        privacyLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            privacyModal.hidden = false;
-            closePrivacyModal.focus();
-        });
-
-        closePrivacyModal.addEventListener('click', () => {
-            privacyModal.hidden = true;
-        });
-
-        privacyModal.addEventListener('click', (event) => {
-            if (event.target === privacyModal) {
-                privacyModal.hidden = true;
-            }
-        });
-
-        privacyFrame.addEventListener('load', () => {
-            const privacyDocument = privacyFrame.contentDocument;
-            const privacyWindow = privacyFrame.contentWindow;
-
-            privacyDocument.addEventListener('scroll', () => {
-                const reachedBottom = privacyWindow.scrollY + privacyWindow.innerHeight
-                    >= privacyDocument.documentElement.scrollHeight - 8;
-
-                if (reachedBottom) {
-                    confirmPrivacyRead.disabled = false;
-                }
-            });
-        });
-
-        confirmPrivacyRead.addEventListener('click', () => {
-            privacyConfirmed = true;
-            privacyModal.hidden = true;
-            privacyCheckbox.focus();
-        });
-    })();
-</script>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 

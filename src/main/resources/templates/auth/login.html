@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#18191d">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <title>FreeToWear | Entrar </title>
+    <title>Entrar — FreeToWear</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <script defer th:src="@{/js/auth.js}"></script>
     <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
@@ -19,46 +19,43 @@
 <body>
 
 <div th:replace="~{layout/announcement :: announcement}"></div>
-
 <div th:replace="~{layout/header :: header}"></div>
 
 <main class="auth-page">
     <div class="auth-card">
-
         <div class="auth-header">
             <span class="eyebrow">Acesso à conta</span>
             <h1>ENTRAR</h1>
             <p>Acesse sua conta para acompanhar pedidos e personalizar camisetas.</p>
         </div>
 
-        <div th:if="${param.success}" class="auth-alert success">
-            Login realizado com sucesso.
+        <div th:if="${param.success}" class="auth-alert success">Login realizado com sucesso.</div>
+        <div th:if="${param.error}" class="auth-alert error">E-mail ou senha inválidos.</div>
+        <div th:if="${param.logout}" class="auth-alert success">Você encerrou sua sessão com sucesso.</div>
+
+        <div th:if="${alreadyLoggedIn}" class="auth-alert">
+            Você já está conectado como <strong th:text="${#authentication.principal.name}">Usuário</strong>.
+            <div style="margin-top: 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <a th:href="@{/account}" class="auth-submit-btn" style="text-decoration: none; padding: 10px 16px; min-height: 40px; width: auto; font-size: 13px;">Ir para minha conta</a>
+                <form method="post" th:action="@{/logout}" style="margin: 0;">
+                    <button type="submit" class="skip-email-button" style="padding: 10px 16px; font-size: 13px;">Sair da conta</button>
+                </form>
+            </div>
         </div>
 
-        <div th:if="${param.error}" class="auth-alert error">
-            E-mail ou senha inválidos.
-        </div>
-
-        <div th:if="${param.logout}" class="auth-alert success">
-            Você encerrou sua sessão com sucesso.
-        </div>
-
-        <form method="post" th:action="@{/login}" class="auth-form">
+        <form th:unless="${alreadyLoggedIn}" method="post" th:action="@{/login}" class="auth-form">
             <div class="auth-form-group">
                 <label for="username">E-mail</label>
                 <input type="email" id="username" name="username" placeholder="seu@email.com" required autofocus/>
             </div>
-
             <div class="auth-form-group">
                 <label for="password">Senha</label>
                 <input type="password" id="password" name="password" placeholder="••••••••" required/>
             </div>
-
             <label class="auth-form-checkbox">
                 <input type="checkbox" name="remember-me"/>
                 <span>Lembrar meu acesso neste dispositivo</span>
             </label>
-
             <button type="submit" class="auth-submit-btn">
                 Entrar
                 <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -67,7 +64,7 @@
             </button>
         </form>
 
-        <div class="auth-links">
+        <div class="auth-links" th:unless="${alreadyLoggedIn}">
             <div>
                 <span>Esqueceu sua senha?</span>
                 <a th:href="@{/password/forgot}">Recuperar senha</a>
@@ -77,288 +74,35 @@
                 <a th:href="@{/register}">Criar conta</a>
             </div>
         </div>
-
     </div>
 </main>
 
-<div th:if="${showEmailVerificationPopup}"
-     id="emailVerificationModal"
-     class="email-verification-overlay">
-
+<div th:if="${showEmailVerificationPopup}" id="emailVerificationModal" class="email-verification-overlay">
     <div class="email-verification-modal">
-
-        <button type="button"
-                class="email-verification-close"
-                onclick="closeEmailVerificationModal()">
-            &times;
-        </button>
-
+        <button type="button" class="email-verification-close" onclick="closeEmailVerificationModal()">&times;</button>
         <div id="verificationStepOne">
-
-            <div class="email-verification-icon">
-                ✉
-            </div>
-
+            <div class="email-verification-icon">✉</div>
             <h2>Verifique seu e-mail</h2>
-
-            <p>
-                Seu endereço de e-mail ainda não foi verificado.
-            </p>
-
-            <p>
-                Confirme seu e-mail para manter sua conta protegida.
-            </p>
-
+            <p>Seu endereço de e-mail ainda não foi verificado.</p>
+            <p>Confirme seu e-mail para manter sua conta protegida.</p>
             <div class="email-verification-actions">
-
-                <button type="button"
-                        onclick="sendVerificationCode()"
-                        class="verify-email-button">
-                    Verificar e-mail
-                </button>
-
-                <button type="button"
-                        onclick="closeEmailVerificationModal()"
-                        class="skip-email-button">
-                    Pular por enquanto
-                </button>
-
+                <button type="button" onclick="sendVerificationCode()" class="verify-email-button">Verificar e-mail</button>
+                <button type="button" onclick="closeEmailVerificationModal()" class="skip-email-button">Pular por enquanto</button>
             </div>
-
         </div>
-
         <div id="verificationStepTwo" style="display: none;">
-
-            <div class="email-verification-icon">
-                ✉
-            </div>
-
+            <div class="email-verification-icon">✉</div>
             <h2>Digite o código recebido</h2>
-
-            <p>
-                Enviamos um código de 6 dígitos para o seu e-mail.
-            </p>
-
-            <input
-                    type="text"
-                    id="verificationCode"
-                    maxlength="6"
-                    inputmode="numeric"
-                    autocomplete="one-time-code"
-                    placeholder="000000"
-                    class="verification-code-input"
-            />
-
-            <div id="verificationError"
-                 class="verification-error"
-                 style="display: none;">
-            </div>
-
+            <p>Enviamos um código de 6 dígitos para o seu e-mail.</p>
+            <input type="text" id="verificationCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" class="verification-code-input"/>
+            <div id="verificationError" class="verification-error" style="display: none;"></div>
             <div class="email-verification-actions">
-
-                <button type="button"
-                        onclick="verifyEmailCode()"
-                        class="verify-email-button">
-                    Confirmar código
-                </button>
-
-                <button type="button"
-                        onclick="sendVerificationCode()"
-                        class="skip-email-button">
-                    Reenviar código
-                </button>
-
+                <button type="button" onclick="verifyEmailCode()" class="verify-email-button">Confirmar código</button>
+                <button type="button" onclick="sendVerificationCode()" class="skip-email-button">Reenviar código</button>
             </div>
-
         </div>
-
     </div>
 </div>
-
-<style>
-    .email-verification-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.55);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-
-    .email-verification-modal {
-        position: relative;
-        width: 90%;
-        max-width: 420px;
-        padding: 32px;
-        background: white;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-    }
-
-    .email-verification-close {
-        position: absolute;
-        top: 10px;
-        right: 14px;
-        border: none;
-        background: transparent;
-        font-size: 28px;
-        cursor: pointer;
-        color: #555;
-    }
-
-    .email-verification-icon {
-        font-size: 42px;
-        margin-bottom: 10px;
-    }
-
-    .email-verification-modal h2 {
-        margin-bottom: 12px;
-    }
-
-    .email-verification-modal p {
-        margin: 8px 0;
-        color: #555;
-    }
-
-    .email-verification-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 24px;
-    }
-
-    .verify-email-button,
-    .skip-email-button {
-        padding: 12px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 15px;
-    }
-
-    .verify-email-button {
-        border: none;
-        background: #222;
-        color: white;
-    }
-
-    .skip-email-button {
-        border: 1px solid #ccc;
-        background: white;
-        color: #333;
-    }
-
-    .verification-code-input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 14px;
-        margin-top: 20px;
-
-        border: 1px solid #ccc;
-        border-radius: 6px;
-
-        font-size: 24px;
-        text-align: center;
-        letter-spacing: 8px;
-    }
-
-    .verification-code-input:focus {
-        outline: none;
-        border-color: #222;
-    }
-
-    .verification-error {
-        margin-top: 12px;
-        color: #c62828;
-        font-size: 14px;
-    }
-</style>
-<script>
-    function closeEmailVerificationModal() {
-        const modal = document.getElementById("emailVerificationModal");
-        if (modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    async function sendVerificationCode() {
-        const button = document.querySelector("#verificationStepOne .verify-email-button");
-        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-        button.disabled = true;
-        button.textContent = "Enviando...";
-
-        try {
-            const response = await fetch("/email-verification/send", {
-                method: "POST",
-                headers: {
-                    [csrfHeader]: csrfToken
-                }
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || "Não foi possível enviar o código.");
-            }
-
-            document.getElementById("verificationStepOne").style.display = "none";
-            document.getElementById("verificationStepTwo").style.display = "block";
-            document.getElementById("verificationCode").focus();
-
-        } catch (error) {
-            console.error("Verification email error:", error);
-            alert(error.message);
-        } finally {
-            button.disabled = false;
-            button.textContent = "Verificar e-mail";
-        }
-    }
-
-    async function verifyEmailCode() {
-        const code = document.getElementById("verificationCode").value.trim();
-        const errorElement = document.getElementById("verificationError");
-        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-        errorElement.style.display = "none";
-
-        if (!/^\d{6}$/.test(code)) {
-            errorElement.textContent = "Digite um código válido de 6 dígitos.";
-            errorElement.style.display = "block";
-            return;
-        }
-
-        try {
-            const response = await fetch("/email-verification/verify", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    [csrfHeader]: csrfToken
-                },
-                body: JSON.stringify({ code: code })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                errorElement.textContent = data.message || "Código inválido.";
-                errorElement.style.display = "block";
-                return;
-            }
-
-            closeEmailVerificationModal();
-            alert("E-mail verificado com sucesso.");
-
-        } catch (error) {
-            console.error("Verification error:", error);
-            errorElement.textContent = "Ocorreu um erro ao verificar o código.";
-            errorElement.style.display = "block";
-        }
-    }
-</script>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 
