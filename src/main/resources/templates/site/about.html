@@ -1,16 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sobre Nós - FreeToWear</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description"
+          content="FREE TO WEAR. Conheça nossa história, propósito e o que nos move: vestir suas ideias com liberdade, autenticidade e tecnologia no estúdio 3D.">
+    <title>FREE TO WEAR | Sobre Nós</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/institutional.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <th:block th:replace="~{layout/final-banner :: final-banner-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
 
-<p>Sobre a FreeToWear</p>
-<p>Quem somos</p>
-<p>Nossa Missão</p>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<main id="view-about">
+
+    <section class="how-hero section-wrap">
+        <span class="eyebrow">Sobre a FreeToWear</span>
+        <h1>LIVRE PARA CRIAR.<br><em>LIVRE PARA VESTIR.</em></h1>
+        <p>
+            Acreditamos que roupa é mais do que tecido: é expressão, ponto de vista e identidade.
+            Nascemos para dar espaço às suas referências, histórias e ideias — sem moldes prontos, sem barreiras.
+        </p>
+        <a th:href="@{/customizer}" href="/customizer" class="button dark">
+            Criar minha camiseta
+            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            </svg>
+        </a>
+    </section>
+
+    <section class="process-section section-wrap">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">Quem somos e o que nos move</span>
+                <h2>Nossos pilares<br>e <em>propósito.</em></h2>
+            </div>
+            <a class="inline-link" th:href="@{/how-it-works}" href="/how-it-works">
+                Como funciona
+                <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="process-grid">
+            <article>
+                <span>01 / AUTONOMIA</span>
+                <h3>Sua visão em primeiro lugar.</h3>
+                <p>Você no controle de cada detalhe: escolha tecidos, cores, posições e combinações com liberdade total de criação.</p>
+            </article>
+            <article>
+                <span>02 / EXPERIÊNCIA</span>
+                <h3>Tecnologia 3D intuitiva.</h3>
+                <p>Criamos um estúdio tridimensional interativo para você girar, aproximar e visualizar a sua peça em tempo real antes de decidir.</p>
+            </article>
+            <article>
+                <span>03 / AUTENTICIDADE</span>
+                <h3>Cultura, humor e histórias.</h3>
+                <p>Seja uma piada interna, uma homenagem ao seu filme favorito, um evento ou a identidade da sua marca, tudo cabe aqui.</p>
+            </article>
+            <article>
+                <span>04 / COMPROMISSO</span>
+                <h3>Cuidado em cada etapa.</h3>
+                <p>Do primeiro esboço digital até a confecção, prezamos pela qualidade dos materiais e pela transparência em todo o processo.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="tips-section section-wrap">
+        <h2>Nossa missão.<br><em>E onde queremos chegar.</em></h2>
+        <div>
+            <article>
+                <h3>Democratizar a criação autoral</h3>
+                <p>Permitir que qualquer pessoa crie peças autênticas e exclusivas com facilidade, sem depender de softwares complexos de design.</p>
+            </article>
+            <article>
+                <h3>Valorizar a expressão individual</h3>
+                <p>Transformar sentimentos, gostos, ideias e causas em estampas que contam histórias reais nas ruas.</p>
+            </article>
+            <article>
+                <h3>Qualidade e transparência</h3>
+                <p>Oferecer uma experiência clara de ponta a ponta, com processos explicados, privacidade respeitada e suporte presente.</p>
+            </article>
+            <article>
+                <h3>Evolução constante</h3>
+                <p>Aprimorar continuamente nossas ferramentas interativas, modelos 3D e catálogo para inspirar seu próximo projeto.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="faq-section section-wrap">
+        <div>
+            <span class="eyebrow">Conecte-se conosco</span>
+            <h2>Tem alguma ideia?<br><em>Fale com a gente.</em></h2>
+            <p>Estamos sempre abertos para dúvidas, sugestões e novas parcerias.</p>
+        </div>
+
+        <div>
+            <details>
+                <summary>Como surgiu a FreeToWear?</summary>
+                <p>A FreeToWear nasceu da vontade de unir tecnologia e moda personalizada, permitindo que qualquer pessoa visualize exatamente o que quer vestir em um ambiente 3D interativo antes de produzir.</p>
+            </details>
+            <details>
+                <summary>Quais tipos de projetos vocês atendem?</summary>
+                <p>Desde quem deseja uma única peça autoral para si ou para presentear, até grupos, eventos, marcas autorais e empresas que buscam camisetas exclusivas.</p>
+            </details>
+            <details>
+                <summary>Onde posso saber mais sobre termos e políticas?</summary>
+                <p>Você pode conferir nosso resumo legal na página de <a th:href="@{/policies}">Políticas</a>, além dos nossos <a th:href="@{/terms}">Termos de Uso</a> e <a th:href="@{/privacy}">Política de Privacidade</a>.</p>
+            </details>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{layout/final-banner :: final-banner}"></div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
