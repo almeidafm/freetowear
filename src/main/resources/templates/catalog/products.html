@@ -1,60 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Produtos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description" content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Coleção.</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/products.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
 <div th:replace="~{layout/header :: header}"></div>
 
-<form th:action="@{/products/search}"
-      method="get"
-      class="search-form">
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 
-    <input type="search"
-           name="q"
-           placeholder="Buscar produtos ou categorias..."
-           autocomplete="off">
 
-    <button type="submit">
-        Buscar
-    </button>
-</form><br>
+<div id="view-shop">
+    <section class="shop-hero section-wrap">
+        <span class="eyebrow">FREE TO WEAR / a coleção</span>
+        <h1>SEU PRÓXIMO<br><em>ASSUNTO FAVORITO.</em></h1>
+        <p>Tem nostalgia, mistério, humor e aquela ideia com a sua cara. Escolha uma peça pronta ou use a coleção como ponto de partida para criar.</p>
+    </section>
 
-<table border="1" cellpadding="10">
-    <thead>
-    <tr>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Detalhes</th>
-    </tr>
-    </thead>
+    <section class="section-wrap store-section">
+        <div class="store-toolbar">
+            <div class="filter-row" aria-label="Filtrar coleção">
+                <button data-collection="Tudo" class="active" aria-pressed="true">Tudo</button>
+            </div>
+            <form th:action="@{/products/search}"
+                  method="get"
+                  class="store-search">
 
-    <tbody>
-    <tr th:each="product : ${products}">
-        <td>
-            <img th:src="${product.imageUrl}"
-                 th:alt="${product.name}"
-                 width="120">
-        </td>
-        <td th:text="${product.name}"></td>
-        <td th:text="'R$' + ${product.price}"></td>
-        <td>
+                <input type="search"
+                       name="q"
+                       placeholder="Buscar produtos ou categorias..."
+                       autocomplete="off">
+            </form><br>
+        </div>
+
+        <p id="product-count" class="small muted" aria-live="polite">0 ideias para vestir</p>
+
+<div id="store-grid" class="store-grid">
+    <article class="store-card"th:each="product : ${products}">
+        <a class="store-card-image" th:href="@{/products/{id}(id=${product.id})}">
+            <img class="store-card-image" th:src="${product.imageUrl}" th:alt="${product.name}">
+            <span class="round-product-arrow" aria-hidden="true">
+                <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+            </span>
+        </a>
+        <div class="store-card-copy">
+            <span class="eyebrow" th:text="${product.categoryName}">Categoria</span>
             <a th:href="@{/products/{id}(id=${product.id})}">
-                Ver produto
+                <h3 th:text="${product.name}">Produto</h3>
             </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+            <div>
+                <strong th:text="|R$ ${product.price}|">R$ Preço</strong>
+                <a th:href="@{/products/{id}(id=${product.id})}" class="inline-link" th:aria-label="|Escolher ${product.name}|">
+                    Escolher
+                    <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </article>
+</div>
+
+</section>
+</div>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>

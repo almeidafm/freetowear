@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const activeRoutes = new Set(['/', '/artworks', '/shop', '/universes']);
+  const activeRoutes = new Set(['/', '/artworks', '/products', '/universes']);
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
   const primaryNav = document.querySelector('.header nav[aria-label*="Navega"]');
 
