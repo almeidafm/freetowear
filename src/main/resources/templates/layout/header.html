@@ -65,7 +65,7 @@
                     </div>
                     <div sec:authorize="isAuthenticated()">
                         <a href="/account" th:href="@{/account}">Minha conta</a>
-                        <a href="/account/edit" th:href="@{/account/edit}">Editar conta</a>
+                        <a href="/orders" th:href="@{/orders}">Meus Pedidos</a>
                         <form method="post" action="/logout" th:action="@{/logout}">
                             <button type="submit">Sair</button>
                         </form>
