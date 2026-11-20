@@ -89,6 +89,10 @@ public class ProductController {
     @GetMapping("/{id}")
     public String showProduct(@PathVariable String id, Model model) {
         model.addAttribute("product", productService.findById(id));
+        model.addAttribute("relatedProducts", productService.listProducts().stream()
+                .filter(product -> !product.getId().equals(id))
+                .limit(4)
+                .toList());
         model.addAttribute("reviews", reviewService.findAllByProductId(id));
         return "catalog/product";
     }
