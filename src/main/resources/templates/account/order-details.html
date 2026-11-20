@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Order details</title>
@@ -13,13 +12,20 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <script defer th:src="@{/js/order-details.js}"></script>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
-<div>
-    <h1 th:text="'Order #' + ${order.id}">Order details</h1>
-    <a th:href="@{/orders}">Back to my orders</a>
+<div class="order-details-page">
+<div class="order-details-shell">
+<div class="order-details-heading">
+    <div>
+        <p class="eyebrow">Account / Orders</p>
+        <a class="order-back-link" th:href="@{/orders}">Back to my orders</a>
+        <h1 th:text="'Order #' + ${order.id}">Order details</h1>
+    </div>
     <button id="cancel-order-btn"
+            class="order-cancel-button"
             th:if="${order.canCancel}"
             th:data-order-id="${order.id}"
             th:data-paid="${order.isPaid}"
@@ -28,11 +34,13 @@
     </button>
 </div>
 
-<main>
-    <p><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</span></p>
-    <p><strong>Status:</strong> <span th:text="${order.status}">PENDING</span></p>
-    <p th:if="${order.deliveryAddress != null}"><strong>Delivery address:</strong> <span th:text="${order.deliveryAddress}">Address</span></p>
-
+<main class="order-details-content">
+<section class="order-info-card">
+    <div><span>Date</span><strong th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</strong></div>
+    <div><span>Status</span><strong class="order-status" th:text="${order.status}">PENDING</strong></div>
+    <div th:if="${order.deliveryAddress != null}"><span>Delivery address</span><strong th:text="${order.deliveryAddress}">Address</strong></div>
+</section>
+<section class="order-section order-tracking">
     <h2>Tracking</h2>
     <p th:if="${order.trackingCode != null}"><strong>Tracking code:</strong> <span th:text="${order.trackingCode}">tracking-code</span></p>
     <p th:if="${#lists.isEmpty(order.trackingEvents)}">No tracking updates yet.</p>
@@ -42,10 +50,13 @@
             - <span th:text="${#temporals.format(event.occurredAt, 'dd/MM/yyyy HH:mm')}">22/09/2026 14:30</span>
         </li>
     </ol>
+</section>
 
+<section class="order-section order-items">
     <h2>Items</h2>
     <p th:if="${#lists.isEmpty(order.items)}">This order has no items.</p>
-    <table th:if="${!#lists.isEmpty(order.items)}">
+    <div class="order-table-wrap" th:if="${!#lists.isEmpty(order.items)}">
+    <table>
         <thead><tr><th>Product</th><th>Variation</th><th>Quantity</th><th>Unit price</th><th>Subtotal</th></tr></thead>
         <tbody>
         <tr th:each="item : ${order.items}">
@@ -57,12 +68,16 @@
         </tr>
         </tbody>
     </table>
+    </div>
+</section>
 
+<section class="order-section order-summary">
     <h2>Summary</h2>
     <p>Products: <span th:text="${'R$ ' + #numbers.formatDecimal(order.productsValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
     <p>Discount: <span th:text="${'R$ ' + #numbers.formatDecimal(order.discountValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
     <p>Shipping: <span th:text="${'R$ ' + #numbers.formatDecimal(order.shippingPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
     <p><strong>Total: <span th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></strong></p>
+</section>
 
     <section class="product-reviews" aria-labelledby="product-reviews-title">
         <div class="product-reviews-heading">
@@ -84,57 +99,9 @@
         <p id="no-review-products" class="no-review-products" hidden>No products are available for review.</p>
     </section>
 </main>
-<script th:src="@{/js/order-reviews.js}"></script>
-<script>
-    (function () {
-        const btn = document.getElementById('cancel-order-btn');
-        if (!btn) return;
+</div>
+</div>
 
-        btn.addEventListener('click', function () {
-            if (!confirm('Are you sure you want to cancel this order?')) return;
-
-            const isPaid = btn.dataset.paid === 'true';
-            if (isPaid) {
-                if (!confirm('Since this order has already been paid, your refund will be reviewed and processed by our team. Do you still want to cancel?')) return;
-            }
-
-            const orderId = btn.dataset.orderId;
-            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-            btn.disabled = true;
-            btn.textContent = 'Cancelling…';
-
-            fetch('/order/cancel', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    [csrfHeader]: csrfToken
-                },
-                body: 'orderId=' + encodeURIComponent(orderId)
-            })
-            .then(function (res) {
-                return res.json().then(function (data) {
-                    return { ok: res.ok, data: data };
-                });
-            })
-            .then(function (result) {
-                if (result.ok) {
-                    window.location.href = '/orders';
-                } else {
-                    alert('Could not cancel order: ' + (result.data.message || 'Unknown error'));
-                    btn.disabled = false;
-                    btn.textContent = 'Cancel Order';
-                }
-            })
-            .catch(function () {
-                alert('An error occurred. Please try again.');
-                btn.disabled = false;
-                btn.textContent = 'Cancel Order';
-            });
-        });
-    })();
-</script>
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

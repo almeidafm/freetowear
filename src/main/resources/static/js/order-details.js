@@ -82,3 +82,52 @@ function safe(value) {
     element.textContent = value || '';
     return element.innerHTML;
 }
+
+(function () {
+    const btn = document.getElementById('cancel-order-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+        if (!confirm('Are you sure you want to cancel this order?')) return;
+
+        const isPaid = btn.dataset.paid === 'true';
+        if (isPaid) {
+            if (!confirm('Since this order has already been paid, your refund will be reviewed and processed by our team. Do you still want to cancel?')) return;
+        }
+
+        const orderId = btn.dataset.orderId;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        btn.disabled = true;
+        btn.textContent = 'Cancelling…';
+
+        fetch('/order/cancel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [csrfHeader]: csrfToken
+            },
+            body: 'orderId=' + encodeURIComponent(orderId)
+        })
+        .then(function (res) {
+            return res.json().then(function (data) {
+                return { ok: res.ok, data: data };
+            });
+        })
+        .then(function (result) {
+            if (result.ok) {
+                window.location.href = '/orders';
+            } else {
+                alert('Could not cancel order: ' + (result.data.message || 'Unknown error'));
+                btn.disabled = false;
+                btn.textContent = 'Cancel Order';
+            }
+        })
+        .catch(function () {
+            alert('An error occurred. Please try again.');
+            btn.disabled = false;
+            btn.textContent = 'Cancel Order';
+        });
+    });
+})();
