@@ -8,9 +8,15 @@
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" th:href="@{/css/order-details.css}">
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<header>
+<div th:replace="~{layout/header :: header}"></div>
+<div>
     <h1 th:text="'Order #' + ${order.id}">Order details</h1>
     <a th:href="@{/orders}">Back to my orders</a>
     <button id="cancel-order-btn"
@@ -20,7 +26,7 @@
             type="button">
         Cancel Order
     </button>
-</header>
+</div>
 
 <main>
     <p><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</span></p>
@@ -129,5 +135,6 @@
         });
     })();
 </script>
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

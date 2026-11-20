@@ -9,9 +9,15 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Checkout</title>
     <link rel="stylesheet" th:href="@{/css/checkout.css}">
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 
 <body>
+<div th:replace="~{layout/header :: header}"></div>
 
 <div class="checkout-container" th:if="${checkoutAvailable}">
 
@@ -249,5 +255,6 @@
     updateStep(1);
 </script>
 
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

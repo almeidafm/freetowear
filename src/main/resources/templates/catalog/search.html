@@ -7,13 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Busca | FreeToWear</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-
 <body>
-
-<h1><a th:href="@{/}">Home</a><br></h1>
+<div th:replace="~{layout/header :: header}"></div>
 
 <main class="search-page">
 
@@ -69,5 +72,7 @@
 
     </section>
 </main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

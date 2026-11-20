@@ -5,12 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>My Orders</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<header>
-    <h1>My Orders</h1>
-    <a th:href="@{/}">Home</a>
-</header>
+<div th:replace="~{layout/header :: header}"></div>
 
 <main>
     <p th:if="${orders == null}">Loading orders...</p>
@@ -45,5 +47,6 @@
         </tbody>
     </table>
 </main>
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

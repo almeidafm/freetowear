@@ -7,9 +7,15 @@
     <title>FreeToWear — Analytics &amp; Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<header>
+<div th:replace="~{layout/header :: header}"></div>
+<div>
     <div class="header-copy">
         <p class="eyebrow"><a th:href="@{/admin}">&larr; FreeToWear Admin</a></p>
         <h1 id="pageTitle">Analytics &amp; Dashboard</h1>
@@ -26,7 +32,7 @@
             </select>
         </div>
     </div>
-</header>
+</div>
 <main id="dashboardMain">
     <section id="dashboard" aria-label="Indicadores e gráficos">
         <div class="loading-state">Carregando métricas...</div>
@@ -34,5 +40,6 @@
     <p class="footer-note">FreeToWear Analytics · Dados atualizados em tempo real a partir da base de dados</p>
 </main>
 <script th:src="@{/js/admin-dashboard.js}"></script>
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

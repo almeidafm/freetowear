@@ -5,15 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Payment</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-<h1><a th:href="@{/}">Home</a><br></h1>
-
-<div>
-    <span>👤</span>
-    <span sec:authorize="isAnonymous()">Guest</span>
-    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
-</div><br>
+<div th:replace="~{layout/header :: header}"></div>
 
 <p th:if="${param.error}" style="color: red;">No active order found.</p>
 
@@ -21,5 +20,6 @@
     <button type="submit">PAY</button>
 </form>
 
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

@@ -7,13 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <script th:src="@{/js/scripts.js}"></script>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
-
-<header>
-    <h1><a th:href="@{/}">Home</a></h1>
-    <div class="badge">TEST PANEL</div>
-</header>
+<div th:replace="~{layout/header :: header}"></div>
 
 <div class="layout">
 
@@ -370,5 +371,6 @@
 </div>
 
 <script th:src="@{/js/admin.js}"></script>
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>
