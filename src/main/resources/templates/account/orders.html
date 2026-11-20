@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>My Orders</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
 
-<main>
-    <p th:if="${orders == null}">Loading orders...</p>
+<main class="orders-page">
+    <div class="orders-shell">
+        <header class="orders-heading">
+            <div>
+                <p class="eyebrow">Account</p>
+                <h1>My orders</h1>
+            </div>
+            <p>Keep track of your purchases, delivery updates, and order details.</p>
+        </header>
 
-    <p th:if="${ordersError}" th:text="${ordersError}">Orders could not be loaded.</p>
+        <section class="orders-panel">
+            <p class="orders-message" th:if="${orders == null}">Loading orders...</p>
 
-    <div th:if="${orders != null and #lists.isEmpty(orders)}">
-        <h2>No orders yet</h2>
-        <p>Your completed orders will appear here.</p>
-        <a th:href="@{/products}">Continue shopping</a>
+            <p class="orders-message" th:if="${ordersError}" th:text="${ordersError}">Orders could not be loaded.</p>
+
+            <div class="orders-empty" th:if="${orders != null and #lists.isEmpty(orders)}">
+                <h2>No orders yet</h2>
+                <p>Your completed orders will appear here.</p>
+                <a th:href="@{/products}">Continue shopping</a>
+            </div>
+
+            <div class="orders-table-wrap" th:if="${orders != null and !#lists.isEmpty(orders)}">
+                <table class="orders-table">
+                    <thead>
+                    <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th>Latest tracking</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="'#' + ${order.id}">#order</td>
+                        <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</td>
+                        <td th:text="${order.status}">PENDING</td>
+                        <td th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+                        <td>
+                            <span th:if="${order.latestTrackingEvent != null}" th:text="${order.latestTrackingEvent.status}">PAYMENT_RECEIVED</span>
+                            <small th:if="${order.latestTrackingEvent != null}" th:text="${#temporals.format(order.latestTrackingEvent.occurredAt, 'dd/MM/yyyy HH:mm')}">22/09/2026 14:30</small>
+                            <span th:if="${order.latestTrackingEvent == null}">No updates yet</span>
+                        </td>
+                        <td><a th:href="@{/orders/{id}(id=${order.id})}">View details</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
-
-    <table th:if="${orders != null and !#lists.isEmpty(orders)}">
-        <thead>
-        <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th>Latest tracking</th><th></th></tr>
-        </thead>
-        <tbody>
-        <tr th:each="order : ${orders}">
-            <td th:text="'#' + ${order.id}">#order</td>
-            <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</td>
-            <td th:text="${order.status}">PENDING</td>
-            <td th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
-            <td>
-                <span th:if="${order.latestTrackingEvent != null}"
-                      th:text="${order.latestTrackingEvent.status}">PAYMENT_RECEIVED</span>
-                <small th:if="${order.latestTrackingEvent != null}"
-                       th:text="${#temporals.format(order.latestTrackingEvent.occurredAt, 'dd/MM/yyyy HH:mm')}">22/09/2026 14:30</small>
-                <span th:if="${order.latestTrackingEvent == null}">No updates yet</span>
-            </td>
-            <td><a th:href="@{/orders/{id}(id=${order.id})}">View details</a></td>
-        </tr>
-        </tbody>
-    </table>
 </main>
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>

@@ -1,0 +1,171 @@
+.orders-page {
+  padding: 48px 24px 100px;
+}
+
+.orders-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.orders-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.orders-heading .eyebrow {
+  margin-bottom: 12px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.orders-heading h1 {
+  margin: 0;
+  font-size: clamp(38px, 6vw, 66px);
+  line-height: .94;
+  font-weight: 500;
+  letter-spacing: -.065em;
+}
+
+.orders-heading p:last-child {
+  max-width: 330px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.orders-panel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.orders-table-wrap {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.orders-table th {
+  padding: 16px 22px;
+  color: var(--muted);
+  background: var(--light);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.orders-table td {
+  padding: 20px 22px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.orders-table tbody tr {
+  transition: background-color .2s ease;
+}
+
+.orders-table tbody tr:hover {
+  background: #fbfbf7;
+}
+
+.orders-table td:first-child {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.orders-table td:nth-child(3) {
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.orders-table td:nth-child(5) {
+  display: grid;
+  gap: 4px;
+}
+
+.orders-table td:nth-child(5) small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.orders-table a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.orders-table a::after {
+  content: "↗";
+  font-size: 16px;
+  line-height: 1;
+}
+
+.orders-message,
+.orders-empty {
+  padding: 54px 32px;
+}
+
+.orders-message {
+  color: var(--muted);
+}
+
+.orders-empty h2 {
+  margin-bottom: 10px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.orders-empty p {
+  margin-bottom: 24px;
+  color: var(--muted);
+}
+
+.orders-empty a {
+  display: inline-flex;
+  padding: 13px 18px;
+  color: var(--lime);
+  background: var(--dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .orders-page {
+    padding: 32px 16px 72px;
+  }
+
+  .orders-heading {
+    display: block;
+  }
+
+  .orders-heading h1 {
+    margin-bottom: 18px;
+  }
+
+  .orders-heading p:last-child {
+    max-width: 420px;
+  }
+
+  .orders-message,
+  .orders-empty {
+    padding: 36px 24px;
+  }
+}
