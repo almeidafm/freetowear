@@ -1,206 +1,141 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Product</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
 
-<div class="product-carousel" id="product-carousel">
-    <div th:each="variation : ${product.variations}">
-        <div class="product-slide" th:each="imageUrl : ${variation.imageUrls}">
-            <img th:src="${imageUrl}" th:alt="${product.name}" width="300">
+<main id="main-content">
+    <section class="section-wrap product-page">
+        <nav class="breadcrumbs" aria-label="Localização">
+            <a href="/home">Início</a><span>/</span>
+            <a href="/products">Coleção</a><span>/</span>
+            <span>Produto</span>
+        </nav>
+        <div class="product-layout">
+            <div class="detail-visual">
+                <span class="product-tag">SUA IDEIA, SEU ESTILO</span>
+                <img id="detail-image" th:src="${product.imageUrl}" th:alt="${product.name}">
+                <span class="visual-caption">COMPOSIÇÃO AUTORAL · PRÉVIA ILUSTRATIVA</span>
+            </div>
+            <div class="detail-copy">
+                <span class="eyebrow" th:text="${product.categoryName}">Categoria</span>
+                <h1 tabindex="-1" th:text="${product.name}">Produto</h1>
+                <p class="detail-description" th:text="${product.description}">
+                    Descrição do produto
+                </p>
+                <strong class="detail-price" th:text="${product.price}">R$ Preço</strong>
+                <p class="small muted">Entrega calculada na finalização. Produção sob demanda.</p>
+
+                <fieldset>
+                    <legend>Cor da camiseta</legend>
+                    <div class="swatches">
+                        <button data-shop-color="#18191d" class="swatch" style="background:#18191d" aria-label="Cor #18191d" aria-pressed="false"></button>
+                        <button data-shop-color="#faf7ed" class="swatch" style="background:#faf7ed" aria-label="Cor #faf7ed" aria-pressed="false"></button>
+                        <button data-shop-color="#abc9ef" class="swatch active" style="background:#abc9ef" aria-label="Cor #abc9ef" aria-pressed="true"></button>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tamanho</legend>
+                    <div class="sizes">
+                        <button data-shop-size="P" aria-pressed="false">P</button>
+                        <button data-shop-size="M" aria-pressed="true" class="active">M</button>
+                        <button data-shop-size="G" aria-pressed="false">G</button>
+                        <button data-shop-size="GG" aria-pressed="false">GG</button>
+                    </div>
+                </fieldset>
+
+                <label class="qty-label" for="product-quantity">
+                    Quantidade
+                    <input id="product-quantity" type="number" min="1" max="20" step="1" value="1">
+                </label>
+
+                <div class="buy-actions">
+                    <button id="buy-now" class="button dark wide">
+                        Comprar agora
+                        <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                        </svg>
+                    </button>
+                    <button id="product-add" class="button wide">Adicionar ao carrinho</button>
+                </div>
+
+                <button id="product-customize" class="inline-link">
+                    Quero personalizar esta ideia
+                    <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                    </svg>
+                </button>
+
+                <div class="product-benefits">
+                    <span>Arte com personalidade</span>
+                    <span>Escolha suas cores</span>
+                    <span>Pagamento em ambiente protegido</span>
+                </div>
+
+                <details>
+                    <summary>O que vou receber?</summary>
+                    <p>Uma camiseta com a composição escolhida. As imagens são mockups ilustrativos; aparência, cor e posicionamento podem variar na peça física. Confira a composição e as medidas com a loja antes de comprar.</p>
+                </details>
+
+                <details>
+                    <summary>Como funciona a personalização?</summary>
+                    <p>Ao escolher personalizar, você leva esta arte para o estúdio. Ajuste a composição, envie outra imagem e crie frente e costas. A peça personalizada possui preço próprio, exibido no estúdio.</p>
+                </details>
+
+                <div class="mode-note" role="note">
+                    <span class="mode-dot"></span>
+                    Demonstração local · você pode testar a entrega e concluir uma simulação. Nenhum pedido é enviado à loja e não há cobrança.
+                </div>
+            </div>
         </div>
-    </div>
-    <button type="button" id="previous-image">‹</button>
-    <button type="button" id="next-image">›</button>
-</div>
 
-<style>
-    .product-carousel { position: relative; width: 300px; }
-    .product-slide { display: none; }
-    .product-slide.active { display: block; }
-    .product-carousel button { position: absolute; top: 45%; padding: .4rem .7rem; }
-    #previous-image { left: .25rem; }
-    #next-image { right: .25rem; }
-</style>
+        <div class="related">
+            <div class="section-heading">
+                <h2>Seu próximo <em>favorito.</em></h2>
+                <a th:href="@{/products}" href="/products" class="inline-link">
+                    Ver tudo
+                    <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                    </svg>
+                </a>
+            </div>
 
-<script>
-    (() => {
-        const slides = [...document.querySelectorAll('#product-carousel .product-slide')];
-        let current = 0;
-        const show = index => slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-        if (slides.length) {
-            show(current);
-            document.getElementById('previous-image').onclick = () => { current = (current - 1 + slides.length) % slides.length; show(current); };
-            document.getElementById('next-image').onclick = () => { current = (current + 1) % slides.length; show(current); };
-        } else {
-            document.getElementById('product-carousel').style.display = 'none';
-        }
-    })();
-</script>
+            <div class="store-grid">
+                <article class="store-card" th:each="relatedProduct : ${relatedProducts}">
+                    <a class="store-card-image" th:href="@{/products/{id}(id=${relatedProduct.id})}">
+                        <img loading="lazy" th:src="${relatedProduct.imageUrl}" th:alt="${relatedProduct.name}">
+                        <span class="round-product-arrow" aria-hidden="true">
+                            <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </span>
+                    </a>
+                    <div class="store-card-copy">
+                        <span class="eyebrow" th:text="${relatedProduct.categoryName}">Categoria</span>
+                        <a th:href="@{/products/{id}(id=${relatedProduct.id})}"><h3 th:text="${relatedProduct.name}">Produto</h3></a>
+                        <div>
+                            <strong th:text="|R$ ${relatedProduct.price}|">R$ Preço</strong>
+                            <a th:href="@{/products/{id}(id=${relatedProduct.id})}" class="inline-link" th:aria-label="|Escolher ${relatedProduct.name}|">Escolher ↗</a>
+                        </div>
+                    </div>
+                </article>
 
-<p>
-    <strong>ID:</strong>
-    <span th:text="${product.id}">1</span>
-</p>
-
-<p>
-    <strong>Nome:</strong>
-    <span th:text="${product.name}">Notebook</span>
-</p>
-
-<p>
-    <strong>Categoria</strong>
-    <span th:text="${product.categoryName}"> </span>
-</p>
-
-<p>
-    <strong>Preço:</strong>
-    <span th:text="${product.price}">1000.00</span>
-</p>
-
-<p>
-    <strong>Avaliação:</strong>
-    <span th:text="${#numbers.formatDecimal(product.ratingAverage, 1, 2)}">0.00</span>
-    <span>/ 5</span>
-    <span th:text="${'(' + product.ratingCount + ' avaliações)'}">(0 avaliações)</span>
-</p>
-
-<p>
-    <strong>Descrição</strong>
-    <span th:text="${product.description}"> </span>
-</p>
-
-<form th:action="@{/order/item}"
-      id="add-to-cart-form"
-      method="post"
-      enctype="multipart/form-data">
-
-    <input type="hidden"
-           name="idProduct"
-           th:value="${product.id}">
-
-    <fieldset>
-        <legend>Variação</legend>
-        <label th:each="variation : ${product.variations}">
-            <input type="radio"
-                   name="idVariation"
-                   th:value="${variation.id}"
-                   required>
-            <span th:text="${variation.color + ' / ' + variation.size}">Cor / Tamanho</span>
-        </label>
-    </fieldset>
-
-    <label for="quantity">
-        Quantidade:
-    </label>
-
-    <input type="number"
-           id="quantity"
-           name="quantity"
-           min="1"
-           value="1"
-           required>
-
-    <br><br>
-
-    <label for="customerCustomization">
-        Personalização:
-    </label>
-
-    <input type="file"
-           id="customerCustomization"
-           name="customerCustomization">
-
-    <br><br>
-
-    <label for="description">
-        Descrição:
-    </label>
-
-    <textarea id="description"
-              name="description"></textarea>
-
-    <br><br>
-
-    <button type="submit">
-        Adicionar ao carrinho
-    </button>
-
-</form>
-
-<script>
-    document.getElementById('add-to-cart-form').addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        try {
-            const response = await fetch(this.action, {
-                method: 'POST',
-                body: new FormData(this)
-            });
-            const data = await response.json().catch(() => ({}));
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Could not add item to cart.');
-            }
-
-            alert(data.message || 'Item added to cart successfully.');
-        } catch (error) {
-            alert(error.message || 'Could not add item to cart.');
-        }
-    });
-</script>
-
-<section>
-    <h2>Avaliações dos clientes</h2>
-
-    <p th:if="${#lists.isEmpty(reviews)}">Nenhuma avaliação ainda.</p>
-
-    <article th:each="review : ${reviews}">
-        <hr>
-        <p>
-            <strong th:text="${review.customerName}">Nome do cliente</strong>
-            &mdash;
-            <span th:text="${review.rating}">5</span>/5
-            &mdash;
-            <time th:datetime="${review.createdAt}"
-                  th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">01/01/2025</time>
-        </p>
-
-        <p th:if="${review.purchasedVariations != null and !#lists.isEmpty(review.purchasedVariations)}">
-            <em>Comprou:
-                <span th:each="variation, iterStat : ${review.purchasedVariations}">
-                    <span th:text="${variation}">Cor / Tamanho</span><span th:if="${!iterStat.last}">, </span>
-                </span>
-            </em>
-        </p>
-
-        <p th:if="${review.text != null and !review.text.isBlank()}"
-           th:text="${review.text}">Comentário do cliente.</p>
-
-        <div th:if="${review.imageUrls != null and !#lists.isEmpty(review.imageUrls)}">
-            <img th:each="url : ${review.imageUrls}"
-                 th:src="${url}"
-                 th:alt="${'Imagem da avaliação de ' + review.customerName}"
-                 width="150">
+            </div>
         </div>
-    </article>
-</section>
+    </section>
 
-<p>
-    <a th:href="@{/products}">
-        Voltar para a lista
-    </a>
-</p>
+</main>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>
