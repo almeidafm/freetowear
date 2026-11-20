@@ -1,210 +1,143 @@
 <!DOCTYPE html>
-<html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>FREE TO WEAR | Minha Conta</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <script defer th:src="@{/js/profile.js}"></script>
 </head>
 <body>
-
-<header>
-    <h1>My Profile</h1>
-    <nav>
-        <a th:href="@{/}">Home</a>
-    </nav>
-</header>
-
-<main>
-
-    <div>
-        <h2>Profile</h2>
-
-        <div>
-            <span th:text="${#strings.substring(customer.name, 0, 1)}">A</span>
+<div th:replace="~{layout/header :: header}"></div>
+<main class="profile-page">
+    <div class="profile-shell">
+        <section class="profile-hero">
+            <div class="profile-hero-copy">
+                <span class="eyebrow">Minha conta</span>
+                <h1>Seu espaço,<br><em>seu jeito.</em></h1>
+                <p>Veja seus dados, endereços e acompanhe tudo o que está a caminho.</p>
+            </div>
+            <div class="profile-identity">
+                <div class="profile-avatar" th:text="${#strings.toUpperCase(#strings.substring(customer.name, 0, 2))}">JO</div>
+                <div>
+                    <span class="profile-greeting">Olá,</span>
+                    <strong th:text="${customer.name}">John Doe</strong>
+                    <span th:text="${customer.email}">john@example.com</span>
+                </div>
+            </div>
+        </section>
+        <div class="profile-grid">
+            <section class="profile-card profile-details-card">
+                <div class="card-heading">
+                    <div><span class="card-kicker">01</span><h2>Seus dados</h2></div>
+                    <a class="text-link" th:href="@{/account/edit}" th:unless="${editMode}">Editar <span>↗</span></a>
+                    <a class="text-link" th:href="@{/account}" th:if="${editMode}">Cancelar <span>↗</span></a>
+                </div>
+                <dl class="profile-data" th:unless="${editMode}">
+                    <div><dt>Nome completo</dt><dd th:text="${customer.name}">John Doe</dd></div>
+                    <div><dt>E-mail</dt><dd th:text="${customer.email}">john@example.com</dd></div>
+                    <div><dt>Telefone<span class="missing-data-marker" th:if="${customer.phone == null or #strings.isEmpty(customer.phone)}">*</span></dt><dd class="profile-phone" th:text="${customer.phone != null ? customer.phone : '—'}">(11) 99999-9999</dd></div>
+                    <div><dt>Data de nascimento<span class="missing-data-marker" th:if="${customer.birthDate == null}">*</span></dt><dd th:text="${customer.birthDate != null ? #temporals.format(customer.birthDate, 'dd/MM/yyyy') : '—'}">01/01/1990</dd></div>
+                    <div><dt>CPF<span class="missing-data-marker" th:if="${customer.cpf == null or #strings.isEmpty(customer.cpf)}">*</span></dt><dd class="profile-cpf" th:text="${customer.cpf != null ? customer.cpf : '—'}">000.000.000-00</dd></div>
+                    <div><dt>Conta criada em</dt><dd th:text="${customer.createdAt != null ? #temporals.format(customer.createdAt, 'dd/MM/yyyy') : '—'}">22/09/2026</dd></div>
+                </dl>
+                <form class="profile-edit-form" id="profile-edit-form" th:if="${editMode}">
+                    <label><span class="field-label">Nome completo</span><input name="name" type="text" th:value="${customer.name}" required></label>
+                    <label><span class="field-label">E-mail</span><input type="email" th:value="${customer.email}" disabled></label>
+                    <label><span class="field-label">Telefone<span class="missing-data-marker" th:if="${customer.phone == null or #strings.isEmpty(customer.phone)}">*</span></span><input name="phone" type="tel" th:value="${customer.phone}"></label>
+                    <label><span class="field-label">Data de nascimento<span class="missing-data-marker" th:if="${customer.birthDate == null}">*</span></span><input name="birthDate" type="date" th:value="${customer.birthDate}"></label>
+                    <label><span class="field-label">CPF<span class="missing-data-marker" th:if="${customer.cpf == null or #strings.isEmpty(customer.cpf)}">*</span></span><input name="cpf" type="text" th:value="${customer.cpf}"></label>
+                    <div class="profile-edit-actions">
+                        <button class="profile-save-button" type="submit">Salvar dados</button>
+                        <span class="profile-edit-feedback" role="status" aria-live="polite"></span>
+                    </div>
+                </form>
+            </section>
         </div>
-
-        <dl>
-            <dt>Name</dt>
-            <dd th:text="${customer.name}">John Doe</dd>
-
-            <dt>Email</dt>
-            <dd th:text="${customer.email}">john@example.com</dd>
-
-            <dt>Account created</dt>
-            <dd th:text="${customer.createdAt != null ? #temporals.format(customer.createdAt, 'dd/MM/yyyy') : '—'}">
-                22/09/2026
-            </dd>
-        </dl>
+        <section class="profile-card addresses-card">
+            <div class="card-heading"><div><span class="card-kicker">02</span><h2>Endereços</h2></div><a class="text-link" th:href="@{/account}">Adicionar <span>↗</span></a></div>
+            <div th:if="${#lists.isEmpty(addresses)}">
+                <p class="empty-state">Nenhum endereço cadastrado ainda.</p>
+            </div>
+            <div class="address-list" th:if="${!#lists.isEmpty(addresses)}">
+                <div class="address-item" th:each="address : ${addresses}">
+                    <span class="address-icon">⌂</span>
+                    <address class="address-content">
+                        <strong th:text="${address.street}">Rua Example</strong>
+                        <span th:text="${address.number}">123</span>
+                        <span th:text="${address.complement}" th:if="${address.complement != null}">Apt 10</span>
+                        <span th:text="${address.neighborhood}">Centro</span>
+                        <span><span th:text="${address.city}">São Paulo</span> - <span th:text="${address.state}">SP</span></span>
+                        <span th:text="${address.cep}">00000-000</span>
+                    </address>
+                </div>
+            </div>
+        </section>
+        <section class="profile-card orders-card">
+            <div class="card-heading orders-heading"><div><span class="card-kicker">03</span><h2>Pedidos</h2></div><a class="text-link" th:href="@{/orders}">Ver todos <span>↗</span></a></div>
+            <h3 class="order-group-title">Em andamento</h3>
+            <div th:if="${#lists.isEmpty(pendingOrders)}">
+                <p class="empty-state">Nenhum pedido aguardando pagamento.</p>
+            </div>
+            <table th:if="${!#lists.isEmpty(pendingOrders)}">
+                <thead>
+                <tr><th>Pedido</th><th>Data</th><th>Status</th><th>Total</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${pendingOrders}">
+                    <td th:text="'#' + ${order.id}"></td>
+                    <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}"></td>
+                    <td><a th:href="@{/orders/{id}(id=${order.id})}">Ver pedido <span>↗</span></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <h3 class="order-group-title">Pedidos ativos</h3>
+            <div th:if="${#lists.isEmpty(activeOrders)}">
+                <p class="empty-state">Você não tem pedidos ativos.</p>
+            </div>
+            <table th:if="${!#lists.isEmpty(activeOrders)}">
+                <thead>
+                <tr><th>Pedido</th><th>Data</th><th>Status</th><th>Total</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${activeOrders}">
+                    <td th:text="'#' + ${order.id}"></td>
+                    <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}"></td>
+                    <td><a th:href="@{/orders/{id}(id=${order.id})}">Ver pedido <span>↗</span></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <h3 class="order-group-title">Pedidos recentes</h3>
+            <div th:if="${#lists.isEmpty(recentOrders)}">
+                <p class="empty-state">Nenhum pedido encontrado.</p>
+            </div>
+            <table th:if="${!#lists.isEmpty(recentOrders)}">
+                <thead>
+                <tr><th>Pedido</th><th>Data</th><th>Status</th><th>Total</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${recentOrders}">
+                    <td th:text="'#' + ${order.id}"></td>
+                    <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}"></td>
+                    <td><a th:href="@{/orders/{id}(id=${order.id})}">Ver pedido <span>↗</span></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <p><a class="orders-footer-link" th:href="@{/orders}">Acessar histórico de pedidos <span>↗</span></a></p>
+        </section>
     </div>
-
-    <div>
-        <h2>Contact</h2>
-
-        <dl>
-            <dt>Email</dt>
-            <dd th:text="${customer.email}">john@example.com</dd>
-
-            <dt>Phone</dt>
-            <dd th:text="${customer.phone != null ? customer.phone : '—'}">(11) 99999-9999</dd>
-
-            <dt>Birth date</dt>
-            <dd th:text="${customer.birthDate != null ? #temporals.format(customer.birthDate, 'dd/MM/yyyy') : '—'}">
-                01/01/1990
-            </dd>
-
-            <dt>CPF</dt>
-            <dd th:text="${customer.cpf != null ? customer.cpf : '—'}">000.000.000-00</dd>
-        </dl>
-    </div>
-
-    <div>
-        <h2>Addresses</h2>
-
-        <div th:if="${#lists.isEmpty(addresses)}">
-            <p>No addresses registered.</p>
-        </div>
-
-        <div th:each="address : ${addresses}">
-            <address>
-                <strong th:text="${address.street}">Rua Example</strong><br>
-                <span th:text="${address.number}">123</span><br>
-                <span th:text="${address.complement}" th:if="${address.complement != null}">Apt 10</span><br th:if="${address.complement != null}">
-                <span th:text="${address.neighborhood}">Centro</span><br>
-                <span th:text="${address.city}">São Paulo</span> -
-                <span th:text="${address.state}">SP</span><br>
-                <span th:text="${address.cep}">00000-000</span>
-            </address>
-        </div>
-    </div>
-
-    <div>
-        <h2>Orders</h2>
-
-        <h3>Pending orders</h3>
-
-        <div th:if="${#lists.isEmpty(pendingOrders)}">
-            <p>No pending orders.</p>
-        </div>
-
-        <table th:if="${!#lists.isEmpty(pendingOrders)}">
-            <thead>
-            <tr>
-                <th>Order</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="order : ${pendingOrders}">
-                <td th:text="'#' + ${order.id}"></td>
-
-                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}">
-                </td>
-
-                <td th:text="${order.status}">
-                </td>
-
-                <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}">
-                </td>
-
-                <td>
-                    <a th:href="@{/orders/{id}(id=${order.id})}">
-                        View order
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <h3>Active orders</h3>
-
-        <div th:if="${#lists.isEmpty(activeOrders)}">
-            <p>No active orders.</p>
-        </div>
-
-        <table th:if="${!#lists.isEmpty(activeOrders)}">
-            <thead>
-            <tr>
-                <th>Order</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="order : ${activeOrders}">
-                <td th:text="'#' + ${order.id}"></td>
-
-                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}">
-                </td>
-
-                <td th:text="${order.status}">
-                </td>
-
-                <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}">
-                </td>
-
-                <td>
-                    <a th:href="@{/orders/{id}(id=${order.id})}">
-                        View order
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <h3>Recent orders</h3>
-
-        <div th:if="${#lists.isEmpty(recentOrders)}">
-            <p>No orders found.</p>
-        </div>
-
-        <table th:if="${!#lists.isEmpty(recentOrders)}">
-            <thead>
-            <tr>
-                <th>Order</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="order : ${recentOrders}">
-                <td th:text="'#' + ${order.id}"></td>
-
-                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy') : '—'}">
-                </td>
-
-                <td th:text="${order.status}">
-                </td>
-
-                <td th:text="${order.totalValue != null ? 'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA') : '—'}">
-                </td>
-
-                <td>
-                    <a th:href="@{/orders/{id}(id=${order.id})}">
-                        View order
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <p>
-            <a th:href="@{/orders}">View all orders</a>
-        </p>
-    </div>
-
 </main>
-
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>
