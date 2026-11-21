@@ -75,6 +75,17 @@ p  {
   line-height: 1.65;
 }
 
+.commerce-page {
+  max-width: 1220px;
+}
+
+.page {
+  max-width: 1180px;
+  padding: 55px 28px;
+  margin: auto;
+  min-height: 48vh;
+}
+
 em  {
   font-style: normal;
 }
