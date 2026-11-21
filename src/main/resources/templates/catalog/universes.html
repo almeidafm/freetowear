@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description"
+          content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Sua ideia. Sua camiseta.</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/universes.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<div id="view-universes">
+    <section class="section-wrap universe-page">
+        <span class="eyebrow">FREE TO WEAR / cultura pop para vestir</span>
+
+        <h1>SEU FILME.<br>SUA SÉRIE.<br><em>SUA CAMISETA.</em></h1>
+
+        <div class="universe-intro">
+            <p>
+                Histórias que você reassiste, personagens que marcaram uma época e referências que só outros fãs entendem.
+                Escolha entre os 30 universos da coleção e crie a sua interpretação.
+            </p>
+            <div class="universe-count">
+                <strong>20</strong><span>FILMES</span>
+                <strong>10</strong><span>SÉRIES</span>
+            </div>
+        </div>
+
+        <div class="store-toolbar">
+            <div class="filter-row">
+                <button data-universe-filter="Todos" aria-pressed="true" class="active">Todos</button>
+                <button data-universe-filter="Filmes" aria-pressed="false">Filmes</button>
+                <button data-universe-filter="Séries" aria-pressed="false">Séries</button>
+            </div>
+            <label class="store-search">
+                <span class="sr-only">Buscar filme ou série</span>
+                <input id="universe-search" type="search" placeholder="Qual história você quer vestir?">
+            </label>
+        </div>
+
+        <p id="universe-count" class="small muted" aria-live="polite">30 universos para explorar</p>
+
+        <div id="universe-grid" class="universe-grid">
+            <article class="universe-card" th:each="product, stat : ${products}">
+                <a class="universe-visual" th:href="@{/products/{id}(id=${product.id})}">
+                    <img loading="lazy" th:src="${product.imageUrl}" th:alt="${product.name}">
+                    <span class="universe-index" th:text="|FTW / ${#numbers.formatInteger(stat.count, 2)}|">FTW / 01</span>
+                </a>
+                <div class="universe-copy">
+                    <span class="eyebrow" th:text="${product.categoryName}">Categoria</span>
+                    <a th:href="@{/products/{id}(id=${product.id})}">
+                        <h3 th:text="${product.name}">Produto</h3>
+                    </a>
+                    <p th:text="${product.description}">Descrição</p>
+                    <div class="universe-price">
+                        <strong th:text="|R$ ${product.price}|">R$ Preço</strong>
+                        <a class="inline-link" th:href="@{/products/{id}(id=${product.id})}">Ver camiseta →</a>
+                    </div>
+                    <a class="button dark wide" th:href="@{/products/{id}(id=${product.id})}">Personalizar esta ideia →</a>
+                </div>
+            </article>
+
+            <div class="empty-state" th:if="${products == null or #lists.isEmpty(products)}">
+                <h3>Nenhum produto disponível.</h3>
+                <p>Estamos preparando novas ideias. Volte em breve para explorar nossa coleção.</p>
+            </div>
+        </div>
+
+        <p class="small muted">
+            Composições autorais de referência cultural, sem vínculo oficial com as franquias.
+            Você pode ajustar as ideias no estúdio.
+        </p>
+    </section>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
