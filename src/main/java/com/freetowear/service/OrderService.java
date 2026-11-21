@@ -262,7 +262,9 @@ public class OrderService {
                 .map(order ->
                         new OrderResponse(
                                 order,
-                                orderItemRepository.findAllByOrderId(order.getId())
+                                orderItemRepository.findAllByOrderId(order.getId()),
+                                List.of(),
+                                cloudinaryService::buildUrl
                         )
                 );
     }
