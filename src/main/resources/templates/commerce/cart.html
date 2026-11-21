@@ -1,132 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cart</title>
+    <title>Carrinho</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
 <body>
+
 <div th:replace="~{layout/header :: header}"></div>
 
-<h2>Your Cart</h2>
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 
-<div th:if="${cart == null or #lists.isEmpty(cart.items)}">
-    <p>Your cart is empty.</p>
-    <a th:href="@{/}">Continue shopping</a>
-</div>
-
-<div th:unless="${cart == null or #lists.isEmpty(cart.items)}">
-
-    <div th:each="item : ${cart.items}" class="cart-item">
-        <hr>
-        <div class="item-info">
-
-            <h3 th:text="${item.productName}">
-                Product name
-            </h3>
-
-            <p>
-                Variation:
-                <span th:text="${item.variation}">
-                Variation
-            </span>
-            </p>
-
-            <p>
-                Quantity:
-                <span th:text="${item.quantity}">
-                1
-            </span>
-            </p>
-
-            <form th:action="@{/order/cart/update}" method="post">
-
-                <input type="hidden"
-                       name="idProduct"
-                       th:value="${item.idProduct}">
-
-                <input type="hidden"
-                       name="idVariation"
-                       th:value="${item.idVariation}">
-
-                <input type="number"
-                       name="quantity"
-                       min="1"
-                       th:value="${item.quantity}">
-
-                <button type="submit">
-                    Change quantity
-                </button>
-            </form>
-
-            <form th:action="@{/order/cart/remove}" method="post">
-
-                <input type="hidden"
-                       name="idProduct"
-                       th:value="${item.idProduct}">
-
-                <input type="hidden"
-                       name="idVariation"
-                       th:value="${item.idVariation}">
-
-                <button type="submit">
-                    Remove product
-                </button>
-            </form>
+<main id=main-content>
+    <section class="page commerce-page">
+        <span class=eyebrow>Seu estilo está tomando forma</span>
+        <h1 tabindex=-1>Seu carrinho.</h1>
+        <div class=mode-note role=note>
+            <span class=mode-dot></span>Demonstração local · você pode testar a entrega e concluir uma simulação. Nenhum pedido é enviado à loja e não há cobrança.</div>
+        <div class=checkout-layout>
+            <div class=bag-list>
+                <div class=empty-cart th:if="${cart == null or cart.items == null or #lists.isEmpty(cart.items)}">
+                    <h2>Seu carrinho está vazio.</h2>
+                    <p class="small muted">Escolha uma camiseta para começar.</p>
+                    <a class="button dark" th:href="@{/products}">Ver camisetas</a>
+                </div>
+                <article class=bag-row th:each="item : ${cart?.items}">
+                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.productName}">
+                    <div>
+                        <h3 th:text="${item.productName}">Produto</h3>
+                        <p th:text="${item.variation}">Cor / Tamanho</p>
+                        <div class=bag-controls>
+                            <form method="post" th:action="@{/order/cart/update}">
+                                <input type="hidden" name="idProduct" th:value="${item.idProduct}">
+                                <input type="hidden" name="idVariation" th:value="${item.idVariation}">
+                                <label>Quantidade
+                                    <input type=number name=quantity min=1 max=20 step=1 th:value="${item.quantity}" th:aria-label="|Quantidade de ${item.productName}|" onchange="this.form.submit()">
+                                </label>
+                            </form>
+                            <form method="post" th:action="@{/order/cart/remove}">
+                                <input type="hidden" name="idProduct" th:value="${item.idProduct}">
+                                <input type="hidden" name="idVariation" th:value="${item.idVariation}">
+                                <button type=submit class=text-button>Remover</button>
+                            </form>
+                        </div>
+                    </div>
+                    <strong th:text="|R$ ${#numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}|">R$ 0,00</strong>
+                </article>
+            </div>
+            <aside class=order-summary th:if="${cart != null}">
+            <span class=eyebrow>Antes de finalizar</span><h2>Falta pouco.</h2>
+                <div class=summary-line>
+            <span>Produtos</span><strong th:text="|R$ ${#numbers.formatDecimal(cart.productsValue, 1, 'POINT', 2, 'COMMA')}|">R$ 0,00</strong></div>
+            <a class="button dark wide" th:classappend="${cart.items == null or #lists.isEmpty(cart.items)} ? ' disabled' : ''" th:href="${cart.items != null and !#lists.isEmpty(cart.items)} ? @{/checkout} : @{/cart}">Continuar para a compra
+                <svg class=ftw-arrow viewBox="0 0 24 24" fill=none aria-hidden=true>
+                    <path d="M5 19 19 5M5 5h14v14" stroke=currentColor stroke-width=1.8></path>
+                </svg></a>
+            <a class=inline-link href=/products>Escolher mais camisetas</a>
+        </aside>
         </div>
-
-        <div class="item-price">
-
-            <p>
-                Unit price:
-                <span th:text="${item.unitPrice}">
-                0.00
-            </span>
-            </p>
-
-            <strong>
-            <span th:text="${item.subtotal}">
-                0.00
-            </span>
-            </strong>
-        </div>
-    </div>
-
-    <div class="summary">
-        <hr>
-        <div class="summary-row">
-            <span>Products</span>
-            <span th:text="${cart.productsValue}">
-                0.00
-            </span>
-        </div>
-
-        <div class="summary-row">
-            <span>Shipping</span>
-            <span th:text="${cart.shippingPrice}">
-                0.00
-            </span>
-        </div>
-
-        <div class="summary-row total">
-            <span>Total</span>
-            <span th:text="${cart.totalValue}">
-                0.00
-            </span>
-        </div>
-
-        <a th:href="@{/checkout}" class="checkout">
-            Proceed to checkout
-        </a>
-    </div>
-</div>
+    </section>
+</main>
 
 <div th:replace="~{layout/footer :: footer}"></div>
+
 </body>
 </html>
