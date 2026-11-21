@@ -131,18 +131,6 @@ dialog::backdrop {
   padding:40px 10px
 }
 
-.wide {
-  width:100%
-}
-
-.muted {
-  color:var(--muted)
-}
-
-.small {
-  font-size:12px
-}
-
 #full-cart-link {
   margin-left:auto !important;
   margin-right:auto !important

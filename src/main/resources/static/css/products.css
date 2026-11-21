@@ -1,12 +1,3 @@
-.eyebrow {
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:.13em;
-  font-weight:750;
-  color:#4F574A;
-  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
 .section-wrap {
   max-width:1296px;
   margin:0 auto;
@@ -171,23 +162,6 @@ img.store-card-image:hover {
 
 .store-card-copy strong {
   font-size:17px;
-}
-
-.inline-link {
-  background:transparent;
-  padding:4px 0 6px;
-  border:0;
-  border-bottom:1px solid currentColor;
-  font-size:12px;
-  font-weight:750;
-  display:inline-flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  line-height:1.5;
-  text-align:left;
-  width:fit-content;
-  cursor:pointer;
 }
 
 @media (max-width:1050px) {

@@ -285,17 +285,7 @@
 }
 
 .mode-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
   margin-top: 20px;
-  padding: 12px 15px;
-  border: 1px solid #d9d5e7;
-  border-radius: 4px;
-  background: #eae8f4;
-  color: #52496d;
-  font-size: 12px;
-  line-height: 1.65;
 }
 
 .mode-dot {
