@@ -1,7 +1,3 @@
-// ============================================
-// GLOBAL STATE VARIABLES
-// ============================================
-
 let currentStep = 1;
 
 let selectedAddressId = null;
@@ -16,10 +12,6 @@ let currentCart = null;
 
 let appliedCoupon = null;
 
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
 function formatCurrency(value) {
     return new Intl.NumberFormat('pt-BR', {
         style: 'currency',

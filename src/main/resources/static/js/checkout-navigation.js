@@ -1,6 +1,3 @@
-// ============================================
-// STEP NAVIGATION
-// ============================================
 async function nextStep() {
     if (currentStep === 1) {
         if (!selectedAddressId) {
@@ -62,10 +59,6 @@ function previousStep() {
     }
 }
 
-
-// ============================================
-// STEP UPDATE & RENDERING
-// ============================================
 function updateStep(step) {
     document.querySelectorAll('.form-section').forEach(section => {
         section.classList.remove('active');
@@ -123,9 +116,6 @@ function updateNavigationButtons(step) {
     nextButton.textContent = step === 4 ? 'Complete Order' : 'Continue';
 }
 
-// ============================================
-// PAYMENT METHOD SELECTION
-// ============================================
 function selectPaymentMethod(paymentMethod) {
     selectedPaymentMethod = paymentMethod;
     renderReview();

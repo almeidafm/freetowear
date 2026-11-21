@@ -1,6 +1,3 @@
-// ============================================
-// ADDRESS MANAGEMENT
-// ============================================
 document.getElementById('checkout-form')?.addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -21,6 +18,27 @@ document.getElementById('checkout-form')?.addEventListener('submit', async funct
         alert(error.message || 'Could not finish order.');
     }
 });
+
+function syncNewAddressForm() {
+    const addressOptions = document.querySelectorAll('input[name="addressId"]');
+    const newAddressForm = document.getElementById('new-address-form');
+
+    if (!newAddressForm) return;
+
+    const selectedAddress = document.querySelector('input[name="addressId"]:checked');
+    const isNewAddress = selectedAddress && selectedAddress.value === 'new';
+
+    newAddressForm.classList.toggle('hidden', !isNewAddress);
+    newAddressForm.querySelectorAll('input, select').forEach(field => {
+        field.disabled = !isNewAddress;
+    });
+
+    addressOptions.forEach(option => {
+        option.addEventListener('change', syncNewAddressForm, { once: true });
+    });
+}
+
+syncNewAddressForm();
 
 async function loadAddresses() {
     try {
@@ -196,9 +214,6 @@ function clearNewAddressForm() {
     document.getElementById('defaultAddress').checked = false;
 }
 
-// ============================================
-// CART LOADING
-// ============================================
 async function loadCurrentCart() {
     try {
         const couponInput = document.getElementById('coupon');
@@ -246,10 +261,6 @@ async function loadCurrentCart() {
     }
 }
 
-
-// ============================================
-// REVIEW RENDERING
-// ============================================
 function renderReview() {
     const reviewContent = document.getElementById('review-content');
 

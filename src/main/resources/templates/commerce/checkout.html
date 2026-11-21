@@ -1,260 +1,379 @@
 <!DOCTYPE html>
-<html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Checkout</title>
-    <link rel="stylesheet" th:href="@{/css/checkout.css}">
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
 </head>
-
 <body>
 <div th:replace="~{layout/header :: header}"></div>
 
-<div class="checkout-container" th:if="${checkoutAvailable}">
+<main id="main-content" th:if="${checkoutAvailable}">
+    <section class="page commerce-page">
+        <nav class="breadcrumbs">
+            <a href="/cart" th:href="@{/cart}">Carrinho</a>
+            <span>/</span>
+            <span>Finalizar compra</span>
+        </nav>
 
-    <div class="progress-wrapper">
-        <div class="progress-steps">
-            <div class="step active" data-step="1">
-                <div class="step-number">1</div>
-                <div class="step-label">Shipping</div>
-            </div>
-            <div class="step" data-step="2">
-                <div class="step-number">2</div>
-                <div class="step-label">Payment</div>
-            </div>
-            <div class="step" data-step="3">
-                <div class="step-number">3</div>
-                <div class="step-label">Coupon</div>
-            </div>
-            <div class="step" data-step="4">
-                <div class="step-number">4</div>
-                <div class="step-label">Review</div>
-            </div>
+        <span class="eyebrow">Sua ideia está quase pronta para sair por aí</span>
+        <h1 tabindex="-1">Vamos concluir?</h1>
+
+        <div class="mode-note" role="note">
+            <span class="mode-dot"></span>
+            Demonstração local · você pode testar a entrega e concluir uma simulação.
+            Nenhum pedido é enviado à loja e não há cobrança.
         </div>
-        <div class="progress-title" id="progressTitle">
-            Shipping Address
-        </div>
-    </div>
 
-    <div class="checkout-content">
-        <form method="post" action="/order/current/finish" id="checkout-form">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <input type="hidden" name="idAddress" id="selectedAddressId">
-            <input type="hidden" name="idCoupon" id="selectedCouponId">
+        <div class="checkout-layout">
+            <form id="checkout-form" method="post" action="/order/current/finish">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-            <!-- STEP 1: SHIPPING ADDRESS -->
-            <div class="form-section active" id="step1">
-                <p class="section-subtitle">
-                    Where should we send your order?
-                </p>
-
-                <div class="form-group">
-                    <label>Saved addresses</label>
-                    <div id="address-list" class="address-options">
-                        <p id="address-loading">Loading your addresses...</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="button" class="btn btn-secondary add-address-button"
-                            id="add-address-btn" onclick="toggleNewAddressForm()">
-                        + Add new address
-                    </button>
-                </div>
-
-                <div id="new-address-form" style="display: none;">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="cep">CEP</label>
-                            <input type="text" id="cep" maxlength="8" placeholder="00000000">
+                <div class="checkout-section">
+                    <div class="step-title">
+                        <span>01</span>
+                        <div>
+                            <h2>Onde a ideia vai chegar?</h2>
+                            <p>Preencha o endereço e escolha sua entrega.</p>
                         </div>
-                        <div class="form-group">
-                            <label for="state">State</label>
-                            <select id="state">
-                                <option value="">Select state</option>
-                                <option value="AC">AC</option>
-                                <option value="AL">AL</option>
-                                <option value="AP">AP</option>
-                                <option value="AM">AM</option>
-                                <option value="BA">BA</option>
-                                <option value="CE">CE</option>
-                                <option value="DF">DF</option>
-                                <option value="ES">ES</option>
-                                <option value="GO">GO</option>
-                                <option value="MA">MA</option>
-                                <option value="MT">MT</option>
-                                <option value="MS">MS</option>
-                                <option value="MG">MG</option>
-                                <option value="PA">PA</option>
-                                <option value="PB">PB</option>
-                                <option value="PR">PR</option>
-                                <option value="PE">PE</option>
-                                <option value="PI">PI</option>
-                                <option value="RJ">RJ</option>
-                                <option value="RN">RN</option>
-                                <option value="RS">RS</option>
-                                <option value="RO">RO</option>
-                                <option value="RR">RR</option>
-                                <option value="SC">SC</option>
-                                <option value="SP">SP</option>
-                                <option value="SE">SE</option>
-                                <option value="TO">TO</option>
+                    </div>
+
+                    <th:block th:unless="${#lists.isEmpty(addresses)}">
+                        <fieldset class="delivery-options address-options">
+                            <legend>Endereço de entrega</legend>
+
+                            <label class="shipping-option" th:each="a : ${addresses}">
+                                <input type="radio" name="addressId" required
+                                       th:value="${a.id}"
+                                       th:checked="${a.id == selectedAddressId}">
+                                <span>
+                                    <strong th:text="|${a.street}, ${a.number}${a.complement != null and !a.complement.isBlank() ? ' - ' + a.complement : ''}|">
+                                        Rua Exemplo, 123
+                                    </strong>
+                                    <small th:text="|${a.neighborhood}, ${a.city}/${a.state} · CEP ${a.cep}|">
+                                        Centro, Recife/PE · CEP 50000-000
+                                    </small>
+                                </span>
+                            </label>
+
+                            <label class="shipping-option">
+                                <input type="radio" name="addressId" value="new" required>
+                                <span>
+                                    <strong>+ Usar outro endereço</strong>
+                                    <small>Adicionar um novo endereço de entrega.</small>
+                                </span>
+                            </label>
+                        </fieldset>
+                    </th:block>
+
+                    <div id="new-address-form"
+                         class="form-grid"
+                         th:classappend="${#lists.isEmpty(addresses)} ? '' : 'hidden'">
+
+                        <label class="form-field">
+                            CEP
+                            <input id="cep" name="cep" th:value="${form?.cep}" autocomplete="postal-code"
+                                   maxlength="9" inputmode="numeric" pattern="[0-9]{5}-?[0-9]{3}"
+                                   placeholder="00000-000" required>
+                        </label>
+
+                        <label class="form-field span-two">
+                            Rua / avenida
+                            <input id="street" name="street" th:value="${form?.street}" autocomplete="address-line1"
+                                   maxlength="140" required>
+                        </label>
+
+                        <label class="form-field">
+                            Número
+                            <input id="number" name="number" th:value="${form?.number}" autocomplete="off"
+                                   maxlength="140" required>
+                        </label>
+
+                        <label class="form-field">
+                            Complemento (opcional)
+                            <input id="complement" name="complement" th:value="${form?.complement}"
+                                   autocomplete="address-line2" maxlength="140">
+                        </label>
+
+                        <label class="form-field">
+                            Bairro
+                            <input id="neighborhood" name="neighborhood" th:value="${form?.neighborhood}"
+                                   autocomplete="address-level3" maxlength="140" required>
+                        </label>
+
+                        <label class="form-field">
+                            Cidade
+                            <input id="city" name="city" th:value="${form?.city}"
+                                   autocomplete="address-level2" maxlength="140" required>
+                        </label>
+
+                        <label class="form-field">
+                            Estado
+                            <select id="state" name="state" aria-label="Estado" required>
+                                <option value="">Selecione</option>
+                                <option th:each="uf : ${states}"
+                                        th:value="${uf}"
+                                        th:text="${uf}"
+                                        th:selected="${uf == form?.state}"></option>
                             </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="street">Street</label>
-                        <input type="text" id="street" maxlength="100">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="number">Number</label>
-                            <input type="text" id="number" maxlength="10">
-                        </div>
-                        <div class="form-group">
-                            <label for="complement">Complement</label>
-                            <input type="text" id="complement" maxlength="50">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="neighborhood">Neighborhood</label>
-                        <input type="text" id="neighborhood" maxlength="100">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" id="city" maxlength="100">
-                    </div>
-
-                    <div class="form-group">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="defaultAddress">
-                            <label for="defaultAddress">Use as my default address</label>
-                        </div>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="button" class="btn btn-primary" id="save-address-btn"
-                                onclick="saveNewAddress()">
-                            Save address
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="toggleNewAddressForm(false)">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- STEP 2: PAYMENT METHOD -->
-            <div class="form-section" id="step2">
-                <p class="section-subtitle">
-                    How would you like to pay?
-                </p>
-
-                <div class="payment-options">
-                    <div class="payment-option">
-                        <input type="radio" id="payment-credit-card" name="method" value="CREDIT_CARD"
-                               onchange="selectPaymentMethod(this.value)">
-                        <label for="payment-credit-card" class="payment-label">
-                            <div class="payment-title">Credit Card</div>
-                            <div class="payment-description">Pay securely with your credit card.</div>
                         </label>
                     </div>
 
-                    <div class="payment-option">
-                        <input type="radio" id="payment-pix" name="method" value="PIX"
-                               onchange="selectPaymentMethod(this.value)">
-                        <label for="payment-pix" class="payment-label">
-                            <div class="payment-title">PIX</div>
-                            <div class="payment-description">Pay instantly using PIX.</div>
+                    <fieldset class="delivery-options">
+                        <legend>Forma de entrega</legend>
+
+                        <label class="shipping-option">
+                            <input type="radio" name="shippingMethod" value="express" checked required>
+                            <span>
+                                <strong>Entrega expressa</strong>
+                                <small>Receba em 2 a 5 dias úteis após a produção.</small>
+                            </span>
+                            <strong>R$ 29,90</strong>
+                        </label>
+
+                        <label class="shipping-option">
+                            <input type="radio" name="shippingMethod" value="standard">
+                            <span>
+                                <strong>Entrega padrão</strong>
+                                <small>Uma opção econômica para o seu pedido.</small>
+                            </span>
+                            <strong>Grátis</strong>
+                        </label>
+                    </fieldset>
+                </div>
+
+                <style>
+                    .hidden { display: none; }
+                </style>
+
+                <div class="checkout-section">
+                    <div class="step-title">
+                        <span>02</span>
+                        <div>
+                            <h2>Como você prefere pagar?</h2>
+                            <p id="payment-intro">
+                                Escolha uma opção para testar o fluxo.
+                                Nenhum dado de pagamento será solicitado.
+                            </p>
+                        </div>
+                    </div>
+
+                    <fieldset class="payment-options">
+                        <legend class="sr-only">Forma de pagamento</legend>
+
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="pix">
+                            <span class="payment-icon" aria-hidden="true">◇</span>
+                            <span>
+                                <strong>Pix</strong>
+                                <small>Opção de teste, sem cobrança.</small>
+                            </span>
+                        </label>
+
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="card">
+                            <span class="payment-icon" aria-hidden="true">▭</span>
+                            <span>
+                                <strong>Cartão</strong>
+                                <small>Opção de teste, sem cobrança.</small>
+                            </span>
+                        </label>
+
+                        <label class="payment-option">
+                            <input
+                                    type="radio"
+                                    name="payment"
+                                    value="boleto"
+                                    checked
+                            >
+                            <span class="payment-icon" aria-hidden="true">▥</span>
+                            <span>
+                                <strong>Boleto</strong>
+                                <small>Opção de teste, sem cobrança.</small>
+                            </span>
+                        </label>
+                    </fieldset>
+
+                    <p id="payment-detail" class="small muted">
+                        Demonstração: não são gerados QR Code, boleto ou cobrança no cartão.
+                    </p>
+                </div>
+
+
+                <div class="checkout-section">
+                    <div class="step-title">
+                        <span>03</span>
+                        <div>
+                            <h2>Quem vai vestir essa história?</h2>
+                            <p>Seus dados para identificar o pedido.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <label class="form-field span-two">
+                            Cupom
+                            <input
+                                    name="cupom"
+                                    autocomplete="FALSE"
+                                    maxlength="140"
+                                    minlength="5"
+                            >
                         </label>
                     </div>
+                </div>
 
-                    <div class="payment-option">
-                        <input type="radio" id="payment-boleto" name="method" value="BOLETO"
-                               onchange="selectPaymentMethod(this.value)">
-                        <label for="payment-boleto" class="payment-label">
-                            <div class="payment-title">Boleto</div>
-                            <div class="payment-description">Pay using a boleto bancário.</div>
-                        </label>
+                <div class="checkout-section">
+                    <div class="step-title">
+                        <span>04</span>
+                        <div>
+                            <h2>Confira. Depois, é só concluir.</h2>
+                            <p>Tamanho, quantidade, endereço e forma de pagamento.</p>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- STEP 3: COUPON -->
-            <div class="form-section" id="step3">
-                <p class="section-subtitle">
-                    Enter your coupon.
-                </p>
+                    <div class="review-items">
+                        <article class="bag-row" th:each="item : ${cart?.items}">
+                            <img class="bag-image" th:if="${item.imageUrl != null}"
+                                 th:src="${item.imageUrl}"
+                                 th:alt="${item.productName}">
 
-                <div class="form-group">
-                    <label for="coupon">Coupon</label>
-                    <input type="text" id="coupon" placeholder="Coupon" onkeydown="if(event.key==='Enter'){event.preventDefault();nextStep();}">
-                </div>
-            </div>
+                            <div>
+                                <a href="/products" th:href="@{/products/{id}(id=${item.idProduct})}">
+                                    <h3 th:text="${item.productName}">Produto</h3>
+                                </a>
 
-            <!-- STEP 4: REVIEW ORDER -->
-            <div class="form-section" id="step4">
-                <p class="section-subtitle">
-                    Please review your order before completing your purchase.
-                </p>
-                <div id="review-content">
-                    <div class="placeholder-message">
-                        Loading order information...
+                                <p th:text="${item.variation}">Cor / Tamanho</p>
+                                <p th:text="|Quantidade: ${item.quantity}|">Quantidade: 1</p>
+                            </div>
+
+                            <strong th:text="|R$ ${#numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}|">R$ 0,00</strong>
+                        </article>
                     </div>
-                </div>
-            </div>
 
-            <!-- NAVIGATION BUTTONS -->
-            <div class="button-group">
-                <button type="button" class="btn btn-secondary" id="backBtn"
-                        onclick="previousStep()" style="display: none;">
-                    Back
-                </button>
-                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
-                    Continue
-                </button>
-            </div>
-        </form>
+                    <label class="check-line">
+                        <input
+                                type="checkbox"
+                                name="accepted"
+                                required
+                                value="on"
+                                checked
+                        >
+                        <span>
+                            Conferi o pedido e li as
+                            <a
+                                    th:href="@{/policies}"
+                                    target="_blank"
+                                    rel="noopener"
+                            >
+                                informações de compra e privacidade
+                            </a>.
+                        </span>
+                    </label>
+
+                    <div id="review-totals"
+                         class="mobile-totals sf-hidden">
+                    </div>
+
+                    <div id="checkout-error"
+                         class="form-error sf-hidden"
+                         role="alert"
+                         hidden>
+                    </div>
+
+                    <button id="submit-order" class="button dark wide" type="submit">
+                        Concluir simulação local
+
+                        <svg class="ftw-arrow"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             aria-hidden="true">
+                            <path d="M5 19 19 5M5 5h14v14"
+                                  stroke="currentColor"
+                                  stroke-width="1.8"></path>
+                        </svg>
+                    </button>
+
+                    <p class="small muted" id="submit-note">
+                        A simulação ficará somente neste navegador.
+                        Nenhum pedido será enviado à loja e nada será cobrado.
+                    </p>
+                </div>
+            </form>
+
+            <aside class="order-summary">
+                <span class="eyebrow">Sua próxima camiseta</span>
+                <h2>Resumo do pedido</h2>
+
+                <div id="checkout-summary">
+                    <div class="summary-line">
+                        <span>Produtos</span>
+                        <strong>R$&nbsp;119,90</strong>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Entrega expressa</span>
+                        <strong>R$&nbsp;29,90</strong>
+                    </div>
+
+                    <div class="summary-line grand-total">
+                        <span>Total</span>
+                        <strong>R$&nbsp;149,80</strong>
+                    </div>
+
+                    <p class="small muted">
+                        Produção: até 7 dias úteis.<br>
+                        Entrega: 2 a 5 dias úteis após a produção.
+                    </p>
+
+                    <p class="small demo-text">
+                        Valores e prazos de demonstração.
+                    </p>
+                </div>
+
+                <div class="summary-trust">
+                    <span>01 · Valores de demonstração</span>
+                    <span>02 · Criação salva no navegador</span>
+                    <span>03 · Nenhum pagamento realizado</span>
+                </div>
+
+                <a href="/cart" th:href="@{/cart}" class="inline-link">
+                    Editar meu carrinho
+                </a>
+            </aside>
+        </div>
+    </section>
+</main>
+
+<div class="checkout-state-container" th:if="${paymentPending}">
+    <div class="checkout-state-card">
+        <span class="eyebrow">Status do pedido</span>
+        <h2>Pagamento pendente</h2>
+        <p>Você possui um pedido aguardando pagamento.</p>
+        <a class="button dark" href="/">Voltar para a loja</a>
     </div>
-
 </div>
 
-<!-- PAYMENT PENDING STATE -->
-<div th:if="${paymentPending}">
-    <h2>Pagamento pendente</h2>
-    <p>Você possui um pedido aguardando pagamento.</p>
-    <a href="/">Voltar para a loja</a>
-</div>
-
-<!-- NO CART STATE -->
-<div th:if="${!checkoutAvailable and !paymentPending}">
-    <h2>Nenhum carrinho ativo</h2>
-    <p>Você não possui um carrinho ativo.</p>
-    <a href="/">Voltar para a loja</a>
+<div class="checkout-state-container" th:if="${!checkoutAvailable and !paymentPending}">
+    <div class="checkout-state-card">
+        <span class="eyebrow">Checkout</span>
+        <h2>Nenhum carrinho ativo</h2>
+        <p>Você não possui um carrinho ativo.</p>
+        <a class="button dark" href="/">Voltar para a loja</a>
+    </div>
 </div>
 
 <script th:if="${checkoutAvailable}" th:src="@{/js/checkout-state.js}"></script>
 <script th:if="${checkoutAvailable}" th:src="@{/js/checkout-navigation.js}"></script>
 <script th:if="${checkoutAvailable}" th:src="@{/js/checkout-forms.js}"></script>
 <script th:if="${checkoutAvailable}" th:src="@{/js/cep.js}"></script>
-<script th:if="${checkoutAvailable}">
-    loadAddresses();
-    updateStep(1);
-</script>
-
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>
