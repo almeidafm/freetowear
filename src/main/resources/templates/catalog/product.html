@@ -3,16 +3,25 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Product</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <script th:inline="javascript">
+        window.ftwProduct = /*[[${product}]]*/ {};
+    </script>
+    <script defer th:src="@{/js/product.js}"></script>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 
 <main id="main-content">
     <section class="section-wrap product-page">
@@ -38,21 +47,12 @@
 
                 <fieldset>
                     <legend>Cor da camiseta</legend>
-                    <div class="swatches">
-                        <button data-shop-color="#18191d" class="swatch" style="background:#18191d" aria-label="Cor #18191d" aria-pressed="false"></button>
-                        <button data-shop-color="#faf7ed" class="swatch" style="background:#faf7ed" aria-label="Cor #faf7ed" aria-pressed="false"></button>
-                        <button data-shop-color="#abc9ef" class="swatch active" style="background:#abc9ef" aria-label="Cor #abc9ef" aria-pressed="true"></button>
-                    </div>
+                    <div class="swatches"></div>
                 </fieldset>
 
                 <fieldset>
                     <legend>Tamanho</legend>
-                    <div class="sizes">
-                        <button data-shop-size="P" aria-pressed="false">P</button>
-                        <button data-shop-size="M" aria-pressed="true" class="active">M</button>
-                        <button data-shop-size="G" aria-pressed="false">G</button>
-                        <button data-shop-size="GG" aria-pressed="false">GG</button>
-                    </div>
+                    <div class="sizes"></div>
                 </fieldset>
 
                 <label class="qty-label" for="product-quantity">
@@ -61,13 +61,13 @@
                 </label>
 
                 <div class="buy-actions">
-                    <button id="buy-now" class="button dark wide">
+                    <button id="buy-now" class="button dark wide" type="button">
                         Comprar agora
                         <svg class="ftw-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
                         </svg>
                     </button>
-                    <button id="product-add" class="button wide">Adicionar ao carrinho</button>
+                    <button id="product-add" class="button wide" type="button">Adicionar ao carrinho</button>
                 </div>
 
                 <button id="product-customize" class="inline-link">
