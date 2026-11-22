@@ -257,6 +257,9 @@ public class WebController {
     @GetMapping("/policies")
     public String policies() { return "institutional/policies"; }
 
+    @GetMapping("/faq")
+    public String faq() { return "institutional/faq"; }
+
     @GetMapping("/privacy")
     public String privacy() {
         return "institutional/privacy";

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description" content="Perguntas frequentes sobre criação, personalização, produtos, pedidos e entrega da FREE TO WEAR.">
+    <title>FREE TO WEAR | Perguntas frequentes</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/institutional.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/final-banner :: final-banner-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+<div th:replace="~{layout/header :: header}"></div>
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<main id="view-faq">
+    <section class="how-hero section-wrap">
+        <span class="eyebrow">Central de ajuda / FAQ</span>
+        <h1>IDEIAS LIVRES.<br><em>DÚVIDAS RESOLVIDAS.</em></h1>
+        <p>Encontre respostas sobre criação, produtos, personalização, pedidos e tudo o que acontece entre a sua ideia e a camiseta.</p>
+        <a th:href="@{/studio}" href="/studio" class="button dark">Começar uma criação <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="faq-section section-wrap">
+        <div>
+            <span class="eyebrow">Antes de começar</span>
+            <h2>O que você<br>quer <em>saber?</em></h2>
+            <p>Não encontrou a resposta? <a th:href="@{/contact}" href="/contact">Fale com a gente</a> e vamos ajudar.</p>
+        </div>
+        <div>
+            <details open><summary>Preciso saber desenhar para personalizar?</summary><p>Não. Comece por uma frase, escolha uma inspiração ou envie uma imagem que você já tenha. No estúdio, você ajusta cores, tamanho e posição até encontrar uma composição que goste.</p></details>
+            <details><summary>Como funciona o estúdio de criação?</summary><p>Escolha o modelo, a cor da camiseta e adicione textos ou imagens. Você pode girar a peça, editar frente e costas e visualizar a composição antes de adicionar ao carrinho.</p></details>
+            <details><summary>Posso usar uma imagem ou logo minha?</summary><p>Sim. Envie arquivos que você tenha autorização para utilizar. PNG com fundo transparente costuma oferecer o melhor resultado.</p></details>
+            <details><summary>Posso criar algo inspirado em filmes e séries?</summary><p>Sim, explore referências e ideias autorais que expressem a sua relação com o universo. Para usar logos, personagens ou artes de terceiros, é necessário ter autorização.</p></details>
+            <details><summary>Quais tamanhos e cores estão disponíveis?</summary><p>As opções aparecem na página de cada produto e no estúdio. Elas podem variar conforme o modelo e o estoque disponível.</p></details>
+            <details><summary>Como vejo o resultado antes de comprar?</summary><p>O estúdio mostra uma prévia da frente e das costas. Revise posição, cor, tamanho e quantidade antes de adicionar ao carrinho.</p></details>
+            <details><summary>Posso salvar ou baixar a minha criação?</summary><p>Você pode baixar a vista atual pelo botão de download do estúdio. Para preservar todas as configurações, mantenha o item no carrinho até finalizar a compra.</p></details>
+            <details><summary>Como adiciono um produto ao carrinho?</summary><p>Na página do produto, selecione cor, tamanho e quantidade e clique em “Adicionar ao carrinho”. O carrinho pode ser aberto pelo ícone no topo.</p></details>
+            <details><summary>Quais formas de pagamento posso usar?</summary><p>As opções disponíveis são exibidas na etapa de finalização. Confira os dados do pedido e escolha uma das formas oferecidas.</p></details>
+            <details><summary>Como acompanho meu pedido?</summary><p>Depois de entrar na sua conta, acesse “Meus pedidos” para consultar detalhes e status. Caso precise de ajuda, fale com o atendimento.</p></details>
+            <details><summary>Como funciona a entrega?</summary><p>O prazo e o valor são calculados na finalização a partir do endereço informado. A produção sob demanda pode influenciar o prazo total.</p></details>
+            <details><summary>Como falar com a FREE TO WEAR?</summary><p>Acesse a <a th:href="@{/contact}" href="/contact">página de contato</a> para encontrar nossos canais e enviar sua dúvida.</p></details>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{layout/final-banner :: final-banner}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
