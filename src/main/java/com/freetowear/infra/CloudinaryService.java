@@ -18,13 +18,25 @@ public class CloudinaryService {
     private Cloudinary cloudinary;
 
     private static final List<String> ALLOWED_TYPES = List.of("image/jpeg", "image/png", "image/webp");
+    private static final List<String> PRODUCT_IMAGE_TYPES = List.of(
+            "image/jpeg", "image/png", "image/webp", "image/svg+xml"
+    );
     private static final long MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
     public String uploadPublic(MultipartFile file, String folder) throws IOException {
         validate(file);
+        return upload(file, folder, "upload");
+    }
+
+    public String uploadProductImage(MultipartFile file, String folder) throws IOException {
+        validate(file, PRODUCT_IMAGE_TYPES);
+        return upload(file, folder, "upload");
+    }
+
+    private String upload(MultipartFile file, String folder, String type) throws IOException {
         Map<String, Object> options = Map.of(
                 "folder", folder,
-                "type", "upload",
+                "type", type,
                 "resource_type", "image",
                 "unique_filename", true,
                 "overwrite", false
@@ -47,15 +59,23 @@ public class CloudinaryService {
     }
 
     private void validate(MultipartFile file) {
+        validate(file, ALLOWED_TYPES);
+    }
+
+    private void validate(MultipartFile file, List<String> allowedTypes) {
         if (file == null || file.isEmpty())
             throw new IllegalArgumentException("Image is required");
-        if (!ALLOWED_TYPES.contains(file.getContentType()))
+        if (!allowedTypes.contains(file.getContentType()))
             throw new IllegalArgumentException("Format not allowed: " + file.getContentType());
         if (file.getSize() > MAX_SIZE)
             throw new IllegalArgumentException("File exceeds 5MB limit");
     }
 
     public String buildUrl(String publicId) {
+        if (publicId != null && (publicId.startsWith("data:image/") || publicId.startsWith("http://")
+                || publicId.startsWith("https://"))) {
+            return publicId;
+        }
         return cloudinary.url()
                 .transformation(new Transformation().width(800).crop("limit"))
                 .generate(publicId);

@@ -55,7 +55,7 @@ public class ProductService {
         variation.setProduct(product);
 
         for (int index = 0; index < request.getImages().size(); index++) {
-            String publicId = cloudinaryService.uploadPublic(request.getImages().get(index), "products");
+            String publicId = cloudinaryService.uploadProductImage(request.getImages().get(index), "products");
             ProductVariationImage variationImage = new ProductVariationImage();
             variationImage.setProductVariation(variation);
             variationImage.setImagePublicId(publicId);
@@ -119,7 +119,7 @@ public class ProductService {
         boolean hasNewImage = request.getImage() != null && !request.getImage().isEmpty();
         if (hasNewImage) {
             if (variation == null) throw new IllegalArgumentException("Product has no variation to update");
-            String publicId = cloudinaryService.uploadPublic(request.getImage(), "products");
+            String publicId = cloudinaryService.uploadProductImage(request.getImage(), "products");
             if (variation.getImages() != null && !variation.getImages().isEmpty()) {
                 for (ProductVariationImage image : variation.getImages()) {
                     cloudinaryService.delete(image.getImagePublicId());
