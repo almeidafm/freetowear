@@ -68,8 +68,15 @@
       return;
     }
     const item = cart.items[index];
+    if (!item) return;
     const body = new URLSearchParams({ idProduct: item.idProduct, idVariation: item.idVariation });
-    await fetch('/order/cart/remove', { method: 'POST', body });
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const headers = {};
+    if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+    const response = await fetch('/order/cart/remove', { method: 'POST', headers, body });
+    if (!response.ok) throw new Error('Não foi possível remover o item.');
     await loadCart();
   }
 
@@ -97,7 +104,13 @@
 
   document.addEventListener('click', event => {
     const removeButton = event.target.closest('[data-remove-cart]');
-    if (removeButton) remove(Number(removeButton.dataset.removeCart));
+    if (removeButton) {
+      removeButton.disabled = true;
+      remove(Number(removeButton.dataset.removeCart)).catch(() => {
+        removeButton.disabled = false;
+        window.alert('Não foi possível remover o item do carrinho.');
+      });
+    }
   });
   $('#open-cart')?.addEventListener('click', open);
   $('#close-cart')?.addEventListener('click', close);

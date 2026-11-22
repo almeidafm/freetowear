@@ -6,6 +6,8 @@
     <title>Title</title>
     <th:block th:fragment="cart-drawer-assets">
         <link rel="stylesheet" th:href="@{/css/cart-drawer.css}">
+        <meta name="_csrf" th:content="${_csrf.token}">
+        <meta name="_csrf_header" th:content="${_csrf.headerName}">
     </th:block>
 </head>
 <body>
