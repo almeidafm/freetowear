@@ -24,7 +24,7 @@
 
 <main id="main-content">
     <div class="ftw-view" id="view-home">
-        <section aria-label="Campanhas de personaliza&ccedil;&atilde;o" aria-roledescription="carrossel" class="campaign">
+        <section aria-label="Campanhas de personaliza&ccedil;&atilde;o" class="campaign">
             <div class="campaign-copy">
                 <span class="eyebrow" id="campaign-eyebrow">Livre para criar. Livre para vestir.</span>
                 <h1 id="campaign-title">
@@ -50,17 +50,6 @@
                         </svg>
                     </a>
                 </div>
-                <div class="campaign-controls">
-                    <button aria-label="Campanha anterior" class="round-control" id="campaign-prev">&larr;</button>
-                    <div aria-label="Escolher campanha" class="campaign-dots">
-                        <button aria-label="Campanha 1" aria-pressed="true" class="active" data-slide="0"></button>
-                        <button aria-label="Campanha 2" aria-pressed="false" class="" data-slide="1"></button>
-                        <button aria-label="Campanha 3" aria-pressed="false" class="" data-slide="2"></button>
-                    </div>
-                    <button aria-label="Pr&oacute;xima campanha" class="round-control" id="campaign-next">&rarr;</button>
-                    <button aria-label="Pausar campanhas" aria-pressed="false" class="pause-control" id="campaign-pause">Pausar</button>
-                    <span id="campaign-counter">01 / 03</span>
-                </div>
             </div>
             <div class="campaign-visual">
                 <img alt="Campanha criativa com tr&ecirc;s amigos vestindo camisetas de estampas diferentes" class="campaign-photo" fetchpriority="high" height="1402" src="img/campanha-criatividade.png" width="1122">
@@ -70,10 +59,10 @@
                 <span class="campaign-note" id="campaign-note">VISTA SUAS IDEIAS. N&Atilde;O AS DOS OUTROS.</span>
                 <span class="photo-credit">Imagem ilustrativa de campanha</span>
                 <span aria-hidden="true" class="campaign-spark">
-                        <svg fill="none" viewbox="0 0 100 100">
-                            <path d="M50 4v92M4 50h92M17 17l66 66M17 83l66-66" stroke="currentColor" stroke-width="12"></path>
-                        </svg>
-                    </span>
+                    <svg fill="none" viewbox="0 0 100 100">
+                        <path d="M50 4v92M4 50h92M17 17l66 66M17 83l66-66" stroke="currentColor" stroke-width="12"></path>
+                    </svg>
+                </span>
             </div>
         </section>
 
@@ -102,18 +91,31 @@
                     comece a experimentar.
                 </p>
             </div>
-            <div aria-label="Filtrar inspira&ccedil;&otilde;es" class="filter-row">
-                <button aria-pressed="true" class="active" data-filter="all">Tudo junto</button>
-                <button aria-pressed="false" data-filter="cinema">Filmes &amp; s&eacute;ries</button>
-                <button aria-pressed="false" data-filter="humor">Humor &amp; memes</button>
-                <button aria-pressed="false" data-filter="empresa">Empresas &amp; equipes</button>
-                <button aria-pressed="false" data-filter="festa">Anivers&aacute;rios &amp; festas</button>
-                <button aria-pressed="false" data-filter="autoral">Criatividade livre</button>
-                <button aria-pressed="false" data-filter="presente">Presentes &amp; encontros</button>
-            </div>
-            <p aria-live="polite" class="sr-only" id="filter-status">6 ideias para explorar</p>
             <div class="ideas-grid">
-                <article class="idea-card" data-category="cinema">
+                <article class="idea-card product-idea-card" th:each="product, iteration : ${products}" th:if="${iteration.count <= 3}" th:attr="data-category=${product.categoryName}">
+                    <a class="idea-image" th:href="@{/products/{id}(id=${product.id})}">
+                        <span class="card-index" th:text="|FTW / ${#numbers.formatInteger(iteration.count, 2)}|">FTW / 01</span>
+                        <img loading="lazy" th:src="${product.imageUrl}" th:alt="${product.name}">
+                        <span class="card-use" aria-hidden="true">
+                            <svg class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </span>
+                    </a>
+                    <div class="idea-copy">
+                        <span class="eyebrow" th:text="${product.categoryName}">Categoria</span>
+                        <h3 th:text="${product.name}">Produto</h3>
+                        <p th:text="${product.description}">Descrição do produto.</p>
+                        <a class="ad-shop-link" th:href="@{/products/{id}(id=${product.id})}">
+                            <span th:text="|Ver camiseta · R$ ${product.price}|">Ver camiseta</span>
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="idea-card" th:if="${false}" data-category="cinema">
                     <div class="idea-image" style="--tile:#e0dcf3">
                         <span class="card-index">FTW / 01</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -146,7 +148,7 @@
                     </div>
                 </article>
 
-                <article class="idea-card" data-category="humor">
+                <article class="idea-card" th:if="${false}" data-category="humor">
                     <div class="idea-image" style="--tile:#f7cdb9">
                         <span class="card-index">FTW / 02</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -178,7 +180,7 @@
                     </div>
                 </article>
 
-                <article class="idea-card" data-category="empresa">
+                <article class="idea-card" th:if="${false}" data-category="empresa">
                     <div class="idea-image" style="--tile:#d6e7da">
                         <span class="card-index">FTW / 03</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -211,7 +213,7 @@
                     </div>
                 </article>
 
-                <article class="idea-card" data-category="festa">
+                <article class="idea-card" th:if="${false}" data-category="festa">
                     <div class="idea-image" style="--tile:#e8dcfa">
                         <span class="card-index">FTW / 04</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -243,7 +245,7 @@
                     </div>
                 </article>
 
-                <article class="idea-card" data-category="autoral">
+                <article class="idea-card" th:if="${false}" data-category="autoral">
                     <div class="idea-image" style="--tile:#d9e7fb">
                         <span class="card-index">FTW / 05</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -276,7 +278,7 @@
                     </div>
                 </article>
 
-                <article class="idea-card" data-category="presente">
+                <article class="idea-card" th:if="${false}" data-category="presente">
                     <div class="idea-image" style="--tile:#f8e1e7">
                         <span class="card-index">FTW / 06</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -431,7 +433,24 @@
                 </p>
             </div>
             <div class="universe-grid">
-                <article class="universe-card">
+                <article class="universe-card product-universe-card" th:each="product, iteration : ${products}" th:if="${iteration.count > 3 and iteration.count <= 9}">
+                    <a class="universe-visual" th:href="@{/products/{id}(id=${product.id})}">
+                        <img loading="lazy" th:src="${product.imageUrl}" th:alt="${product.name}">
+                        <span class="universe-index" th:text="|FTW / ${#numbers.formatInteger(iteration.count - 3, 2)}|">FTW / 01</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow" th:text="${product.categoryName}">Categoria</span>
+                        <h3 th:text="${product.name}">Produto</h3>
+                        <p th:text="${product.description}">Descrição do produto.</p>
+                        <div class="universe-price">
+                            <strong th:text="|R$ ${product.price}|">R$ Preço</strong>
+                            <a class="inline-link" th:href="@{/products/{id}(id=${product.id})}">Ver camiseta</a>
+                        </div>
+                        <a class="button dark wide" th:href="@{/products/{id}(id=${product.id})}">Personalizar esta ideia</a>
+                    </div>
+                </article>
+
+                <article class="universe-card" th:if="${false}">
                     <a class="universe-visual" href="#product/destino-1985" style="background:#edddc6">
                         <span class="product-tag">De Volta para o Futuro</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -462,7 +481,7 @@
                     </div>
                 </article>
 
-                <article class="universe-card">
+                <article class="universe-card" th:if="${false}">
                     <a class="universe-visual" href="#product/star-wars" style="background:#dce6cd">
                         <span class="product-tag">Star Wars</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -493,7 +512,7 @@
                     </div>
                 </article>
 
-                <article class="universe-card">
+                <article class="universe-card" th:if="${false}">
                     <a class="universe-visual" href="#product/jurassic-park" style="background:#dde9d5">
                         <span class="product-tag">Jurassic Park</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -525,7 +544,7 @@
                     </div>
                 </article>
 
-                <article class="universe-card">
+                <article class="universe-card" th:if="${false}">
                     <a class="universe-visual" href="#product/harry-potter" style="background:#dfe0ef">
                         <span class="product-tag">Harry Potter</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -556,7 +575,7 @@
                     </div>
                 </article>
 
-                <article class="universe-card">
+                <article class="universe-card" th:if="${false}">
                     <a class="universe-visual" href="#product/sofa-cafe" style="background:#edddc6">
                         <span class="product-tag">Friends</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -587,7 +606,7 @@
                     </div>
                 </article>
 
-                <article class="universe-card">
+                <article class="universe-card" th:if="${false}">
                     <a class="universe-visual" href="#product/outro-lado" style="background:#e3dfcc">
                         <span class="product-tag">Stranger Things</span>
                         <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
@@ -648,60 +667,6 @@
                 </svg>
             </button>
             <span aria-hidden="true" class="humor-star">☺</span>
-        </section>
-
-        <section class="phrase-lab section-wrap" id="phrase-lab">
-            <div class="lab-copy">
-                <span class="eyebrow">Pequeno laborat&oacute;rio de grandes ideias</span>
-                <h2>
-                    Uma frase.<br>
-                    Um monte de<br>
-                    <em>personalidade.</em>
-                </h2>
-                <p>
-                    Seu bord&atilde;o favorito acabou de encontrar uma camiseta. Escreva, escolha um estilo e veja uma
-                    primeira vers&atilde;o aparecer aqui.
-                </p>
-                <label for="lab-phrase">O que a sua camiseta vai dizer?</label>
-                <input autocomplete="off" id="lab-phrase" maxlength="64" value="MINHA IDEIA MINHAS REGRAS">
-                <div class="lab-selects">
-                    <div>
-                        <label for="lab-style">Estilo</label>
-                        <select id="lab-style">
-                            <option value="orbital">Fora de &oacute;rbita</option>
-                            <option value="stamp">Edi&ccedil;&atilde;o especial</option>
-                            <option value="clean">Direto ao ponto</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="lab-palette">Combina&ccedil;&atilde;o</label>
-                        <select id="lab-palette">
-                            <option value="0">Preto + lima</option>
-                            <option value="1">Creme + coral</option>
-                            <option value="2">Lil&aacute;s + roxo</option>
-                            <option value="3">Azul + cobalto</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="lab-actions">
-                    <button class="button dark" id="lab-use">
-                        Levar para o est&uacute;dio
-                        <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
-                            <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
-                        </svg>
-                    </button>
-                    <button class="inline-link" id="lab-download">Baixar a arte &darr;</button>
-                </div>
-                <p class="small muted">
-                    Pr&eacute;via ilustrativa. No est&uacute;dio, ajuste a aplica&ccedil;&atilde;o sobre o seu modelo 3D.
-                </p>
-            </div>
-            <div class="lab-preview">
-                <span class="lab-label">SUA IDEIA, EM TEMPO REAL</span>
-                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-                <span class="lab-caption">Isso aqui j&aacute; pode ser o come&ccedil;o de alguma coisa.</span>
-                <span aria-hidden="true" class="creative-sticker">100%<br>SUA IDEIA</span>
-            </div>
         </section>
 
         <section class="process-section section-wrap">
@@ -782,11 +747,12 @@
                     </svg>
                 </a>
             </div>
-            <div aria-label="Tr&ecirc;s ideias de camisetas para grupos" class="team-shirts">
-                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-            </div>
+                <div class="team-shirts" aria-label="Três ideias de camisetas para grupos">
+                    <img loading="lazy" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22440%22%20height%3D%22440%22%20viewBox%3D%220%200%20360%20390%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22cloth%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22white%22%20stop-opacity%3D%22.12%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22white%22%20stop-opacity%3D%220%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%20stop-opacity%3D%22.16%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M137%2056%2097%2068%2042%20112l31%2064%2037-19-5%20171q74%2017%20150%200l-5-171%2037%2019%2031-64-55-44-40-12q-9%2027-43%2027t-43-27Z%22%20fill%3D%22%23273e36%22%2F%3E%3Cpath%20d%3D%22M137%2056%2097%2068%2042%20112l31%2064%2037-19-5%20171q74%2017%20150%200l-5-171%2037%2019%2031-64-55-44-40-12q-9%2027-43%2027t-43-27Z%22%20fill%3D%22url(%23cloth)%22%2F%3E%3Cpath%20d%3D%22M133%2058q9%2035%2047%2035t47-35M110%20157l4-54m136%2054-4-54M107%20318q73%2015%20146%200%22%20fill%3D%22none%22%20stroke%3D%22%23808080%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%222%22%2F%3E%3Cg%20transform%3D%22translate(91%2095)%20scale(.5)%22%3E%3Cpath%20d%3D%22M65%2087h230M65%20258h70%22%20stroke%3D%22%23e5f4ac%22%20stroke-width%3D%225%22%2F%3E%3Ctext%20x%3D%22180%22%20y%3D%22146%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%23e5f4ac%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2229%22%20letter-spacing%3D%22-1%22%3ESUA%20MARCA%3C%2Ftext%3E%3Ctext%20x%3D%22180%22%20y%3D%22194%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%23e5f4ac%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2229%22%20letter-spacing%3D%22-1%22%3ENOSSA%20EQUIPE%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Camiseta de exemplo para equipe">
+                    <img loading="lazy" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22440%22%20height%3D%22440%22%20viewBox%3D%220%200%20360%20390%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22cloth%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22white%22%20stop-opacity%3D%22.12%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22white%22%20stop-opacity%3D%220%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%20stop-opacity%3D%22.16%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M137%2056%2097%2068%2042%20112l31%2064%2037-19-5%20171q74%2017%20150%200l-5-171%2037%2019%2031-64-55-44-40-12q-9%2027-43%2027t-43-27Z%22%20fill%3D%22%23faf7ed%22%2F%3E%3Cpath%20d%3D%22M137%2056%2097%2068%2042%20112l31%2064%2037-19-5%20171q74%2017%20150%200l-5-171%2037%2019%2031-64-55-44-40-12q-9%2027-43%2027t-43-27Z%22%20fill%3D%22url(%23cloth)%22%2F%3E%3Cpath%20d%3D%22M133%2058q9%2035%2047%2035t47-35M110%20157l4-54m136%2054-4-54M107%20318q73%2015%20146%200%22%20fill%3D%22none%22%20stroke%3D%22%23808080%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%222%22%2F%3E%3Cg%20transform%3D%22translate(91%2095)%20scale(.5)%22%3E%3Crect%20x%3D%2249%22%20y%3D%2264%22%20width%3D%22262%22%20height%3D%22217%22%20rx%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22%23693fc5%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M65%2090h230M65%20255h230%22%20stroke%3D%22%23693fc5%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%22180%22%20y%3D%22146%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%23693fc5%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2229%22%20letter-spacing%3D%22-1%22%3EEDI%C3%87%C3%83O%2030%3C%2Ftext%3E%3Ctext%20x%3D%22180%22%20y%3D%22194%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%23693fc5%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2229%22%20letter-spacing%3D%22-1%22%3ELIMITADA%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Camiseta de exemplo de aniversário">
+                    <img loading="lazy" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22440%22%20height%3D%22440%22%20viewBox%3D%220%200%20360%20390%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22cloth%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22white%22%20stop-opacity%3D%22.12%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22white%22%20stop-opacity%3D%220%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%20stop-opacity%3D%22.16%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M137%2056%2097%2068%2042%20112l31%2064%2037-19-5%20171q74%2017%20150%200l-5-171%2037%2019%2031-64-55-44-40-12q-9%2027-43%2027t-43-27Z%22%20fill%3D%22%23f3b2bd%22%2F%3E%3Cpath%20d%3D%22M137%2056%2097%2068%2042%20112l31%2064%2037-19-5%20171q74%2017%20150%200l-5-171%2037%2019%2031-64-55-44-40-12q-9%2027-43%2027t-43-27Z%22%20fill%3D%22url(%23cloth)%22%2F%3E%3Cpath%20d%3D%22M133%2058q9%2035%2047%2035t47-35M110%20157l4-54m136%2054-4-54M107%20318q73%2015%20146%200%22%20fill%3D%22none%22%20stroke%3D%22%23808080%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%222%22%2F%3E%3Cg%20transform%3D%22translate(91%2095)%20scale(.5)%22%3E%3Cpath%20d%3D%22M65%2087h230M65%20258h70%22%20stroke%3D%22%238e2345%22%20stroke-width%3D%225%22%2F%3E%3Ctext%20x%3D%22180%22%20y%3D%22146%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%238e2345%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2229%22%20letter-spacing%3D%22-1%22%3ENOSSO%20ROL%C3%8A%3C%2Ftext%3E%3Ctext%20x%3D%22180%22%20y%3D%22194%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20fill%3D%22%238e2345%22%20font-family%3D%22Arial%2Csans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2225%22%20letter-spacing%3D%22-1%22%3ENOSSA%20HIST%C3%93RIA%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Camiseta de exemplo para amigos">
+                </div>
+
         </section>
 
         <section class="idea-machine section-wrap">

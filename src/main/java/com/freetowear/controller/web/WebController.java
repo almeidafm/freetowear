@@ -40,7 +40,10 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String home() { return "index"; }
+    public String home(Model model) {
+        model.addAttribute("products", productService.listProducts());
+        return "index";
+    }
     
     @GetMapping("/register")
     public String register(

@@ -436,6 +436,13 @@ gap:37px 24px}
   overflow:hidden;
 aspect-ratio:1.08}
 
+.product-idea-card .idea-image {
+  display:block;
+  background:#eef0e8;
+  color:inherit;
+  text-decoration:none;
+}
+
 .idea-image>img {
   width:100%;
   height:100%;
