@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="#18191d" name="theme-color"/>
+    <meta content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, s&eacute;ries, humor, empresas, anivers&aacute;rios e tudo que faz parte da sua hist&oacute;ria. Experimente no est&uacute;dio 3D." name="description"/>
+    <title>
+        FREE TO WEAR | Sua ideia. Sua camiseta.
+    </title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/artworks.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<main id="main-content">
+    <div id="view-artworks">
+        <section class="section-wrap art-page">
+     <span class="eyebrow">
+      Seu acervo de ideias prontas
+     </span>
+            <h1>
+                A ARTE J&Aacute; EST&Aacute; AQUI.
+                <br/>
+                <em>
+                    FALTA O SEU TOQUE.
+                </em>
+            </h1>
+            <p class="lead">
+                Escolha uma ilustra&ccedil;&atilde;o ou uma composi&ccedil;&atilde;o da cole&ccedil;&atilde;o. Use na frente ou nas costas,
+                mude a cor da camiseta e ajuste a aplica&ccedil;&atilde;o no est&uacute;dio.
+            </p>
+            <div class="art-intro">
+      <span>
+       PNG com transpar&ecirc;ncia
+      </span>
+                <span>
+       Aplica&ccedil;&atilde;o com um clique
+      </span>
+                <span>
+       Download da arte
+      </span>
+            </div>
+            <div class="store-toolbar">
+                <div class="filter-row">
+                    <button aria-pressed="true" class="active" data-art-filter="Todas">
+                        Todas
+                    </button>
+                    <button aria-pressed="false" data-art-filter="Ilustra&ccedil;&otilde;es">
+                        Ilustra&ccedil;&otilde;es
+                    </button>
+                    <button aria-pressed="false" data-art-filter="Filmes">
+                        Filmes
+                    </button>
+                    <button aria-pressed="false" data-art-filter="S&eacute;ries">
+                        S&eacute;ries
+                    </button>
+                </div>
+                <label class="store-search">
+       <span class="sr-only">
+        Buscar artes
+       </span>
+                    <input id="art-search" placeholder="Busque uma arte, filme ou s&eacute;rie" type="search"/>
+                </label>
+            </div>
+            <p aria-live="polite" class="small muted" id="art-count">
+                34 artes dispon&iacute;veis
+            </p>
+            <div class="art-grid" id="art-grid">
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#e0e8d3">
+        <span class="product-tag">
+         PNG transparente
+        </span>
+                        <img alt="Estampa Expedi&ccedil;&atilde;o Jur&aacute;ssica" loading="lazy" src="img/jurassico.png"/>
+                    </div>
+                    <div class="art-card-body">
+        <span class="eyebrow">
+         Ilustra&ccedil;&atilde;o pronta
+        </span>
+                        <h3>
+                            Expedi&ccedil;&atilde;o Jur&aacute;ssica
+                        </h3>
+                        <p>
+                            Aventura em cada detalhe.
+                        </p>
+                        <button class="button dark wide" data-use-art="art:jurassico">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8">
+                                </path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:jurassico">
+                            Baixar PNG &darr;
+                        </button>
+                    </div>
+                </article>
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#f3dece">
+        <span class="product-tag">
+         PNG transparente
+        </span>
+                        <img alt="Estampa Gato em Modo Caf&eacute;" loading="lazy" src="img/cafe.png"/>
+                    </div>
+                    <div class="art-card-body">
+        <span class="eyebrow">
+         Ilustra&ccedil;&atilde;o pronta
+        </span>
+                        <h3>
+                            Gato em Modo Caf&eacute;
+                        </h3>
+                        <p>
+                            Seu humor antes do primeiro caf&eacute;.
+                        </p>
+                        <button class="button dark wide" data-use-art="art:cafe">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8">
+                                </path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:cafe">
+                            Baixar PNG &darr;
+                        </button>
+                    </div>
+                </article>
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#d6e4ee">
+        <span class="product-tag">
+         PNG transparente
+        </span>
+                        <img alt="Estampa Pequeno Universo" loading="lazy" src="img/cosmos.png"/>
+                    </div>
+                    <div class="art-card-body">
+        <span class="eyebrow">
+         Ilustra&ccedil;&atilde;o pronta
+        </span>
+                        <h3>
+                            Pequeno Universo
+                        </h3>
+                        <p>
+                            Ideias que v&atilde;o al&eacute;m daqui.
+                        </p>
+                        <button class="button dark wide" data-use-art="art:cosmos">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8">
+                                </path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:cosmos">
+                            Baixar PNG &darr;
+                        </button>
+                    </div>
+                </article>
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#e3d7f0">
+        <span class="product-tag">
+         PNG transparente
+        </span>
+                        <img alt="Estampa Capivara Gamer" loading="lazy" src="img/game.png"/>
+                    </div>
+                    <div class="art-card-body">
+        <span class="eyebrow">
+         Ilustra&ccedil;&atilde;o pronta
+        </span>
+                        <h3>
+                            Capivara Gamer
+                        </h3>
+                        <p>
+                            Uma pausa entre uma fase e outra.
+                        </p>
+                        <button class="button dark wide" data-use-art="art:game">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8">
+                                </path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:game">
+                            Baixar PNG &darr;
+                        </button>
+                    </div>
+                </article>
+            </div>
+            <p class="small muted">
+                Ilustrações e composições autorais. A prévia ajuda a criar; confira medidas e resolução com quem fará a impressão.
+            </p>
+        </section>
+    </div>
+</main>
+<div th:replace="~{layout/footer :: footer}"></div>
+<div aria-live="polite" hidden="" id="toast" role="status"></div>
+</body>
+</html>
