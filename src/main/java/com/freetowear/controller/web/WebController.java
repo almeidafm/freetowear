@@ -8,6 +8,7 @@ import com.freetowear.service.AccountService;
 import com.freetowear.service.CategoryService;
 import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
+import com.freetowear.enums.UF;
 
 import com.freetowear.exception.ResourceNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -107,6 +108,7 @@ public class WebController {
         model.addAttribute("paymentPending", paymentPending);
         model.addAttribute("cart", orderService.getCart(customerId).orElse(null));
         model.addAttribute("addresses", accountService.getAddresses(customerId));
+        model.addAttribute("states", UF.values());
 
         return "commerce/checkout";
     }

@@ -46,33 +46,27 @@
                         </div>
                     </div>
 
-                    <th:block th:unless="${#lists.isEmpty(addresses)}">
-                        <fieldset class="delivery-options address-options">
-                            <legend>Endereço de entrega</legend>
+                    <fieldset class="delivery-options address-options">
+                        <legend>Endereço de entrega</legend>
 
-                            <label class="shipping-option" th:each="a : ${addresses}">
-                                <input type="radio" name="addressId" required
+                        <label class="shipping-option" th:each="a : ${addresses}">
+                            <input type="radio" name="idAddress" required
                                        th:value="${a.id}"
                                        th:checked="${a.id == selectedAddressId}">
-                                <span>
-                                    <strong th:text="|${a.street}, ${a.number}${a.complement != null and !a.complement.isBlank() ? ' - ' + a.complement : ''}|">
-                                        Rua Exemplo, 123
-                                    </strong>
-                                    <small th:text="|${a.neighborhood}, ${a.city}/${a.state} · CEP ${a.cep}|">
-                                        Centro, Recife/PE · CEP 50000-000
-                                    </small>
-                                </span>
-                            </label>
+                            <span>
+                                <strong th:text="|${a.street}, ${a.number}${a.complement != null and !a.complement.isBlank() ? ' - ' + a.complement : ''}|">Rua Exemplo, 123</strong>
+                                <small th:text="|${a.neighborhood}, ${a.city}/${a.state} · CEP ${a.cep}|">Centro, Recife/PE · CEP 50000-000</small>
+                            </span>
+                        </label>
 
-                            <label class="shipping-option">
-                                <input type="radio" name="addressId" value="new" required>
-                                <span>
-                                    <strong>+ Usar outro endereço</strong>
-                                    <small>Adicionar um novo endereço de entrega.</small>
-                                </span>
-                            </label>
-                        </fieldset>
-                    </th:block>
+                        <label class="shipping-option">
+                            <input type="radio" name="idAddress" value="new" required th:checked="${#lists.isEmpty(addresses)}">
+                            <span>
+                                <strong>+ Adicionar novo endereço</strong>
+                                <small>Preencha um novo endereço de entrega.</small>
+                            </span>
+                        </label>
+                    </fieldset>
 
                     <div id="new-address-form"
                          class="form-grid"
@@ -124,6 +118,14 @@
                                         th:text="${uf}"
                                         th:selected="${uf == form?.state}"></option>
                             </select>
+                        </label>
+                        <label class="form-field">
+                            Salvar este endereço para continuar a entrega
+                            <button type="button" id="save-address-btn" class="button dark add-address-button">
+                                <span>
+                                    <small>Adicionar endereço</small>
+                                </span>
+                            </button>
                         </label>
                     </div>
 

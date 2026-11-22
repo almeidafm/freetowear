@@ -19,14 +19,18 @@ document.getElementById('checkout-form')?.addEventListener('submit', async funct
     }
 });
 
+document.getElementById('save-address-btn')?.addEventListener('click', saveNewAddress);
+
 function syncNewAddressForm() {
-    const addressOptions = document.querySelectorAll('input[name="addressId"]');
+    const addressOptions = document.querySelectorAll('input[name="idAddress"]');
     const newAddressForm = document.getElementById('new-address-form');
 
     if (!newAddressForm) return;
 
-    const selectedAddress = document.querySelector('input[name="addressId"]:checked');
+    const selectedAddress = document.querySelector('input[name="idAddress"]:checked');
     const isNewAddress = selectedAddress && selectedAddress.value === 'new';
+
+    if (selectedAddress) selectedAddressId = selectedAddress.value;
 
     newAddressForm.classList.toggle('hidden', !isNewAddress);
     newAddressForm.querySelectorAll('input, select').forEach(field => {
@@ -143,6 +147,8 @@ function toggleNewAddressForm(forceOpen = null) {
     const form = document.getElementById('new-address-form');
     const button = document.getElementById('add-address-btn');
 
+    if (!form) return;
+
     let shouldOpen;
 
     if (forceOpen !== null) {
@@ -152,7 +158,7 @@ function toggleNewAddressForm(forceOpen = null) {
     }
 
     form.style.display = shouldOpen ? 'block' : 'none';
-    button.style.display = shouldOpen ? 'none' : 'block';
+    if (button) button.style.display = shouldOpen ? 'none' : 'block';
 }
 
 async function saveNewAddress() {
@@ -164,7 +170,7 @@ async function saveNewAddress() {
         neighborhood: document.getElementById('neighborhood').value.trim(),
         city: document.getElementById('city').value.trim(),
         state: document.getElementById('state').value,
-        defaultAddress: document.getElementById('defaultAddress').checked
+        defaultAddress: false
     };
 
     if (!data.cep || !data.street || !data.neighborhood || !data.city || !data.state) {
@@ -191,11 +197,8 @@ async function saveNewAddress() {
             throw new Error(`Error ${response.status}: ${responseText}`);
         }
 
-        clearNewAddressForm();
-        toggleNewAddressForm(false);
-        await loadAddresses();
-
         alert('Address saved successfully!');
+        window.location.reload();
 
     } catch (error) {
         console.error('Error saving address:', error);
@@ -211,7 +214,6 @@ function clearNewAddressForm() {
     document.getElementById('neighborhood').value = '';
     document.getElementById('city').value = '';
     document.getElementById('state').value = '';
-    document.getElementById('defaultAddress').checked = false;
 }
 
 async function loadCurrentCart() {
