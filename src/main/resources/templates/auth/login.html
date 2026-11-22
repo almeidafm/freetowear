@@ -11,7 +11,6 @@
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/auth.css}">
-    <script defer th:src="@{/js/auth.js}"></script>
     <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
@@ -76,33 +75,6 @@
         </div>
     </div>
 </main>
-
-<div th:if="${showEmailVerificationPopup}" id="emailVerificationModal" class="email-verification-overlay">
-    <div class="email-verification-modal">
-        <button type="button" class="email-verification-close" onclick="closeEmailVerificationModal()">&times;</button>
-        <div id="verificationStepOne">
-            <div class="email-verification-icon">✉</div>
-            <h2>Verifique seu e-mail</h2>
-            <p>Seu endereço de e-mail ainda não foi verificado.</p>
-            <p>Confirme seu e-mail para manter sua conta protegida.</p>
-            <div class="email-verification-actions">
-                <button type="button" onclick="sendVerificationCode()" class="verify-email-button">Verificar e-mail</button>
-                <button type="button" onclick="closeEmailVerificationModal()" class="skip-email-button">Pular por enquanto</button>
-            </div>
-        </div>
-        <div id="verificationStepTwo" style="display: none;">
-            <div class="email-verification-icon">✉</div>
-            <h2>Digite o código recebido</h2>
-            <p>Enviamos um código de 6 dígitos para o seu e-mail.</p>
-            <input type="text" id="verificationCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" class="verification-code-input"/>
-            <div id="verificationError" class="verification-error" style="display: none;"></div>
-            <div class="email-verification-actions">
-                <button type="button" onclick="verifyEmailCode()" class="verify-email-button">Confirmar código</button>
-                <button type="button" onclick="sendVerificationCode()" class="skip-email-button">Reenviar código</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
 

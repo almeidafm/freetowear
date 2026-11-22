@@ -10,8 +10,6 @@ import com.freetowear.service.OrderService;
 import com.freetowear.service.ProductService;
 
 import com.freetowear.exception.ResourceNotFoundException;
-import jakarta.servlet.http.HttpSession;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,22 +55,9 @@ public class WebController {
     @GetMapping("/login")
     public String login(
             @AuthenticationPrincipal CustomerDetails customerDetails,
-            Model model,
-            HttpSession session
+            Model model
     ) {
         model.addAttribute("alreadyLoggedIn", customerDetails != null);
-
-        Boolean emailVerificationPopupShown =
-                (Boolean) session.getAttribute("emailVerificationPopupShown");
-
-        if (customerDetails != null
-                && !customerDetails.isEmailVerified()
-                && !Boolean.TRUE.equals(emailVerificationPopupShown)) {
-
-            model.addAttribute("showEmailVerificationPopup", true);
-
-            session.setAttribute("emailVerificationPopupShown", true);
-        }
 
         return "auth/login";
     }
