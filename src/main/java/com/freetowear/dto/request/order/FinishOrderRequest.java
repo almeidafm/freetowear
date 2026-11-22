@@ -21,6 +21,8 @@ public class FinishOrderRequest {
 
     private String idCoupon;
 
+    private String shippingMethod;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private PaymentMethod method;

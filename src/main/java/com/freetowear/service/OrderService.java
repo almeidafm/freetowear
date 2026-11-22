@@ -225,6 +225,7 @@ public class OrderService {
         }
 
         order.setDeliveryAddress(address);
+        order.setShippingPrice(calculateShippingPrice(address.getState(), request.getShippingMethod()));
 
         if (request.getIdCoupon() != null && !request.getIdCoupon().isBlank()) {
             Coupon coupon = getValidCoupon(customerId, request.getIdCoupon());
@@ -253,6 +254,19 @@ public class OrderService {
 
         order.setStatus(OrderStatus.PENDING);
         orderRepository.save(order);
+    }
+
+    private BigDecimal calculateShippingPrice(com.freetowear.enums.UF state, String shippingMethod) {
+        boolean express = "express".equalsIgnoreCase(shippingMethod);
+        int[] range = switch (state) {
+            case SP, RJ, ES, MG -> express ? new int[]{2500, 5000} : new int[]{1000, 2000};
+            case PR, SC, RS -> express ? new int[]{3000, 6000} : new int[]{1200, 2500};
+            case GO, MT, MS, DF -> express ? new int[]{3500, 7000} : new int[]{1500, 3000};
+            case BA, SE, AL, PE, PB, RN, CE, PI, MA -> express ? new int[]{4000, 8000} : new int[]{1800, 3500};
+            case AM, RR, AP, PA, RO, AC, TO -> express ? new int[]{5000, 10000} : new int[]{2500, 4500};
+        };
+        int cents = (range[0] + range[1]) / 2;
+        return BigDecimal.valueOf(cents, 2);
     }
 
     @Transactional(readOnly = true)

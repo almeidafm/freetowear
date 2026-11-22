@@ -49,7 +49,7 @@
                     <fieldset class="delivery-options address-options">
                         <legend>Endereço de entrega</legend>
 
-                        <label class="shipping-option" th:each="a : ${addresses}">
+                        <label class="shipping-option" th:each="a : ${addresses}" th:attr="data-state=${a.state}">
                             <input type="radio" name="idAddress" required
                                        th:value="${a.id}"
                                        th:checked="${a.id == selectedAddressId}">
@@ -135,19 +135,19 @@
                         <label class="shipping-option">
                             <input type="radio" name="shippingMethod" value="express" checked required>
                             <span>
-                                <strong>Entrega expressa</strong>
-                                <small>Receba em 2 a 5 dias úteis após a produção.</small>
-                            </span>
-                            <strong>R$ 29,90</strong>
+                            <strong>Entrega expressa</strong>
+                            <small id="express-delivery-time">Receba em 2 a 5 dias úteis após a produção.</small>
+                        </span>
+                            <strong id="express-delivery-price">Selecione o endereço</strong>
                         </label>
 
                         <label class="shipping-option">
                             <input type="radio" name="shippingMethod" value="standard">
                             <span>
                                 <strong>Entrega padrão</strong>
-                                <small>Uma opção econômica para o seu pedido.</small>
+                                <small id="standard-delivery-time">Selecione o endereço para calcular o prazo.</small>
                             </span>
-                            <strong>Grátis</strong>
+                            <strong id="standard-delivery-price">Selecione o endereço</strong>
                         </label>
                     </fieldset>
                 </div>

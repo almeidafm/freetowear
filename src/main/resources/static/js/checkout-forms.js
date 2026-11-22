@@ -21,6 +21,49 @@ document.getElementById('checkout-form')?.addEventListener('submit', async funct
 
 document.getElementById('save-address-btn')?.addEventListener('click', saveNewAddress);
 
+const shippingRanges = {
+    southeast: { standard: [10, 20, 5, 10], express: [25, 50, 1, 3] },
+    south: { standard: [12, 25, 6, 11], express: [30, 60, 2, 4] },
+    central: { standard: [15, 30, 7, 12], express: [35, 70, 2, 5] },
+    northeast: { standard: [18, 35, 8, 15], express: [40, 80, 3, 6] },
+    north: { standard: [25, 45, 10, 20], express: [50, 100, 4, 8] }
+};
+
+const stateRegions = {
+    SP: 'southeast', RJ: 'southeast', ES: 'southeast', MG: 'southeast',
+    PR: 'south', SC: 'south', RS: 'south',
+    GO: 'central', MT: 'central', MS: 'central', DF: 'central',
+    BA: 'northeast', SE: 'northeast', AL: 'northeast', PE: 'northeast', PB: 'northeast', RN: 'northeast', CE: 'northeast', PI: 'northeast', MA: 'northeast',
+    AM: 'north', RR: 'north', AP: 'north', PA: 'north', RO: 'north', AC: 'north', TO: 'north'
+};
+
+function updateShippingOptions(state) {
+    const region = stateRegions[state];
+    const ranges = shippingRanges[region];
+    if (!ranges) return;
+    const formatPrice = value => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    ['standard', 'express'].forEach(type => {
+        const [min, max, daysMin, daysMax] = ranges[type];
+        const value = (min + max) / 2;
+        document.getElementById(`${type}-delivery-price`).textContent = formatPrice(value);
+        document.getElementById(`${type}-delivery-time`).textContent =
+            `Receba em ${daysMin} a ${daysMax} dias úteis após a produção.`;
+    });
+}
+
+document.querySelectorAll('input[name="idAddress"]').forEach(input => {
+    input.addEventListener('change', () => {
+        const address = input.closest('[data-state]');
+        updateShippingOptions(address?.dataset.state || document.getElementById('state')?.value);
+    });
+});
+document.getElementById('state')?.addEventListener('change', event => updateShippingOptions(event.target.value));
+const initialAddress = document.querySelector('input[name="idAddress"]:checked');
+if (initialAddress) {
+    const address = initialAddress.closest('[data-state]');
+    updateShippingOptions(address?.dataset.state || document.getElementById('state')?.value);
+}
+
 function syncNewAddressForm() {
     const addressOptions = document.querySelectorAll('input[name="idAddress"]');
     const newAddressForm = document.getElementById('new-address-form');
@@ -163,7 +206,7 @@ function toggleNewAddressForm(forceOpen = null) {
 
 async function saveNewAddress() {
     const data = {
-        cep: document.getElementById('cep').value.trim(),
+        cep: document.getElementById('cep').value.replace(/\D/g, ''),
         street: document.getElementById('street').value.trim(),
         number: document.getElementById('number').value.trim(),
         complement: document.getElementById('complement').value.trim(),
