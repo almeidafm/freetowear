@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Order details</title>
+    <title>Detalhes do pedido</title>
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" th:href="@{/css/order-details.css}">
@@ -20,9 +20,9 @@
 <div class="order-details-shell">
 <div class="order-details-heading">
     <div>
-        <p class="eyebrow">Account / Orders</p>
-        <a class="order-back-link" th:href="@{/orders}">Back to my orders</a>
-        <h1 th:text="'Order #' + ${order.id}">Order details</h1>
+        <p class="eyebrow">Conta / Pedidos</p>
+        <a class="order-back-link" th:href="@{/orders}">Voltar aos meus pedidos</a>
+        <h1 th:text="'Pedido #' + ${order.id}">Detalhes do pedido</h1>
     </div>
     <button id="cancel-order-btn"
             class="order-cancel-button"
@@ -30,20 +30,20 @@
             th:data-order-id="${order.id}"
             th:data-paid="${order.isPaid}"
             type="button">
-        Cancel Order
+        Cancelar pedido
     </button>
 </div>
 
 <main class="order-details-content">
 <section class="order-info-card">
-    <div><span>Date</span><strong th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</strong></div>
+    <div><span>Data</span><strong th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">22/09/2026</strong></div>
     <div><span>Status</span><strong class="order-status" th:text="${order.status}">PENDING</strong></div>
-    <div th:if="${order.deliveryAddress != null}"><span>Delivery address</span><strong th:text="${order.deliveryAddress}">Address</strong></div>
+    <div th:if="${order.deliveryAddress != null}"><span>Endereço de entrega</span><strong th:text="${order.deliveryAddress}">Endereço</strong></div>
 </section>
 <section class="order-section order-tracking">
-    <h2>Tracking</h2>
-    <p th:if="${order.trackingCode != null}"><strong>Tracking code:</strong> <span th:text="${order.trackingCode}">tracking-code</span></p>
-    <p th:if="${#lists.isEmpty(order.trackingEvents)}">No tracking updates yet.</p>
+    <h2>Acompanhamento</h2>
+    <p th:if="${order.trackingCode != null}"><strong>Código de rastreamento:</strong> <span th:text="${order.trackingCode}">código-rastreamento</span></p>
+    <p th:if="${#lists.isEmpty(order.trackingEvents)}">Nenhuma atualização de rastreamento ainda.</p>
     <ol th:if="${!#lists.isEmpty(order.trackingEvents)}">
         <li th:each="event : ${order.trackingEvents}">
             <strong th:text="${event.status}">PAYMENT_RECEIVED</strong>
@@ -53,15 +53,15 @@
 </section>
 
 <section class="order-section order-items">
-    <h2>Items</h2>
-    <p th:if="${#lists.isEmpty(order.items)}">This order has no items.</p>
+    <h2>Itens</h2>
+    <p th:if="${#lists.isEmpty(order.items)}">Este pedido não possui itens.</p>
     <div class="order-table-wrap" th:if="${!#lists.isEmpty(order.items)}">
     <table>
-        <thead><tr><th>Product</th><th>Variation</th><th>Quantity</th><th>Unit price</th><th>Subtotal</th></tr></thead>
+        <thead><tr><th>Produto</th><th>Variação</th><th>Quantidade</th><th>Preço unitário</th><th>Subtotal</th></tr></thead>
         <tbody>
         <tr th:each="item : ${order.items}">
-            <td th:text="${item.productName}">Product</td>
-            <td th:text="${item.variation}">Variation</td>
+            <td th:text="${item.productName}">Produto</td>
+            <td th:text="${item.variation}">Variação</td>
             <td th:text="${item.quantity}">1</td>
             <td th:text="${'R$ ' + #numbers.formatDecimal(item.unitPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
             <td th:text="${'R$ ' + #numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
@@ -72,19 +72,19 @@
 </section>
 
 <section class="order-section order-summary">
-    <h2>Summary</h2>
-    <p>Products: <span th:text="${'R$ ' + #numbers.formatDecimal(order.productsValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
-    <p>Discount: <span th:text="${'R$ ' + #numbers.formatDecimal(order.discountValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
-    <p>Shipping: <span th:text="${'R$ ' + #numbers.formatDecimal(order.shippingPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+    <h2>Resumo</h2>
+    <p>Produtos: <span th:text="${'R$ ' + #numbers.formatDecimal(order.productsValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+    <p>Desconto: <span th:text="${'R$ ' + #numbers.formatDecimal(order.discountValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+    <p>Frete: <span th:text="${'R$ ' + #numbers.formatDecimal(order.shippingPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
     <p><strong>Total: <span th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></strong></p>
 </section>
 
     <section class="product-reviews" aria-labelledby="product-reviews-title">
         <div class="product-reviews-heading">
             <div>
-                <p class="eyebrow">Your feedback matters</p>
-                <h2 id="product-reviews-title">Review your products</h2>
-                <p class="product-reviews-intro">Tell us what you think about each product from your order.</p>
+                <p class="eyebrow">Sua opinião é importante</p>
+                <h2 id="product-reviews-title">Avalie seus produtos</h2>
+                <p class="product-reviews-intro">Conte o que você achou de cada produto do seu pedido.</p>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
                  th:data-variation="${item.variation}"></div>
         </div>
         <div id="product-review-list" class="product-review-list"></div>
-        <p id="no-review-products" class="no-review-products" hidden>No products are available for review.</p>
+        <p id="no-review-products" class="no-review-products" hidden>Nenhum produto disponível para avaliação.</p>
     </section>
 </main>
 </div>

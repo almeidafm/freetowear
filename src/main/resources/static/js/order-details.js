@@ -24,30 +24,30 @@ function createReviewCard(product) {
 
     const info = document.createElement('div');
     info.className = 'product-review-product';
-    info.innerHTML = `<img class="product-review-image" src="${product.imageUrl}" alt="${safe(product.name)} product image" onerror="this.replaceWith(document.createTextNode('No image'))">
-        <div><p class="product-id">Product ID ${safe(product.id)}</p><h3>${safe(product.name)}</h3>
-        <p class="purchased-label">Purchased:</p><p class="purchased-variations">${[...product.variations].map(safe).join(', ')}</p></div>`;
+    info.innerHTML = `<img class="product-review-image" src="${product.imageUrl}" alt="Imagem do produto ${safe(product.name)}" onerror="this.replaceWith(document.createTextNode('Sem imagem'))">
+        <div><p class="product-id">ID do produto: ${safe(product.id)}</p><h3>${safe(product.name)}</h3>
+        <p class="purchased-label">Comprado:</p><p class="purchased-variations">${[...product.variations].map(safe).join(', ')}</p></div>`;
 
     const form = document.createElement('div');
     form.className = 'product-review-form';
-    form.innerHTML = `<p class="review-label">Review your product</p>
-        <div class="star-rating" role="radiogroup" aria-label="Rate ${safe(product.name)} from 1 to 5 stars">
-        ${[1, 2, 3, 4, 5].map(n => `<button type="button" data-rating="${n}" aria-label="${n} star">★</button>`).join('')}</div>
-        <textarea placeholder="Write your review..." aria-label="Review for ${safe(product.name)}"></textarea>
-        <label class="image-upload">＋ Add photos <input type="file" accept="image/*" multiple></label>
-        <div class="image-previews"></div><button type="button" class="submit-review">Submit review</button><p class="review-message"></p>`;
+    form.innerHTML = `<p class="review-label">Avalie seu produto</p>
+        <div class="star-rating" role="radiogroup" aria-label="Dê uma nota de 1 a 5 estrelas para ${safe(product.name)}">
+        ${[1, 2, 3, 4, 5].map(n => `<button type="button" data-rating="${n}" aria-label="${n} estrela">★</button>`).join('')}</div>
+        <textarea placeholder="Escreva sua avaliação..." aria-label="Avaliação para ${safe(product.name)}"></textarea>
+        <label class="image-upload">＋ Adicionar fotos <input type="file" accept="image/*" multiple></label>
+        <div class="image-previews"></div><button type="button" class="submit-review">Enviar avaliação</button><p class="review-message"></p>`;
 
     const files = form.querySelector('input[type=file]');
     const previews = form.querySelector('.image-previews');
     files.addEventListener('change', () => {
         previews.replaceChildren(...[...files.files].map(file => {
-            const image = document.createElement('img'); image.src = URL.createObjectURL(file); image.alt = 'Selected review image'; return image;
+            const image = document.createElement('img'); image.src = URL.createObjectURL(file); image.alt = 'Imagem selecionada para avaliação'; return image;
         }));
     });
     form.querySelector('.submit-review').addEventListener('click', async () => {
         const rating = form.dataset.rating;
         const message = form.querySelector('.review-message');
-        if (!rating) { message.textContent = 'Please select a rating.'; return; }
+        if (!rating) { message.textContent = 'Selecione uma avaliação.'; return; }
         const data = new FormData(); data.append('productId', product.id); data.append('rating', rating); data.append('text', form.querySelector('textarea').value);
         [...files.files].forEach(file => data.append('images', file));
         const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
@@ -58,11 +58,11 @@ function createReviewCard(product) {
             body: data
         });
         if (response.ok) {
-            message.textContent = 'Review submitted.';
+            message.textContent = 'Avaliação enviada.';
             form.querySelector('.submit-review').disabled = true;
         } else {
             const error = await response.json().catch(() => null);
-            message.textContent = error?.message || `Could not submit review (${response.status}).`;
+            message.textContent = error?.message || `Não foi possível enviar a avaliação (${response.status}).`;
         }
     });
 
@@ -88,11 +88,11 @@ function safe(value) {
     if (!btn) return;
 
     btn.addEventListener('click', function () {
-        if (!confirm('Are you sure you want to cancel this order?')) return;
+        if (!confirm('Tem certeza de que deseja cancelar este pedido?')) return;
 
         const isPaid = btn.dataset.paid === 'true';
         if (isPaid) {
-            if (!confirm('Since this order has already been paid, your refund will be reviewed and processed by our team. Do you still want to cancel?')) return;
+            if (!confirm('Como este pedido já foi pago, o reembolso será analisado e processado pela nossa equipe. Deseja cancelar mesmo assim?')) return;
         }
 
         const orderId = btn.dataset.orderId;
@@ -100,7 +100,7 @@ function safe(value) {
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
         btn.disabled = true;
-        btn.textContent = 'Cancelling…';
+        btn.textContent = 'Cancelando…';
 
         fetch('/order/cancel', {
             method: 'POST',
@@ -119,15 +119,15 @@ function safe(value) {
             if (result.ok) {
                 window.location.href = '/orders';
             } else {
-                alert('Could not cancel order: ' + (result.data.message || 'Unknown error'));
+                alert('Não foi possível cancelar o pedido: ' + (result.data.message || 'Erro desconhecido'));
                 btn.disabled = false;
-                btn.textContent = 'Cancel Order';
+                btn.textContent = 'Cancelar pedido';
             }
         })
         .catch(function () {
-            alert('An error occurred. Please try again.');
+            alert('Ocorreu um erro. Tente novamente.');
             btn.disabled = false;
-            btn.textContent = 'Cancel Order';
+            btn.textContent = 'Cancelar pedido';
         });
     });
 })();

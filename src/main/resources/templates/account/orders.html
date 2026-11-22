@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Orders</title>
+    <title>Meus pedidos</title>
     <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" th:href="@{/css/colors.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -18,27 +18,27 @@
     <div class="orders-shell">
         <header class="orders-heading">
             <div>
-                <p class="eyebrow">Account</p>
-                <h1>My orders</h1>
+                <p class="eyebrow">Conta</p>
+                <h1>Meus pedidos</h1>
             </div>
-            <p>Keep track of your purchases, delivery updates, and order details.</p>
+            <p>Acompanhe suas compras, atualizações de entrega e detalhes dos pedidos.</p>
         </header>
 
         <section class="orders-panel">
-            <p class="orders-message" th:if="${orders == null}">Loading orders...</p>
+            <p class="orders-message" th:if="${orders == null}">Carregando pedidos...</p>
 
-            <p class="orders-message" th:if="${ordersError}" th:text="${ordersError}">Orders could not be loaded.</p>
+            <p class="orders-message" th:if="${ordersError}" th:text="${ordersError}">Não foi possível carregar os pedidos.</p>
 
             <div class="orders-empty" th:if="${orders != null and #lists.isEmpty(orders)}">
-                <h2>No orders yet</h2>
-                <p>Your completed orders will appear here.</p>
-                <a th:href="@{/products}">Continue shopping</a>
+                <h2>Nenhum pedido ainda</h2>
+                <p>Seus pedidos concluídos aparecerão aqui.</p>
+                <a th:href="@{/products}">Continuar comprando</a>
             </div>
 
             <div class="orders-table-wrap" th:if="${orders != null and !#lists.isEmpty(orders)}">
                 <table class="orders-table">
                     <thead>
-                    <tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th>Latest tracking</th><th></th></tr>
+                    <tr><th>Pedido</th><th>Data</th><th>Status</th><th>Total</th><th>Última atualização</th><th></th></tr>
                     </thead>
                     <tbody>
                     <tr th:each="order : ${orders}">
@@ -49,9 +49,9 @@
                         <td>
                             <span th:if="${order.latestTrackingEvent != null}" th:text="${order.latestTrackingEvent.status}">PAYMENT_RECEIVED</span>
                             <small th:if="${order.latestTrackingEvent != null}" th:text="${#temporals.format(order.latestTrackingEvent.occurredAt, 'dd/MM/yyyy HH:mm')}">22/09/2026 14:30</small>
-                            <span th:if="${order.latestTrackingEvent == null}">No updates yet</span>
+                            <span th:if="${order.latestTrackingEvent == null}">Nenhuma atualização ainda</span>
                         </td>
-                        <td><a th:href="@{/orders/{id}(id=${order.id})}">View details</a></td>
+                        <td><a th:href="@{/orders/{id}(id=${order.id})}">Ver detalhes</a></td>
                     </tr>
                     </tbody>
                 </table>
