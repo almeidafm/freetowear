@@ -42,8 +42,8 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String home() { return "site/index"; }
-
+    public String home() { return "index"; }
+    
     @GetMapping("/register")
     public String register(
             @AuthenticationPrincipal CustomerDetails customerDetails,
@@ -60,6 +60,8 @@ public class WebController {
             Model model,
             HttpSession session
     ) {
+        model.addAttribute("alreadyLoggedIn", customerDetails != null);
+
         Boolean emailVerificationPopupShown =
                 (Boolean) session.getAttribute("emailVerificationPopupShown");
 
@@ -76,7 +78,18 @@ public class WebController {
     }
 
     @GetMapping("/account/edit")
-    public String editAccount() { return "account/account"; }
+    public String editAccount(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        String customerId = customerDetails.getId();
+        model.addAttribute("customer", accountService.getAccount(customerId));
+        model.addAttribute("pendingOrders", orderService.getPendingOrders(customerId));
+        model.addAttribute("activeOrders", orderService.getActiveOrders(customerId));
+        model.addAttribute("recentOrders", orderService.getRecentOrders(customerId));
+        model.addAttribute("editMode", true);
+        return "account/profile";
+    }
 
     @GetMapping("/cart")
     public String cart(
@@ -98,15 +111,14 @@ public class WebController {
     ) {
         String customerId = customerDetails.getId();
 
-        boolean checkoutAvailable =
-                orderService.getCart(customerId).isPresent();
+        boolean checkoutAvailable = orderService.getCart(customerId).isPresent();
 
-        boolean paymentPending =
-                !checkoutAvailable &&
-                        orderService.getPendingOrder(customerId).isPresent();
+        boolean paymentPending = !checkoutAvailable && orderService.getPendingOrder(customerId).isPresent();
 
         model.addAttribute("checkoutAvailable", checkoutAvailable);
         model.addAttribute("paymentPending", paymentPending);
+        model.addAttribute("cart", orderService.getCart(customerId).orElse(null));
+        model.addAttribute("addresses", accountService.getAddresses(customerId));
 
         return "commerce/checkout";
     }
@@ -205,6 +217,7 @@ public class WebController {
         model.addAttribute("pendingOrders", orderService.getPendingOrders(customerId));
         model.addAttribute("activeOrders", orderService.getActiveOrders(customerId));
         model.addAttribute("recentOrders", orderService.getRecentOrders(customerId));
+        model.addAttribute("editMode", false);
         return "account/profile";
     }
 
@@ -215,40 +228,43 @@ public class WebController {
 
     @GetMapping("/about")
     public String about() {
-        return "site/about";
+        return "institutional/about";
     }
 
     @GetMapping("/contact")
     public String contact() {
-        return "site/contact";
+        return "institutional/contact";
     }
 
     @GetMapping("/how-it-works")
-    public String howItWorks() { return "site/how-it-works"; }
+    public String howItWorks() { return "institutional/how-it-works"; }
 
     @GetMapping("/inspirations")
-    public String inspirations() { return "site/inspirations"; }
+    public String inspirations() { return "catalog/inspirations"; }
 
-    @GetMapping("/customizer")
-    public String customizer() { return "site/customizer"; }
+    @GetMapping("/studio")
+    public String studio() { return "catalog/studio"; }
 
     @GetMapping("/universes")
-    public String universes() { return "site/universes"; }
+    public String universes(Model model) {
+        model.addAttribute("products", productService.listProducts());
+        return "catalog/universes";
+    }
 
     @GetMapping("/artworks")
-    public String artworks() { return "site/artworks"; }
+    public String artworks() { return "catalog/artworks"; }
 
-    @GetMapping("/shop")
-    public String shop() { return "site/shop"; }
+    @GetMapping("/policies")
+    public String policies() { return "institutional/policies"; }
 
     @GetMapping("/privacy")
     public String privacy() {
-        return "site/privacy";
+        return "institutional/privacy";
     }
 
     @GetMapping("/terms")
     public String terms() {
-        return "site/terms";
+        return "institutional/terms";
     }
 
     @GetMapping("/payment")
