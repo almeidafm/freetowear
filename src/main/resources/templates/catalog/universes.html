@@ -33,27 +33,15 @@
         <div class="universe-intro">
             <p>
                 Histórias que você reassiste, personagens que marcaram uma época e referências que só outros fãs entendem.
-                Escolha entre os 30 universos da coleção e crie a sua interpretação.
+                Escolha entre os <span th:text="${products == null ? 0 : #lists.size(products)}">0</span> universos da coleção e crie a sua interpretação.
             </p>
             <div class="universe-count">
-                <strong>20</strong><span>FILMES</span>
-                <strong>10</strong><span>SÉRIES</span>
+                <strong th:text="${products == null ? 0 : #lists.size(products)}">0</strong><span>UNIVERSOS</span>
             </div>
         </div>
 
-        <div class="store-toolbar">
-            <div class="filter-row">
-                <button data-universe-filter="Todos" aria-pressed="true" class="active">Todos</button>
-                <button data-universe-filter="Filmes" aria-pressed="false">Filmes</button>
-                <button data-universe-filter="Séries" aria-pressed="false">Séries</button>
-            </div>
-            <label class="store-search">
-                <span class="sr-only">Buscar filme ou série</span>
-                <input id="universe-search" type="search" placeholder="Qual história você quer vestir?">
-            </label>
-        </div>
-
-        <p id="universe-count" class="small muted" aria-live="polite">30 universos para explorar</p>
+        <p id="universe-count" class="small muted" aria-live="polite"
+           th:text="|${products == null ? 0 : #lists.size(products)} universos para explorar|">0 universos para explorar</p>
 
         <div id="universe-grid" class="universe-grid">
             <article class="universe-card" th:each="product, stat : ${products}">

@@ -32,22 +32,9 @@
     </section>
 
     <section class="section-wrap store-section">
-        <div class="store-toolbar">
-            <div class="filter-row" aria-label="Filtrar coleção">
-                <button data-collection="Tudo" class="active" aria-pressed="true">Tudo</button>
-            </div>
-            <form th:action="@{/products/search}"
-                  method="get"
-                  class="store-search">
 
-                <input type="search"
-                       name="q"
-                       placeholder="Buscar produtos ou categorias..."
-                       autocomplete="off">
-            </form><br>
-        </div>
-
-        <p id="product-count" class="small muted" aria-live="polite">0 ideias para vestir</p>
+        <p id="product-count" class="small muted" aria-live="polite"
+           th:text="|${products == null ? 0 : #lists.size(products)} ideias para vestir|">0 ideias para vestir</p>
 
 <div id="store-grid" class="store-grid">
     <article class="store-card"th:each="product : ${products}">
