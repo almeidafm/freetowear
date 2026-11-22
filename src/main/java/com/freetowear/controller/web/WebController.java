@@ -239,9 +239,6 @@ public class WebController {
     @GetMapping("/how-it-works")
     public String howItWorks() { return "institutional/how-it-works"; }
 
-    @GetMapping("/inspirations")
-    public String inspirations() { return "catalog/inspirations"; }
-
     @GetMapping("/studio")
     public String studio() { return "catalog/studio"; }
 
