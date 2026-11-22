@@ -42,13 +42,17 @@
 
     const feedback = form.querySelector('.profile-edit-feedback');
     const button = form.querySelector('button');
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'};
+    if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
     button.disabled = true;
     feedback.textContent = 'Salvando...';
 
     try {
       const response = await fetch('/account', {
         method: 'PATCH',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+        headers,
         body: new URLSearchParams(new FormData(form))
       });
       if (!response.ok) throw new Error('Não foi possível salvar os dados.');
