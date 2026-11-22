@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#18191d">
+    <meta name="description"
+          content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, séries, humor, empresas, aniversários e tudo que faz parte da sua história. Experimente no estúdio 3D.">
+    <title>FREE TO WEAR | Sua ideia. Sua camiseta.</title>
+    <link rel="icon" th:href="@{/img/favicon.svg}" href="/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/studio.css}">
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<div id="view-customizer">
+    <section class="studio">
+
+        <aside class="panel" aria-label="Personalização">
+
+            <div class="panel-intro">
+                <span class="eyebrow">FREE TO WEAR / Estúdio 3D</span>
+                <h1>Sua camiseta, sua criação.</h1>
+                <p>Seu filme, sua frase, sua marca. Experimente e faça do seu jeito.</p>
+            </div>
+
+            <div class="control-section">
+                <span class="control-title">Lado da estampa</span>
+                <div class="segmented">
+                    <button data-side="front" class="active" aria-pressed="true">Frente</button>
+                    <button data-side="back" aria-pressed="false">Costas</button>
+                </div>
+            </div>
+
+            <div class="control-section art-controls">
+                <label class="upload">
+                    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.7" aria-hidden="true">
+                        <path d="M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5"/>
+                    </svg>
+                    <strong>Enviar sua estampa</strong>
+                    <span>PNG, JPG, WebP ou SVG · até 15 MB</span>
+                    <input id="art-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="file-input"
+                           aria-label="Enviar estampa">
+                </label>
+                <a class="button small wide art-library-link" th:href="@{/artworks}" href="/artworks">
+                    Escolher uma arte pronta
+                </a>
+                <div class="art-meta">
+                    <span id="art-name">Nenhuma arte selecionada</span>
+                    <button id="remove-art" class="text-button" hidden>Remover</button>
+                </div>
+                <div class="art-adjustments">
+                    <span class="control-title">Ajuste da estampa</span>
+                    <div class="range-row"><label class="range-label" for="art-width"><span>Tamanho</span><output id="value-width">44%</output></label><input id="art-width" data-range="width" type="range" min="5" max="65" step="1" value="44" aria-label="Tamanho" disabled></div>
+                    <div class="range-row"><label class="range-label" for="art-x"><span>Posição horizontal</span><output id="value-x">0%</output></label><input id="art-x" data-range="x" type="range" min="-48" max="48" step="1" value="0" aria-label="Posição horizontal" disabled></div>
+                    <div class="range-row"><label class="range-label" for="art-y"><span>Posição vertical</span><output id="value-y">0%</output></label><input id="art-y" data-range="y" type="range" min="-48" max="48" step="1" value="0" aria-label="Posição vertical" disabled></div>
+                    <div class="range-row"><label class="range-label" for="art-rotation"><span>Rotação</span><output id="value-rotation">0°</output></label><input id="art-rotation" data-range="rotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Rotação" disabled></div>
+                    <button id="reset-art" class="text-button" disabled>Centralizar arte</button>
+                    <p id="art-status" class="small muted" role="status"></p>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <label class="title" for="custom-color">Cor do tecido</label>
+                <div class="swatches">
+                    <button data-size="P" class="" aria-pressed="false">P</button>
+                    <button data-size="M" class="active" aria-pressed="true">M</button>
+                    <button data-size="G" class="" aria-pressed="false">G</button>
+                    <button data-size="GG" class="" aria-pressed="false">GG</button>
+                </div>
+                <p class="small muted" style="margin:8px 0 0">O tamanho selecionado é registrado no pedido.</p>
+            </div>
+
+            <div class="panel-bottom">
+                <div class="price-line">
+                    <span>Valor da peça personalizada</span>
+                    <strong>R$ 99,90</strong>
+                </div>
+                <button id="buy-custom" class="button dark wide">Comprar minha criação</button>
+                <button id="add-custom" class="button wide">Adicionar ao carrinho</button>
+                <p class="small muted">Frente, costas e configurações acompanham seu pedido.</p>
+            </div>
+
+        </aside>
+
+        <div class="stage-wrap">
+            <div id="canvas-container" class="stage"></div>
+
+            <div id="model-overlay" class="stage-overlay">
+                <div class="spinner"></div>
+                <h2>Carregando modelo 3D…</h2>
+            </div>
+
+            <p id="stage-hint" class="stage-hint">
+                Arraste para girar · Role para zoom
+            </p>
+
+            <div class="stage-bottom">
+                <button data-camera="front" class="button small">Frente</button>
+                <button data-camera="back" class="button small">Costas</button>
+                <button id="fit-camera" class="button small">Enquadrar</button>
+                <button id="placement" class="button small" aria-pressed="false" disabled>
+                    Posicionar na camisa
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<noscript>Ative o JavaScript para usar o estúdio 3D e o carrinho.</noscript>
+
+<script th:src="@{/vendor/three.min.js}"></script>
+<script th:src="@{/vendor/OrbitControls.js}"></script>
+<script th:src="@{/vendor/OBJLoader.js}"></script>
+<script th:src="@{/vendor/DecalGeometry.js}"></script>
+<script th:src="@{/js/studio.js}"></script>
+
+</body>
+</html>
