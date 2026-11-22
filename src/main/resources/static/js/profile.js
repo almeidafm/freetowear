@@ -25,6 +25,19 @@
 
   const phoneInput = document.querySelector('input[name="phone"]');
   const cpfInput = document.querySelector('input[name="cpf"]');
+  const birthDateInput = document.querySelector('input[name="birthDate"]');
+
+  const formatBirthDate = (value) => {
+    const digits = onlyDigits(value).slice(0, 8);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+  };
+
+  const birthDateToIso = (value) => {
+    const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    return match ? `${match[3]}-${match[2]}-${match[1]}` : value;
+  };
 
   if (phoneInput) phoneInput.addEventListener('input', () => {
     phoneInput.value = formatPhone(phoneInput.value);
@@ -34,11 +47,16 @@
     cpfInput.value = formatCpf(cpfInput.value);
   });
 
+  if (birthDateInput) birthDateInput.addEventListener('input', () => {
+    birthDateInput.value = formatBirthDate(birthDateInput.value);
+  });
+
   const form = document.getElementById('profile-edit-form');
   if (form) form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (phoneInput) phoneInput.value = onlyDigits(phoneInput.value);
     if (cpfInput) cpfInput.value = onlyDigits(cpfInput.value);
+    if (birthDateInput) birthDateInput.value = birthDateToIso(birthDateInput.value);
 
     const feedback = form.querySelector('.profile-edit-feedback');
     const button = form.querySelector('button');

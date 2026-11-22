@@ -52,7 +52,7 @@
                     <label><span class="field-label">Nome completo</span><input name="name" type="text" th:value="${customer.name}" required></label>
                     <label><span class="field-label">E-mail</span><input type="email" th:value="${customer.email}" disabled></label>
                     <label><span class="field-label">Telefone<span class="missing-data-marker" th:if="${customer.phone == null or #strings.isEmpty(customer.phone)}">*</span></span><input name="phone" type="tel" th:value="${customer.phone}"></label>
-                    <label><span class="field-label">Data de nascimento<span class="missing-data-marker" th:if="${customer.birthDate == null}">*</span></span><input name="birthDate" type="date" th:value="${customer.birthDate}"></label>
+                    <label><span class="field-label">Data de nascimento<span class="missing-data-marker" th:if="${customer.birthDate == null}">*</span></span><input name="birthDate" type="text" inputmode="numeric" autocomplete="bday" placeholder="dd/mm/aaaa" pattern="\d{2}/\d{2}/\d{4}" maxlength="10" th:value="${customer.birthDate != null ? #temporals.format(customer.birthDate, 'dd/MM/yyyy') : ''}"></label>
                     <label><span class="field-label">CPF<span class="missing-data-marker" th:if="${customer.cpf == null or #strings.isEmpty(customer.cpf)}">*</span></span><input name="cpf" type="text" th:value="${customer.cpf}"></label>
                     <div class="profile-edit-actions">
                         <button class="profile-save-button" type="submit">Salvar dados</button>
