@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="#18191d" name="theme-color">
+    <meta content="FREE TO WEAR. Vista suas ideias: crie camisetas para filmes, s&eacute;ries, humor, empresas, anivers&aacute;rios e tudo que faz parte da sua hist&oacute;ria. Experimente no est&uacute;dio 3D." name="description">
+    <title>FREE TO WEAR | Sua ideia. Sua camiseta.</title>
+    <link href="/img/favicon.svg" rel="icon" th:href="@{/img/favicon.svg}" type="image/svg+xml">
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <script defer="" src="/js/navigation.js" th:src="@{/js/navigation.js}"></script>
+    <th:block th:replace="~{layout/announcement :: announcement-assets}"></th:block>
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <th:block th:replace="~{layout/final-banner :: final-banner-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{layout/announcement :: announcement}"></div>
+<div th:replace="~{layout/header :: header}"></div>
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
+
+<main id="main-content">
+    <div class="ftw-view" id="view-home">
+        <section aria-label="Campanhas de personaliza&ccedil;&atilde;o" aria-roledescription="carrossel" class="campaign">
+            <div class="campaign-copy">
+                <span class="eyebrow" id="campaign-eyebrow">Livre para criar. Livre para vestir.</span>
+                <h1 id="campaign-title">
+                    N&Atilde;O &Eacute; S&Oacute;<br>
+                    UMA CAMISETA.<br>
+                    <em>&Eacute; MUITO VOC&Ecirc;.</em>
+                </h1>
+                <p id="campaign-text">
+                    Seu filme favorito. Seu humor duvidoso. Sua marca. A ideia que n&atilde;o sai da sua cabe&ccedil;a.
+                    Aqui, tudo isso pode ganhar uma camiseta com a sua cara.
+                </p>
+                <div class="campaign-actions">
+                    <a class="button dark" href="/studio" id="campaign-link">
+                        Criar minha camiseta
+                        <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                            <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                        </svg>
+                    </a>
+                    <a class="inline-link" href="/inspirations">
+                        Quero me inspirar
+                        <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                            <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="campaign-controls">
+                    <button aria-label="Campanha anterior" class="round-control" id="campaign-prev">&larr;</button>
+                    <div aria-label="Escolher campanha" class="campaign-dots">
+                        <button aria-label="Campanha 1" aria-pressed="true" class="active" data-slide="0"></button>
+                        <button aria-label="Campanha 2" aria-pressed="false" class="" data-slide="1"></button>
+                        <button aria-label="Campanha 3" aria-pressed="false" class="" data-slide="2"></button>
+                    </div>
+                    <button aria-label="Pr&oacute;xima campanha" class="round-control" id="campaign-next">&rarr;</button>
+                    <button aria-label="Pausar campanhas" aria-pressed="false" class="pause-control" id="campaign-pause">Pausar</button>
+                    <span id="campaign-counter">01 / 03</span>
+                </div>
+            </div>
+            <div class="campaign-visual">
+                <img alt="Campanha criativa com tr&ecirc;s amigos vestindo camisetas de estampas diferentes" class="campaign-photo" fetchpriority="high" height="1402" src="img/campanha-criatividade.png" width="1122">
+                <div class="campaign-art" hidden="">
+                    <img alt="Exemplo de camiseta da campanha" id="campaign-shirt">
+                </div>
+                <span class="campaign-note" id="campaign-note">VISTA SUAS IDEIAS. N&Atilde;O AS DOS OUTROS.</span>
+                <span class="photo-credit">Imagem ilustrativa de campanha</span>
+                <span aria-hidden="true" class="campaign-spark">
+                        <svg fill="none" viewbox="0 0 100 100">
+                            <path d="M50 4v92M4 50h92M17 17l66 66M17 83l66-66" stroke="currentColor" stroke-width="12"></path>
+                        </svg>
+                    </span>
+            </div>
+        </section>
+
+        <div class="statement-strip">
+            <span>SUAS PAIX&Otilde;ES</span>
+            <b>✳</b>
+            <span>SUAS HIST&Oacute;RIAS</span>
+            <b>✳</b>
+            <span>SUAS IDEIAS</span>
+            <b>✳</b>
+            <span>SUAS REGRAS</span>
+            <b>✳</b>
+        </div>
+
+        <section class="inspiration-section section-wrap" id="inspiration-gallery">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Feita para tudo o que voc&ecirc; &eacute;</span>
+                    <h2>
+                        O que voc&ecirc; quer<br>
+                        <em>vestir hoje?</em>
+                    </h2>
+                </div>
+                <p>
+                    Voc&ecirc; n&atilde;o precisa chegar com a arte pronta. Encontre uma ideia, d&ecirc; o seu toque e
+                    comece a experimentar.
+                </p>
+            </div>
+            <div aria-label="Filtrar inspira&ccedil;&otilde;es" class="filter-row">
+                <button aria-pressed="true" class="active" data-filter="all">Tudo junto</button>
+                <button aria-pressed="false" data-filter="cinema">Filmes &amp; s&eacute;ries</button>
+                <button aria-pressed="false" data-filter="humor">Humor &amp; memes</button>
+                <button aria-pressed="false" data-filter="empresa">Empresas &amp; equipes</button>
+                <button aria-pressed="false" data-filter="festa">Anivers&aacute;rios &amp; festas</button>
+                <button aria-pressed="false" data-filter="autoral">Criatividade livre</button>
+                <button aria-pressed="false" data-filter="presente">Presentes &amp; encontros</button>
+            </div>
+            <p aria-live="polite" class="sr-only" id="filter-status">6 ideias para explorar</p>
+            <div class="ideas-grid">
+                <article class="idea-card" data-category="cinema">
+                    <div class="idea-image" style="--tile:#e0dcf3">
+                        <span class="card-index">FTW / 01</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <button aria-label="Usar ideia de Filmes &amp; s&eacute;ries" class="card-use" data-preset="cinema">
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="idea-copy">
+                        <span class="eyebrow">Filmes &amp; s&eacute;ries</span>
+                        <h3>Seu pr&oacute;ximo epis&oacute;dio favorito? Vestir a sua ideia.</h3>
+                        <p>
+                            Aquele universo que voc&ecirc; maratona, uma refer&ecirc;ncia que s&oacute; outros f&atilde;s
+                            entendem ou uma frase com clima de cena final. Transforme o que voc&ecirc; ama assistir em
+                            uma cria&ccedil;&atilde;o com a sua interpreta&ccedil;&atilde;o.
+                        </p>
+                        <button class="inline-link" data-preset="cinema">
+                            Come&ccedil;ar com essa ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <a class="ad-shop-link" href="#product/cinema">
+                            Ver camiseta &middot; R$&nbsp;99,90
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="idea-card" data-category="humor">
+                    <div class="idea-image" style="--tile:#f7cdb9">
+                        <span class="card-index">FTW / 02</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <button aria-label="Usar ideia de Humor &amp; memes" class="card-use" data-preset="humor">
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="idea-copy">
+                        <span class="eyebrow">Humor &amp; memes</span>
+                        <h3>A sua piada interna merece sair do grupo.</h3>
+                        <p>
+                            O meme que nunca perde a gra&ccedil;a, o bord&atilde;o da turma ou a verdade que voc&ecirc;
+                            sempre diz brincando. Crie uma camiseta que puxa assunto antes mesmo do primeiro &ldquo;oi&rdquo;.
+                        </p>
+                        <button class="inline-link" data-preset="humor">
+                            Come&ccedil;ar com essa ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <a class="ad-shop-link" href="#product/humor">
+                            Ver camiseta &middot; R$&nbsp;99,90
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="idea-card" data-category="empresa">
+                    <div class="idea-image" style="--tile:#d6e7da">
+                        <span class="card-index">FTW / 03</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <button aria-label="Usar ideia de Empresas &amp; equipes" class="card-use" data-preset="empresa">
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="idea-copy">
+                        <span class="eyebrow">Empresas &amp; equipes</span>
+                        <h3>A sua marca tamb&eacute;m faz parte da conversa.</h3>
+                        <p>
+                            Do balc&atilde;o ao evento, da pequena empresa &agrave; equipe inteira: experimente sua
+                            identidade visual em uma pe&ccedil;a que aproxima as pessoas. Logo na frente, mensagem nas
+                            costas e personalidade por todos os lados.
+                        </p>
+                        <button class="inline-link" data-preset="empresa">
+                            Come&ccedil;ar com essa ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <a class="ad-shop-link" href="#product/empresa">
+                            Ver camiseta &middot; R$&nbsp;99,90
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="idea-card" data-category="festa">
+                    <div class="idea-image" style="--tile:#e8dcfa">
+                        <span class="card-index">FTW / 04</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <button aria-label="Usar ideia de Anivers&aacute;rios &amp; festas" class="card-use" data-preset="festa">
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="idea-copy">
+                        <span class="eyebrow">Anivers&aacute;rios &amp; festas</span>
+                        <h3>Uma ocasi&atilde;o especial pede uma edi&ccedil;&atilde;o s&oacute; sua.</h3>
+                        <p>
+                            A nova idade, o tema da festa, o apelido que s&oacute; a fam&iacute;lia conhece. Personalize
+                            uma camiseta para o aniversariante ou imagine uma vers&atilde;o para cada pessoa da comemora&ccedil;&atilde;o.
+                        </p>
+                        <button class="inline-link" data-preset="festa">
+                            Come&ccedil;ar com essa ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <a class="ad-shop-link" href="#product/festa">
+                            Ver camiseta &middot; R$&nbsp;99,90
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="idea-card" data-category="autoral">
+                    <div class="idea-image" style="--tile:#d9e7fb">
+                        <span class="card-index">FTW / 05</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <button aria-label="Usar ideia de Criatividade livre" class="card-use" data-preset="autoral">
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="idea-copy">
+                        <span class="eyebrow">Criatividade livre</span>
+                        <h3>A sua cabe&ccedil;a n&atilde;o segue cat&aacute;logo. Sua camiseta tamb&eacute;m n&atilde;o precisa.</h3>
+                        <p>
+                            Rabiscos, desenhos, tipografia, colagens ou aquela combina&ccedil;&atilde;o de cores que s&oacute;
+                            faz sentido para voc&ecirc;. D&ecirc; espa&ccedil;o para experimentar e transforme uma ideia
+                            autoral em algo que voc&ecirc; pode vestir.
+                        </p>
+                        <button class="inline-link" data-preset="autoral">
+                            Come&ccedil;ar com essa ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <a class="ad-shop-link" href="#product/autoral">
+                            Ver camiseta &middot; R$&nbsp;99,90
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="idea-card" data-category="presente">
+                    <div class="idea-image" style="--tile:#f8e1e7">
+                        <span class="card-index">FTW / 06</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <button aria-label="Usar ideia de Presentes &amp; encontros" class="card-use" data-preset="presente">
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="idea-copy">
+                        <span class="eyebrow">Presentes &amp; encontros</span>
+                        <h3>Tem presente que s&oacute; voc&ecirc;s dois entenderiam.</h3>
+                        <p>
+                            Uma viagem inesquec&iacute;vel, o nome do pet, uma lembran&ccedil;a de amizade ou o encontro
+                            anual da turma. Crie uma pe&ccedil;a que guarda um pouco dessa hist&oacute;ria &mdash; e d&aacute;
+                            vontade de usar de novo.
+                        </p>
+                        <button class="inline-link" data-preset="presente">
+                            Come&ccedil;ar com essa ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <a class="ad-shop-link" href="#product/presente">
+                            Ver camiseta &middot; R$&nbsp;99,90
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+            </div>
+            <p class="gallery-note">
+                Exemplos para inspirar. Cada frase, cor e composi&ccedil;&atilde;o pode ganhar a sua vers&atilde;o.
+            </p>
+        </section>
+
+        <section class="art-shelf section-wrap">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Agora a ideia j&aacute; vem desenhada</span>
+                    <h2>
+                        Escolha a arte.<br>
+                        <em>Fa&ccedil;a ser sua.</em>
+                    </h2>
+                </div>
+                <p>
+                    Dinossauros, humor, games e um universo inteiro de possibilidades. Clique, aplique na camiseta e
+                    encontre a sua combina&ccedil;&atilde;o.
+                </p>
+            </div>
+            <div class="art-grid">
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#e0e8d3">
+                        <span class="product-tag">PNG transparente</span>
+                        <img alt="Estampa Expedi&ccedil;&atilde;o Jur&aacute;ssica" loading="lazy" src="img/jurassico.png">
+                    </div>
+                    <div class="art-card-body">
+                        <span class="eyebrow">Ilustra&ccedil;&atilde;o pronta</span>
+                        <h3>Expedi&ccedil;&atilde;o Jur&aacute;ssica</h3>
+                        <p>Aventura em cada detalhe.</p>
+                        <button class="button dark wide" data-use-art="art:jurassico">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:jurassico">Baixar PNG &darr;</button>
+                    </div>
+                </article>
+
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#f3dece">
+                        <span class="product-tag">PNG transparente</span>
+                        <img alt="Estampa Gato em Modo Caf&eacute;" loading="lazy" src="img/cafe.png">
+                    </div>
+                    <div class="art-card-body">
+                        <span class="eyebrow">Ilustra&ccedil;&atilde;o pronta</span>
+                        <h3>Gato em Modo Caf&eacute;</h3>
+                        <p>Seu humor antes do primeiro caf&eacute;.</p>
+                        <button class="button dark wide" data-use-art="art:cafe">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:cafe">Baixar PNG &darr;</button>
+                    </div>
+                </article>
+
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#d6e4ee">
+                        <span class="product-tag">PNG transparente</span>
+                        <img alt="Estampa Pequeno Universo" loading="lazy" src="img/cosmos.png">
+                    </div>
+                    <div class="art-card-body">
+                        <span class="eyebrow">Ilustra&ccedil;&atilde;o pronta</span>
+                        <h3>Pequeno Universo</h3>
+                        <p>Ideias que v&atilde;o al&eacute;m daqui.</p>
+                        <button class="button dark wide" data-use-art="art:cosmos">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:cosmos">Baixar PNG &darr;</button>
+                    </div>
+                </article>
+
+                <article class="art-card">
+                    <div class="art-card-visual" style="--art-bg:#e3d7f0">
+                        <span class="product-tag">PNG transparente</span>
+                        <img alt="Estampa Capivara Gamer" loading="lazy" src="img/game.png">
+                    </div>
+                    <div class="art-card-body">
+                        <span class="eyebrow">Ilustra&ccedil;&atilde;o pronta</span>
+                        <h3>Capivara Gamer</h3>
+                        <p>Uma pausa entre uma fase e outra.</p>
+                        <button class="button dark wide" data-use-art="art:game">
+                            Usar esta arte
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                        <button class="inline-link" data-download-art="art:game">Baixar PNG &darr;</button>
+                    </div>
+                </article>
+            </div>
+            <div class="shelf-footer">
+                <span>4 ilustra&ccedil;&otilde;es + 30 composi&ccedil;&otilde;es de filmes e s&eacute;ries.</span>
+                <a class="button dark" href="/artworks">
+                    Abrir todas as artes
+                    <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="universe-feature section-wrap">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">20 filmes + 10 s&eacute;ries / sua nova cole&ccedil;&atilde;o</span>
+                    <h2>
+                        Todo universo<br>
+                        tem o <em>seu look.</em>
+                    </h2>
+                </div>
+                <p>
+                    Da primeira viagem no tempo &agrave; &uacute;ltima maratona de epis&oacute;dios. Encontre a sua hist&oacute;ria
+                    favorita e fa&ccedil;a uma vers&atilde;o que s&oacute; voc&ecirc; usaria.
+                </p>
+            </div>
+            <div class="universe-grid">
+                <article class="universe-card">
+                    <a class="universe-visual" href="#product/destino-1985" style="background:#edddc6">
+                        <span class="product-tag">De Volta para o Futuro</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <span class="universe-index">FTW / 01</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow">Filmes / De Volta para o Futuro</span>
+                        <h3>Pr&oacute;xima Parada: 1985</h3>
+                        <p>
+                            Seu estilo n&atilde;o precisa seguir a linha do tempo. Uma composi&ccedil;&atilde;o retr&ocirc;
+                            para quem embarca em De Volta para o Futuro a cada sess&atilde;o.
+                        </p>
+                        <div class="universe-price">
+                            <strong>R$&nbsp;109,90</strong>
+                            <a class="inline-link" href="#product/destino-1985">
+                                Ver camiseta
+                                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <button class="button dark wide" data-universe-use="destino-1985">
+                            Personalizar esta ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <a class="universe-visual" href="#product/star-wars" style="background:#dce6cd">
+                        <span class="product-tag">Star Wars</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <span class="universe-index">FTW / 02</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow">Filmes / Star Wars</span>
+                        <h3>Entre Estrelas</h3>
+                        <p>
+                            Escolha seu lado criativo. Leve a aventura de Star Wars para uma estampa que parece pronta
+                            para atravessar uma gal&aacute;xia.
+                        </p>
+                        <div class="universe-price">
+                            <strong>R$&nbsp;119,90</strong>
+                            <a class="inline-link" href="#product/star-wars">
+                                Ver camiseta
+                                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <button class="button dark wide" data-universe-use="star-wars">
+                            Personalizar esta ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <a class="universe-visual" href="#product/jurassic-park" style="background:#dde9d5">
+                        <span class="product-tag">Jurassic Park</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <img alt="" class="shirt-art-overlay" src="img/jurassico.png">
+                        <span class="universe-index">FTW / 04</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow">Filmes / Jurassic Park</span>
+                        <h3>Expedi&ccedil;&atilde;o Jur&aacute;ssica</h3>
+                        <p>
+                            A criatividade acabou de sair do laborat&oacute;rio. Um tiranossauro entre folhas tropicais
+                            para vestir a aventura de Jurassic Park.
+                        </p>
+                        <div class="universe-price">
+                            <strong>R$&nbsp;119,90</strong>
+                            <a class="inline-link" href="#product/jurassic-park">
+                                Ver camiseta
+                                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <button class="button dark wide" data-universe-use="jurassic-park">
+                            Personalizar esta ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <a class="universe-visual" href="#product/harry-potter" style="background:#dfe0ef">
+                        <span class="product-tag">Harry Potter</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <span class="universe-index">FTW / 08</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow">Filmes / Harry Potter</span>
+                        <h3>Magia no Cotidiano</h3>
+                        <p>
+                            Tem dias que pedem uma carta, uma aventura e um toque de magia. Crie sua interpreta&ccedil;&atilde;o
+                            do universo de Harry Potter.
+                        </p>
+                        <div class="universe-price">
+                            <strong>R$&nbsp;119,90</strong>
+                            <a class="inline-link" href="#product/harry-potter">
+                                Ver camiseta
+                                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <button class="button dark wide" data-universe-use="harry-potter">
+                            Personalizar esta ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <a class="universe-visual" href="#product/sofa-cafe" style="background:#edddc6">
+                        <span class="product-tag">Friends</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <span class="universe-index">FTW / 21</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow">S&eacute;ries / Friends</span>
+                        <h3>Sof&aacute;, Caf&eacute; &amp; Amigos</h3>
+                        <p>
+                            Para quem reassiste Friends como quem reencontra a pr&oacute;pria turma. Um caf&eacute;, uma
+                            conversa e amigos que viram fam&iacute;lia.
+                        </p>
+                        <div class="universe-price">
+                            <strong>R$&nbsp;109,90</strong>
+                            <a class="inline-link" href="#product/sofa-cafe">
+                                Ver camiseta
+                                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <button class="button dark wide" data-universe-use="sofa-cafe">
+                            Personalizar esta ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <a class="universe-visual" href="#product/outro-lado" style="background:#e3dfcc">
+                        <span class="product-tag">Stranger Things</span>
+                        <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                        <span class="universe-index">FTW / 25</span>
+                    </a>
+                    <div class="universe-copy">
+                        <span class="eyebrow">S&eacute;ries / Stranger Things</span>
+                        <h3>Clube do Outro Lado</h3>
+                        <p>
+                            Mist&eacute;rio, amizade e uma cidade cheia de segredos. Uma refer&ecirc;ncia a Stranger
+                            Things para quem nunca resiste ao pr&oacute;ximo epis&oacute;dio.
+                        </p>
+                        <div class="universe-price">
+                            <strong>R$&nbsp;119,90</strong>
+                            <a class="inline-link" href="#product/outro-lado">
+                                Ver camiseta
+                                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <button class="button dark wide" data-universe-use="outro-lado">
+                            Personalizar esta ideia
+                            <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                                <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+            </div>
+            <div class="shelf-footer">
+                <span>Todos os 30 t&iacute;tulos em uma cole&ccedil;&atilde;o para explorar.</span>
+                <a class="button dark" href="/universes">
+                    Explorar filmes e s&eacute;ries
+                    <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8"></path>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="humor-banner section-wrap">
+            <span class="eyebrow">N&atilde;o guarde essa ideia s&oacute; pra voc&ecirc;</span>
+            <div>
+                <h2>
+                    O GRUPO RIU.<br>
+                    <em>AGORA VIRA ESTAMPA.</em>
+                </h2>
+                <p>
+                    A piada que atravessou meses de conversa merece mais que um print. Escolha a frase, teste uma
+                    composi&ccedil;&atilde;o e imagine a turma inteira usando.
+                </p>
+            </div>
+            <button class="button dark" data-scroll-lab="">
+                Transformar uma frase em camiseta
+                <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                    <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                </svg>
+            </button>
+            <span aria-hidden="true" class="humor-star">☺</span>
+        </section>
+
+        <section class="phrase-lab section-wrap" id="phrase-lab">
+            <div class="lab-copy">
+                <span class="eyebrow">Pequeno laborat&oacute;rio de grandes ideias</span>
+                <h2>
+                    Uma frase.<br>
+                    Um monte de<br>
+                    <em>personalidade.</em>
+                </h2>
+                <p>
+                    Seu bord&atilde;o favorito acabou de encontrar uma camiseta. Escreva, escolha um estilo e veja uma
+                    primeira vers&atilde;o aparecer aqui.
+                </p>
+                <label for="lab-phrase">O que a sua camiseta vai dizer?</label>
+                <input autocomplete="off" id="lab-phrase" maxlength="64" value="MINHA IDEIA MINHAS REGRAS">
+                <div class="lab-selects">
+                    <div>
+                        <label for="lab-style">Estilo</label>
+                        <select id="lab-style">
+                            <option value="orbital">Fora de &oacute;rbita</option>
+                            <option value="stamp">Edi&ccedil;&atilde;o especial</option>
+                            <option value="clean">Direto ao ponto</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="lab-palette">Combina&ccedil;&atilde;o</label>
+                        <select id="lab-palette">
+                            <option value="0">Preto + lima</option>
+                            <option value="1">Creme + coral</option>
+                            <option value="2">Lil&aacute;s + roxo</option>
+                            <option value="3">Azul + cobalto</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="lab-actions">
+                    <button class="button dark" id="lab-use">
+                        Levar para o est&uacute;dio
+                        <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                            <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                        </svg>
+                    </button>
+                    <button class="inline-link" id="lab-download">Baixar a arte &darr;</button>
+                </div>
+                <p class="small muted">
+                    Pr&eacute;via ilustrativa. No est&uacute;dio, ajuste a aplica&ccedil;&atilde;o sobre o seu modelo 3D.
+                </p>
+            </div>
+            <div class="lab-preview">
+                <span class="lab-label">SUA IDEIA, EM TEMPO REAL</span>
+                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                <span class="lab-caption">Isso aqui j&aacute; pode ser o come&ccedil;o de alguma coisa.</span>
+                <span aria-hidden="true" class="creative-sticker">100%<br>SUA IDEIA</span>
+            </div>
+        </section>
+
+        <section class="process-section section-wrap">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Voc&ecirc; imagina. Voc&ecirc; experimenta.</span>
+                    <h2>
+                        Da sua cabe&ccedil;a<br>
+                        para a <em>camiseta.</em>
+                    </h2>
+                </div>
+                <a class="inline-link" href="/how-it-works">
+                    Veja o passo a passo
+                    <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="process-grid">
+                <article>
+                    <span>01 / IMAGINE</span>
+                    <h3>Encontre o seu motivo.</h3>
+                    <p>
+                        Uma paix&atilde;o, uma piada, uma marca, um momento. Pode come&ccedil;ar com uma frase ou com
+                        uma imagem que voc&ecirc; j&aacute; tem.
+                    </p>
+                </article>
+                <article>
+                    <span>02 / EXPERIMENTE</span>
+                    <h3>Monte a sua composi&ccedil;&atilde;o.</h3>
+                    <p>
+                        Escolha a cor do tecido, envie a arte e ajuste o tamanho, a posi&ccedil;&atilde;o e a rota&ccedil;&atilde;o.
+                        Crie na frente, nas costas ou nos dois lados.
+                    </p>
+                </article>
+                <article>
+                    <span>03 / VEJA EM 3D</span>
+                    <h3>Olhe de outro &acirc;ngulo.</h3>
+                    <p>
+                        Gire o modelo, aproxime os detalhes e compare combina&ccedil;&otilde;es. &Eacute; o seu espa&ccedil;o
+                        para testar antes de decidir.
+                    </p>
+                </article>
+                <article>
+                    <span>04 / VISTA</span>
+                    <h3>Leve sua cria&ccedil;&atilde;o adiante.</h3>
+                    <p>
+                        Adicione sua pe&ccedil;a ao carrinho, confira os dados de entrega e escolha como pagar. Frente,
+                        costas e ajustes acompanham o pedido.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section class="team-banner section-wrap">
+            <div>
+                <span class="eyebrow">Juntos, com identidade</span>
+                <h2>
+                    Da turma inteira.<br>
+                    Da sua empresa.<br>
+                    <em>Do seu jeito.</em>
+                </h2>
+                <p>
+                    Uma camiseta pode fazer parte de algo maior: a identidade de uma equipe, a energia de um anivers&aacute;rio
+                    ou a mem&oacute;ria de um encontro. Crie uma ideia em comum e personalize os detalhes de cada hist&oacute;ria.
+                </p>
+                <button class="button dark" data-preset="empresa">
+                    Imaginar uma camiseta para o grupo
+                    <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                    </svg>
+                </button>
+                <br>
+                <a class="ad-shop-link" href="#product/empresa">
+                    Ver op&ccedil;&otilde;es de compra
+                    <svg aria-hidden="true" class="ftw-arrow" fill="none" viewbox="0 0 24 24">
+                        <path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-linecap="square" stroke-width="1.8"></path>
+                    </svg>
+                </a>
+            </div>
+            <div aria-label="Tr&ecirc;s ideias de camisetas para grupos" class="team-shirts">
+                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                <img alt="Pr&eacute;via da camiseta" id="lab-shirt" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+            </div>
+        </section>
+
+        <section class="idea-machine section-wrap">
+            <span class="eyebrow">T&aacute; faltando aquela fa&iacute;sca?</span>
+            <div class="idea-machine-inner">
+                <div>
+                    <h2>
+                        Deu branco?<br>
+                        <em>A gente puxa o fio.</em>
+                    </h2>
+                    <p>Um ponto de partida pode virar uma ideia que s&oacute; voc&ecirc; teria.</p>
+                </div>
+                <div class="idea-result">
+                    <span>DESAFIO CRIATIVO</span>
+                    <p aria-live="polite" id="random-idea">
+                        Transforme a frase que voc&ecirc; mais repete em uma estampa de duas cores.
+                    </p>
+                    <button class="inline-link" id="shuffle-idea">
+                        Me d&aacute; outra ideia
+                        <span aria-hidden="true">&orarr;</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<div th:replace="~{layout/final-banner :: final-banner}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
+<div aria-live="polite" hidden="" id="toast" role="status"></div>
+</body>
+</html>
