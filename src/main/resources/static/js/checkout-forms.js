@@ -13,7 +13,7 @@ document.getElementById('checkout-form')?.addEventListener('submit', async funct
         }
 
         alert(data.message || 'Order finished successfully.');
-        window.location.href = '/';
+        window.location.href = '/order-success';
     } catch (error) {
         alert(error.message || 'Could not finish order.');
     }
