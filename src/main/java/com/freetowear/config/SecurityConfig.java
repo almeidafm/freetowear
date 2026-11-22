@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/account/register").anonymous()
                         .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/about", "/contact", "/privacy", "/terms",
-                                "/how-it-works", "/inspirations", "/shop", "/universes", "/customizer", "/artworks", "/403").permitAll()
+                        "/how-it-works", "/inspirations", "/universes", "/studio", "/artworks", "/policies", "/faq").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products", "/products/**", "/categories", "/categories/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/vendor/**", "/favicon.ico").permitAll()
                         .requestMatchers(HttpMethod.GET, "/password/forgot").permitAll()
