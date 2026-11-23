@@ -119,7 +119,7 @@ public class OrderResponse {
             this.idProduct = customShirt ? "custom-shirt" : item.getProduct().getId();
             this.idVariation = customShirt ? "custom-shirt-" + item.getCustomColor() + "-" + item.getCustomSize() : item.getProductVariation().getId();
             this.productName = customShirt ? "Camiseta personalizada" : item.getProduct().getName();
-            this.imageUrl = customShirt ? item.getCustomizationImage() : item.getProductVariation().getImages() == null
+            this.imageUrl = customShirt ? (item.getCustomizationImage() == null ? null : imageUrlBuilder.apply(item.getCustomizationImage())) : item.getProductVariation().getImages() == null
                     || item.getProductVariation().getImages().isEmpty()
                     ? null
                     : imageUrlBuilder.apply(item.getProductVariation().getImages().get(0).getImagePublicId());

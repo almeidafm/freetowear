@@ -45,6 +45,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class OrderService {
 
+    private String orderImageUrl(String publicId) {
+        return publicId != null && publicId.startsWith("customization/")
+                ? cloudinaryService.buildPrivateUrl(publicId)
+                : cloudinaryService.buildUrl(publicId);
+    }
+
     @Autowired
     private OrderRepository orderRepository;
 
@@ -82,6 +88,8 @@ public class OrderService {
         Order order = orderRepository.findByCustomerIdAndStatus(customerId, OrderStatus.CART)
                 .orElseGet(() -> createCart(customer));
 
+        String uploadedImageId = request.getImage() == null ? null
+                : cloudinaryService.uploadPrivateDataUrl(request.getImage(), "customization");
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setQuantity(1);
@@ -91,8 +99,13 @@ public class OrderService {
         item.setCustomColor(request.getColor());
         item.setCustomSize(request.getSize());
         item.setCustomizationData(request.getCustomization());
-        item.setCustomizationImage(request.getImage());
-        orderItemRepository.save(item);
+        item.setCustomizationImage(uploadedImageId);
+        try {
+            orderItemRepository.save(item);
+        } catch (RuntimeException exception) {
+            if (uploadedImageId != null) cloudinaryService.delete(uploadedImageId);
+            throw exception;
+        }
 
         order.setProductsValue(Optional.ofNullable(order.getProductsValue()).orElse(BigDecimal.ZERO)
                 .add(item.getUnitPrice()));
@@ -309,7 +322,7 @@ public class OrderService {
                                 order,
                                 orderItemRepository.findAllByOrderId(order.getId()),
                                 List.of(),
-                                cloudinaryService::buildUrl
+                                this::orderImageUrl
                         )
                 );
     }
@@ -324,7 +337,7 @@ public class OrderService {
                         order,
                         orderItemRepository.findAllByOrderId(order.getId()),
                         orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
-                        cloudinaryService::buildUrl
+                        this::orderImageUrl
                 ))
                 .toList();
     }
@@ -338,7 +351,7 @@ public class OrderService {
                         order,
                         orderItemRepository.findAllByOrderId(order.getId()),
                         orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
-                        cloudinaryService::buildUrl
+                        this::orderImageUrl
                 ))
                 .toList();
     }
@@ -352,7 +365,7 @@ public class OrderService {
                         order,
                         orderItemRepository.findAllByOrderId(order.getId()),
                         orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
-                        cloudinaryService::buildUrl
+                        this::orderImageUrl
                 ));
     }
 
@@ -410,7 +423,7 @@ public class OrderService {
                 order,
                 orderItemRepository.findAllByOrderId(order.getId()),
                 orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
-                cloudinaryService::buildUrl
+                this::orderImageUrl
         );
     }
 
