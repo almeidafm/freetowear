@@ -51,7 +51,7 @@
   padding: 7px 10px;
   border-radius: 2px;
   background: #fff9;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -74,17 +74,58 @@
 
 .detail-description {
   max-width: 520px;
-  margin: 0 0 22px;
+  margin: 0 0 10px;
   color: #65655e;
   font-size: 16px;
   line-height: 1.7;
 }
 
 .detail-price {
-  display: block;
-  margin-top: 25px;
+  margin-top: 10px;
   font-size: 30px;
   letter-spacing: -.04em;
+}
+
+.detail-price-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.detail-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #77786f;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.detail-rating-stars {
+  display: inline-flex;
+  gap: 0;
+  color: #d1d2c9;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.detail-rating-stars .is-filled {
+  color: #c78d2a;
+}
+
+.detail-rating-count {
+  color: #77786f;
+}
+
+@media (max-width: 560px) {
+  .detail-price-row {
+    align-items: baseline;
+    gap: 12px;
+  }
 }
 
 .detail-copy .small.muted {

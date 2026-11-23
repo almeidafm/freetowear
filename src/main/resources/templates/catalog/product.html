@@ -42,7 +42,17 @@
                 <p class="detail-description" th:text="${product.description}">
                     Descrição do produto
                 </p>
-                <strong class="detail-price" th:text="${product.price}">R$ Preço</strong>
+                <div class="detail-rating"
+                     th:attr="aria-label=|Avaliação média: ${product.ratingAverage} de 5, ${product.ratingCount} avaliações|">
+                    <span class="detail-rating-stars" aria-hidden="true">
+                        <span th:each="star : ${#numbers.sequence(1, 5)}"
+                              th:classappend="${product.ratingAverage >= star} ? 'is-filled' : ''">★</span>
+                    </span>
+                    <span class="detail-rating-count" th:text="|(${product.ratingCount} AVALIAÇÕES)|">(0 AVALIAÇÕES)</span>
+                </div>
+                <div class="detail-price-row">
+                    <strong class="detail-price" th:text="${product.price}">R$ Preço</strong>
+                </div>
                 <p class="small muted">Entrega calculada na finalização. Produção sob demanda.</p>
 
                 <fieldset>
