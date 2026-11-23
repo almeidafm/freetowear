@@ -80,13 +80,21 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/tracking")
-    public String updateOrderTracking(
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> updateOrderTracking(
             @PathVariable String id,
             @RequestParam OrderTrackingStatus trackingStatus,
             @RequestParam(required = false) String trackingCode
     ) {
-        orderService.updateOrderTracking(id, trackingStatus, trackingCode);
-        return "redirect:/admin";
+        try {
+            orderService.updateOrderTracking(id, trackingStatus, trackingCode);
+            return ResponseEntity.ok(Map.of("message", "Tracking event updated successfully"));
+        } catch (RuntimeException exception) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", exception.getMessage() == null
+                            ? "Could not update tracking event"
+                            : exception.getMessage()));
+        }
     }
 
     @PostMapping("/cancel")
