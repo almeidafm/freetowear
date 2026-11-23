@@ -18,5 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     List<Order> findByCustomer(Customer customer);
     List<Order> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     List<Order> findByCreatedAtGreaterThanEqual(LocalDateTime start);
+    List<Order> findAllByStatusInOrderByCreatedAtDesc(List<OrderStatus> statuses);
     boolean existsByTrackingCodeStartingWith(String prefix);
 }

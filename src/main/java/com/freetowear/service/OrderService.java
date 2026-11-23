@@ -299,6 +299,20 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    public List<OrderResponse> getPaidOrdersForAdmin() {
+        return orderRepository.findAllByStatusInOrderByCreatedAtDesc(
+                        List.of(OrderStatus.PAID, OrderStatus.SHIPPED))
+                .stream()
+                .map(order -> new OrderResponse(
+                        order,
+                        orderItemRepository.findAllByOrderId(order.getId()),
+                        orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
+                        cloudinaryService::buildUrl
+                ))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public Optional<OrderResponse> getOrder(String orderId, String customerId) {
         return orderRepository.findById(orderId)
                 .filter(order -> order.getCustomer().getId().equals(customerId))
@@ -354,6 +368,19 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         return new OrderResponse(order);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse getAdminOrderById(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        return new OrderResponse(
+                order,
+                orderItemRepository.findAllByOrderId(order.getId()),
+                orderTrackingRepository.findByOrderIdOrderByOccurredAtAsc(order.getId()),
+                cloudinaryService::buildUrl
+        );
     }
 
     public OrderResponse getOrderById(String orderId, String customerId) {
