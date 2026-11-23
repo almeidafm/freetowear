@@ -430,9 +430,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const addCreationToCart = async (redirectCheckout) => {
     const customization = customizationSnapshot();
-    const thumbnail = customization.artwork.front?.dataUrl
+    const artworkDataUrl = customization.artwork.front?.dataUrl
       || customization.artwork.back?.dataUrl
-      || '/img/favicon.svg';
+      || null;
+    const thumbnail = artworkDataUrl || '/img/favicon.svg';
     const item = {
       idProduct: 'custom-shirt',
       idVariation: `custom-shirt-${customization.color}-${customization.size}`,
@@ -461,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
           color: customization.color,
           size: customization.size,
           customization: JSON.stringify(customization),
-          image: thumbnail
+          image: artworkDataUrl
         })
       });
       if (response.ok) {

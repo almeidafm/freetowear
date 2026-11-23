@@ -123,9 +123,9 @@ public class OrderResponse {
                     || item.getProductVariation().getImages().isEmpty()
                     ? null
                     : imageUrlBuilder.apply(item.getProductVariation().getImages().get(0).getImagePublicId());
-            this.customizationImageUrl = item.getCustomerCustomizationId() == null
+            this.customizationImageUrl = item.getCustomizationImage() == null
                     ? null
-                    : imageUrlBuilder.apply(item.getCustomerCustomizationId());
+                    : imageUrlBuilder.apply(item.getCustomizationImage());
             this.description = item.getDescription();
             this.color = customShirt ? item.getCustomColor() : item.getProductVariation().getColor();
             this.size = customShirt ? item.getCustomSize() : item.getProductVariation().getSize().name();
