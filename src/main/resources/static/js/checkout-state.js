@@ -1,5 +1,3 @@
-let currentStep = 1;
-
 let selectedAddressId = null;
 
 let selectedAddress = null;
