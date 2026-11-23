@@ -223,6 +223,7 @@
                         <label class="form-field span-two">
                             Cupom
                             <input
+                                    id="coupon"
                                     name="cupom"
                                     autocomplete="FALSE"
                                     maxlength="140"
@@ -315,24 +316,17 @@
                 <h2>Resumo do pedido</h2>
 
                 <div id="checkout-summary">
+                    <div class="summary-line"><span>Produtos</span><strong>R$ 0,00</strong></div>
                     <div class="summary-line">
-                        <span>Produtos</span>
-                        <strong>R$&nbsp;119,90</strong>
+                        <span id="summary-shipping-label">Entrega</span>
+                        <strong id="summary-shipping-price">R$ 0,00</strong>
                     </div>
+                    <div class="summary-line"><span>Desconto</span><strong>R$ 0,00</strong></div>
+                    <div class="summary-line grand-total"><span>Total</span><strong>R$ 0,00</strong></div>
 
-                    <div class="summary-line">
-                        <span>Entrega expressa</span>
-                        <strong>R$&nbsp;29,90</strong>
-                    </div>
-
-                    <div class="summary-line grand-total">
-                        <span>Total</span>
-                        <strong>R$&nbsp;149,80</strong>
-                    </div>
-
-                    <p class="small muted">
+                    <p class="small muted" id="summary-delivery-time">
                         Produção: até 7 dias úteis.<br>
-                        Entrega: 2 a 5 dias úteis após a produção.
+                        Entrega: selecione o endereço.
                     </p>
 
                     <p class="small demo-text">

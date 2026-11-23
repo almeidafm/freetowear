@@ -17,6 +17,51 @@ function formatCurrency(value) {
     }).format(value || 0);
 }
 
+function parseCurrency(value) {
+    if (!value) return 0;
+    const normalized = String(value)
+        .replace(/[^\d,.-]/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.');
+    const number = Number(normalized);
+    return Number.isFinite(number) ? number : 0;
+}
+
+function renderCheckoutSummary() {
+    const summary = document.getElementById('checkout-summary');
+    if (!summary) return;
+
+    const products = [...document.querySelectorAll('.bag-row')]
+        .reduce((total, row) => total + parseCurrency(row.querySelector('strong')?.textContent), 0);
+
+    const selectedShipping = document.querySelector('input[name="shippingMethod"]:checked');
+    const shippingType = selectedShipping?.value;
+    const shippingPriceElement = document.getElementById(`${shippingType}-delivery-price`);
+    const shippingTimeElement = document.getElementById(`${shippingType}-delivery-time`);
+    const shippingPrice = parseCurrency(shippingPriceElement?.textContent);
+    const shippingLabel = shippingType === 'standard' ? 'Entrega padrão' : 'Entrega expressa';
+
+    let discount = 0;
+    if (appliedCoupon) {
+        const couponValue = Number(appliedCoupon.discountValue) || 0;
+        discount = appliedCoupon.discountType === 'PERCENTAGE'
+            ? products * couponValue / 100
+            : couponValue;
+        discount = Math.min(products, discount);
+    }
+
+    const total = Math.max(0, products + shippingPrice - discount);
+    const values = summary.querySelectorAll('.summary-line strong');
+    values[0].textContent = formatCurrency(products);
+    values[1].textContent = shippingPrice ? formatCurrency(shippingPrice) : 'Selecione o endereço';
+    values[2].textContent = discount ? `- ${formatCurrency(discount)}` : formatCurrency(0);
+    values[3].textContent = formatCurrency(total);
+    document.getElementById('summary-shipping-label').textContent = shippingLabel;
+    const shippingTime = shippingTimeElement?.textContent || 'Selecione o endereço.';
+    document.getElementById('summary-delivery-time').innerHTML =
+        `Produção: até 7 dias úteis.<br>Entrega: ${shippingTime.replace(/^Receba em /, '')}`;
+}
+
 function escapeHtml(value) {
     if (value == null) {
         return '';
@@ -89,6 +134,7 @@ function updateShippingOptions(state) {
         document.getElementById(`${type}-delivery-time`).textContent =
             `Receba em ${daysMin} a ${daysMax} dias úteis após a produção.`;
     });
+    renderCheckoutSummary();
 }
 
 document.querySelectorAll('input[name="idAddress"]').forEach(input => {
@@ -98,6 +144,11 @@ document.querySelectorAll('input[name="idAddress"]').forEach(input => {
     });
 });
 document.getElementById('state')?.addEventListener('change', event => updateShippingOptions(event.target.value));
+document.querySelectorAll('input[name="shippingMethod"]').forEach(input => {
+    input.addEventListener('change', renderCheckoutSummary);
+});
+document.getElementById('coupon')?.addEventListener('input', renderCheckoutSummary);
+renderCheckoutSummary();
 const initialAddress = document.querySelector('input[name="idAddress"]:checked');
 if (initialAddress) {
     const address = initialAddress.closest('[data-state]');
@@ -297,53 +348,6 @@ function clearNewAddressForm() {
     document.getElementById('neighborhood').value = '';
     document.getElementById('city').value = '';
     document.getElementById('state').value = '';
-}
-
-async function loadCurrentCart() {
-    try {
-        const couponInput = document.getElementById('coupon');
-        const couponCode = couponInput ? couponInput.value.trim() : '';
-
-        if (couponCode && (!appliedCoupon || (appliedCoupon.code && appliedCoupon.code.toLowerCase() !== couponCode.toLowerCase()))) {
-            try {
-                const couponRes = await fetch(`/order/coupon?code=${encodeURIComponent(couponCode)}`, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                if (couponRes.ok) {
-                    appliedCoupon = await couponRes.json();
-                } else {
-                    appliedCoupon = null;
-                }
-            } catch (e) {
-                console.error('Error fetching coupon:', e);
-            }
-        } else if (!couponCode) {
-            appliedCoupon = null;
-        }
-
-        const response = await fetch('/order/current', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Unable to load cart.');
-        }
-
-        currentCart = await response.json();
-        renderReview();
-
-    } catch (error) {
-        console.error('Error loading cart:', error);
-
-        document.getElementById('review-content').innerHTML = `
-            <div class="error-message">
-                Could not load order information.
-            </div>
-        `;
-    }
 }
 
 function renderReview() {
