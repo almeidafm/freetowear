@@ -170,6 +170,16 @@ public class WebController {
         return "admin/admin-dashboard";
     }
 
+    @GetMapping("/admin/orders")
+    public String adminOrders() {
+        return "admin/admin-orders";
+    }
+
+    @GetMapping("/admin/orders/{id}")
+    public String adminOrderDetails() {
+        return "admin/admin-order-detail";
+    }
+
     @GetMapping("/orders")
     public String orders(
             @AuthenticationPrincipal CustomerDetails customerDetails,

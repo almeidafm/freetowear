@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeToWear — Pedidos pagos</title>
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-pages.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+    <link rel="icon" th:href="@{/img/favicon.svg}" type="image/svg+xml">
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+<main class="admin-page"><div class="admin-shell">
+    <header class="admin-heading"><div><p class="eyebrow">Administração / vendas</p><h1>Pedidos pagos</h1></div><p>Todos os pedidos pagos, enviados ou entregues em um só lugar.</p></header>
+    <section class="admin-panel"><div id="orders" class="admin-empty">Carregando pedidos...</div></section>
+</div></main>
+<div th:replace="~{layout/footer :: footer}"></div>
+<script th:src="@{/js/admin-orders.js}"></script>
+</body>
+</html>

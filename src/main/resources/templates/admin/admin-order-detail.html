@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeToWear — Detalhe do pedido</title>
+    <link rel="stylesheet" th:href="@{/css/colors.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-pages.css}">
+    <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+<main class="admin-page"><div class="admin-shell">
+    <a class="admin-back" th:href="@{/admin/orders}">← Voltar para pedidos</a>
+    <header class="admin-heading"><div><p class="eyebrow">Administração / venda</p><h1>Detalhe do pedido</h1></div></header>
+    <section class="admin-panel"><div id="order-detail" class="admin-detail">Carregando pedido...</div></section>
+    <section class="admin-panel admin-tracking-panel">
+        <div class="admin-detail">
+            <h3>Atualizar rastreamento</h3>
+            <form id="tracking-form" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div class="admin-tracking-fields">
+                    <label>Próximo evento
+                        <select name="trackingStatus" id="tracking-status" required></select>
+                    </label>
+                    <label>Código de rastreio
+                        <input type="text" name="trackingCode" placeholder="Opcional">
+                    </label>
+                    <button class="button lime" type="submit">Salvar evento</button>
+                </div>
+            </form>
+            <p id="tracking-message" class="muted" hidden></p>
+        </div>
+    </section>
+</div></main>
+<div th:replace="~{layout/footer :: footer}"></div>
+<script th:src="@{/js/admin-order-detail.js}"></script>
+</body>
+</html>
