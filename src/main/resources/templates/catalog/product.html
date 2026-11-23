@@ -103,6 +103,36 @@
             </div>
         </div>
 
+        <section class="product-reviews" aria-labelledby="product-reviews-title">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">O que dizem por aí</span>
+                    <h2 id="product-reviews-title">Avaliações de quem <em>já escolheu.</em></h2>
+                </div>
+                <span class="reviews-total" th:text="|${product.ratingCount} avaliações|">0 avaliações</span>
+            </div>
+
+            <div class="reviews-grid" th:if="${reviews != null and !reviews.isEmpty()}">
+                <article class="review-card" th:each="review : ${reviews}">
+                    <div class="review-card-top">
+                        <strong th:text="${review.customerName}">Cliente</strong>
+                        <time th:datetime="${review.createdAt}"
+                              th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">01/01/2026</time>
+                    </div>
+                    <div class="review-stars" th:attr="aria-label=|${review.rating} de 5 estrelas|">
+                        <span th:each="star : ${#numbers.sequence(1, 5)}"
+                              th:classappend="${review.rating >= star} ? 'is-filled' : ''"
+                              aria-hidden="true">★</span>
+                    </div>
+                    <p th:if="${review.text != null and !review.text.isBlank()}" th:text="${review.text}">Comentário do cliente.</p>
+                </article>
+            </div>
+
+            <p class="reviews-empty" th:if="${reviews == null or reviews.isEmpty()}">
+                Este produto ainda não recebeu avaliações. Seja o primeiro a contar sua experiência.
+            </p>
+        </section>
+
         <div class="related">
             <div class="section-heading">
                 <h2>Seu próximo <em>favorito.</em></h2>
