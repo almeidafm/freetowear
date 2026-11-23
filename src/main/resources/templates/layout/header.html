@@ -53,7 +53,6 @@
                     <span sec:authorize="isAuthenticated()" class="account-avatar" aria-hidden="true"
                           th:text="${#strings.toUpperCase(#authentication.principal.name.substring(0, 2))}">US</span>
                     <span class="account-tooltip" role="status">
-                    <span aria-hidden="true">👤</span>
                     <span sec:authorize="isAnonymous()">Visitante</span>
                     <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.name}">User</span>
                 </span>
