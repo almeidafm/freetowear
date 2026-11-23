@@ -47,7 +47,22 @@
 
             <div class="auth-form-group">
                 <label for="password">Senha</label>
-                <input id="password" type="password" th:field="*{password}" placeholder="••••••••" required>
+                <div class="password-input-wrapper">
+                    <input id="password" type="password" th:field="*{password}" placeholder="••••••••" required>
+                    <button type="button" class="password-toggle" id="passwordToggle" aria-label="Mostrar senha" aria-pressed="false">
+                        <span aria-hidden="true">◉</span>
+                    </button>
+                </div>
+                <div class="password-requirements" id="passwordRequirements" aria-live="polite">
+                    <span class="password-requirements-title">Sua senha precisa ter:</span>
+                    <ul>
+                        <li data-requirement="length"><span class="requirement-icon" aria-hidden="true">○</span> pelo menos 8 caracteres</li>
+                        <li data-requirement="uppercase"><span class="requirement-icon" aria-hidden="true">○</span> uma letra maiúscula</li>
+                        <li data-requirement="lowercase"><span class="requirement-icon" aria-hidden="true">○</span> uma letra minúscula</li>
+                        <li data-requirement="number"><span class="requirement-icon" aria-hidden="true">○</span> um número</li>
+                        <li data-requirement="special"><span class="requirement-icon" aria-hidden="true">○</span> um caractere especial</li>
+                    </ul>
+                </div>
                 <div class="auth-field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
 

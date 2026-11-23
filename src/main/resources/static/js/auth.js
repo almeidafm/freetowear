@@ -1,4 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const password = document.getElementById("password");
+    const passwordRequirements = document.getElementById("passwordRequirements");
+
+    if (password && passwordRequirements) {
+        const rules = {
+            length: value => value.length >= 8,
+            uppercase: value => /[A-Z]/.test(value),
+            lowercase: value => /[a-z]/.test(value),
+            number: value => /\d/.test(value),
+            special: value => /[^a-zA-Z\d]/.test(value)
+        };
+
+        const updatePasswordRequirements = () => {
+            const value = password.value;
+            Object.entries(rules).forEach(([name, test]) => {
+                const item = passwordRequirements.querySelector(`[data-requirement="${name}"]`);
+                const valid = test(value);
+                item.classList.toggle("is-valid", valid);
+                item.querySelector(".requirement-icon").textContent = valid ? "✓" : "○";
+            });
+        };
+
+        password.addEventListener("input", updatePasswordRequirements);
+        updatePasswordRequirements();
+    }
+
+    const passwordToggle = document.getElementById("passwordToggle");
+    if (password && passwordToggle) {
+        passwordToggle.addEventListener("click", () => {
+            const showingPassword = password.type === "text";
+            password.type = showingPassword ? "password" : "text";
+            passwordToggle.setAttribute("aria-label", showingPassword ? "Mostrar senha" : "Ocultar senha");
+            passwordToggle.setAttribute("aria-pressed", String(!showingPassword));
+            passwordToggle.querySelector("span").textContent = showingPassword ? "◉" : "◌";
+        });
+    }
+
     const termsLink = document.getElementById("termsLink");
     const termsModal = document.getElementById("termsModal");
     const closeTermsModal = document.getElementById("closeTermsModal");
