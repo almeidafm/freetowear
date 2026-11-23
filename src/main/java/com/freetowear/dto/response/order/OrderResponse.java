@@ -107,16 +107,19 @@ public class OrderResponse {
         private final Integer quantity;
         private final BigDecimal unitPrice;
         private final BigDecimal subtotal;
+        private final Boolean customShirt;
+        private final String customization;
 
         public OrderItemResponse(OrderItem item) {
             this(item, productId -> null);
         }
 
         public OrderItemResponse(OrderItem item, Function<String, String> imageUrlBuilder) {
-            this.idProduct = item.getProduct().getId();
-            this.idVariation = item.getProductVariation().getId();
-            this.productName = item.getProduct().getName();
-            this.imageUrl = item.getProductVariation().getImages() == null
+            this.customShirt = Boolean.TRUE.equals(item.getCustomShirt());
+            this.idProduct = customShirt ? "custom-shirt" : item.getProduct().getId();
+            this.idVariation = customShirt ? "custom-shirt-" + item.getCustomColor() + "-" + item.getCustomSize() : item.getProductVariation().getId();
+            this.productName = customShirt ? "Camiseta personalizada" : item.getProduct().getName();
+            this.imageUrl = customShirt ? item.getCustomizationImage() : item.getProductVariation().getImages() == null
                     || item.getProductVariation().getImages().isEmpty()
                     ? null
                     : imageUrlBuilder.apply(item.getProductVariation().getImages().get(0).getImagePublicId());
@@ -124,9 +127,10 @@ public class OrderResponse {
                     ? null
                     : imageUrlBuilder.apply(item.getCustomerCustomizationId());
             this.description = item.getDescription();
-            this.color = item.getProductVariation().getColor();
-            this.size = item.getProductVariation().getSize().name();
+            this.color = customShirt ? item.getCustomColor() : item.getProductVariation().getColor();
+            this.size = customShirt ? item.getCustomSize() : item.getProductVariation().getSize().name();
             this.variation = this.color + " / " + this.size;
+            this.customization = item.getCustomizationData();
             this.quantity = item.getQuantity();
             this.unitPrice = item.getUnitPrice();
             this.subtotal = item.getSubtotal();

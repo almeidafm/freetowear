@@ -305,6 +305,20 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.hidden = false;
     window.setTimeout(() => { toast.hidden = true; }, 3500);
   };
+  const optimizeArtwork = (dataUrl, callback) => {
+    const image = new Image();
+    image.onload = () => {
+      const maxSize = 900;
+      const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/webp', .82));
+    };
+    image.onerror = () => callback(dataUrl);
+    image.src = dataUrl;
+  };
   const studio = new ShirtStudio(container, state, {
     status: (kind, message) => {
       overlay.hidden = kind === 'ready' || kind === 'demo';
@@ -354,10 +368,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      state[state.side].dataUrl = reader.result;
       document.getElementById('art-name').textContent = file.name;
       document.querySelectorAll('[data-range], #reset-art').forEach(control => control.disabled = false);
-      studio.setArtwork(state.side, reader.result);
+      optimizeArtwork(reader.result, optimizedDataUrl => {
+        state[state.side].dataUrl = optimizedDataUrl;
+        studio.setArtwork(state.side, optimizedDataUrl);
+      });
     };
     reader.readAsDataURL(file);
   });
@@ -387,4 +403,94 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     studio.updateDecal(state.side);
   });
+
+  // O estúdio é um produto configurável: guarde uma cópia do estado no item
+  // do carrinho, em vez de depender do estado atual da página.
+  const customizationSnapshot = () => ({
+    color: state.colorName,
+    colorHex: state.color,
+    size: state.size,
+    side: state.side,
+    orientation: [...state.orientation],
+    artwork: ['front', 'back'].reduce((result, side) => {
+      const art = state[side];
+      if (art.dataUrl) {
+        result[side] = {
+          dataUrl: art.dataUrl,
+          x: art.x,
+          y: art.y,
+          width: art.width,
+          rotation: art.rotation,
+          aspect: art.aspect
+        };
+      }
+      return result;
+    }, {})
+  });
+
+  const addCreationToCart = async (redirectCheckout) => {
+    const customization = customizationSnapshot();
+    const thumbnail = customization.artwork.front?.dataUrl
+      || customization.artwork.back?.dataUrl
+      || '/img/favicon.svg';
+    const item = {
+      idProduct: 'custom-shirt',
+      idVariation: `custom-shirt-${customization.color}-${customization.size}`,
+      productName: 'Camiseta personalizada',
+      name: 'Camiseta personalizada',
+      price: 99.90,
+      imageUrl: thumbnail,
+      image: thumbnail,
+      customizationImageUrl: thumbnail,
+      customization,
+      color: customization.color,
+      size: customization.size,
+      variation: `${customization.color} / ${customization.size}`,
+      quantity: 1
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const headers = { 'Content-Type': 'application/json' };
+    if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+    try {
+      const response = await fetch('/order/custom-shirt', {
+        method: 'POST', headers, credentials: 'same-origin',
+        body: JSON.stringify({
+          color: customization.color,
+          size: customization.size,
+          customization: JSON.stringify(customization),
+          image: thumbnail
+        })
+      });
+      if (response.ok) {
+        if (redirectCheckout) window.location.href = '/checkout';
+        else window.FtwCart?.open();
+        return;
+      }
+    } catch (_) { /* visitante: usa o carrinho local abaixo */ }
+
+    if (!window.FtwCart?.add) {
+      notice('Não foi possível abrir o carrinho.');
+      return;
+    }
+    try {
+      window.FtwCart.add(item);
+    } catch (error) {
+      if (error.name === 'QuotaExceededError') {
+        notice('A imagem é muito grande para ser salva no carrinho. Tente outra imagem menor.');
+        return;
+      }
+      throw error;
+    }
+    if (redirectCheckout) {
+      window.location.href = '/checkout';
+    } else {
+      window.FtwCart.open();
+    }
+  };
+
+  document.getElementById('add-custom')?.addEventListener('click', () => addCreationToCart(false));
+  document.getElementById('buy-custom')?.addEventListener('click', () => addCreationToCart(true));
 });

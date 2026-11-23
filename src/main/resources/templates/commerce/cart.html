@@ -32,7 +32,9 @@
                     <a class="button dark" th:href="@{/products}">Ver camisetas</a>
                 </div>
                 <article class=bag-row th:each="item : ${cart?.items}">
-                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.productName}">
+                    <img th:if="${item.customizationImageUrl != null or item.imageUrl != null}"
+                         th:src="${item.customizationImageUrl != null ? item.customizationImageUrl : item.imageUrl}"
+                         th:alt="${item.productName}">
                     <div>
                         <h3 th:text="${item.productName}">Produto</h3>
                         <p th:text="${item.variation}">Cor / Tamanho</p>

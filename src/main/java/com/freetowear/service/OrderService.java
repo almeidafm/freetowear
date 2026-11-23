@@ -40,6 +40,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Objects;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class OrderService {
@@ -71,7 +72,37 @@ public class OrderService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Transactional
+    public void addCustomShirt(String customerId, AddCustomShirtToCartRequest request) throws IOException {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        Order order = orderRepository.findByCustomerIdAndStatus(customerId, OrderStatus.CART)
+                .orElseGet(() -> createCart(customer));
+
+        OrderItem item = new OrderItem();
+        item.setOrder(order);
+        item.setQuantity(1);
+        item.setUnitPrice(new BigDecimal("99.90"));
+        item.setSubtotal(item.getUnitPrice());
+        item.setCustomShirt(true);
+        item.setCustomColor(request.getColor());
+        item.setCustomSize(request.getSize());
+        item.setCustomizationData(request.getCustomization());
+        item.setCustomizationImage(request.getImage());
+        orderItemRepository.save(item);
+
+        order.setProductsValue(Optional.ofNullable(order.getProductsValue()).orElse(BigDecimal.ZERO)
+                .add(item.getUnitPrice()));
+        orderRepository.save(order);
+    }
+
     private boolean isMatchingCartItem(OrderItem item, String productId, String variationId) {
+        if (Boolean.TRUE.equals(item.getCustomShirt()) || item.getProduct() == null || item.getProductVariation() == null) {
+            return false;
+        }
         return item.getProduct().getId().equals(productId)
                 && item.getProductVariation().getId().equals(variationId);
     }

@@ -25,7 +25,7 @@
     if (items) {
       items.innerHTML = entries.length ? entries.map((item, index) => `
         <article class="cart-item">
-          <img src="${item.imageUrl || item.image || '/img/favicon.svg'}" alt="${item.productName || item.name || 'Camiseta'}" width="70" height="70">
+          <img src="${item.customizationImageUrl || item.imageUrl || item.image || '/img/favicon.svg'}" alt="${item.productName || item.name || 'Camiseta'}" width="70" height="70">
           <div class="cart-item-body">
             <h3>${item.productName || item.name || 'Camiseta'}</h3>
             <p class="small muted">${item.variation || `Tam: ${item.size || 'M'}`} · Qtd: ${item.quantity || 1}</p>
@@ -49,6 +49,12 @@
   }
 
   async function loadCart() {
+    // Criações do estúdio ficam no carrinho local. Não substitua esse estado
+    // por uma resposta do servidor ao abrir o drawer logo após adicioná-las.
+    if (!serverCart && cart.some(item => item.customization)) {
+      render();
+      return;
+    }
     try {
       const response = await fetch('/order/current', { headers: { Accept: 'application/json' } });
       if (!response.ok) throw new Error('No server cart');
@@ -81,8 +87,27 @@
   }
 
   function add(item) {
+    // Produtos personalizados do estúdio usam o carrinho local. Se a API
+    // acabou de carregar um carrinho persistido, converta seus itens antes de
+    // adicionar para que cart continue sendo um array.
+    if (!Array.isArray(cart)) cart = Array.isArray(cart?.items) ? [...cart.items] : [];
     cart.push({ ...item, quantity: Number(item.quantity) || 1 });
-    localStorage.setItem(storageKey, JSON.stringify(cart));
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(cart));
+    } catch (error) {
+      // Remove personalizações antigas que podem ter sido salvas antes da
+      // compactação das imagens e tenta novamente sem apagar produtos comuns.
+      cart.pop();
+      if (error.name !== 'QuotaExceededError') throw error;
+      cart = cart.filter(existingItem => !existingItem.customization);
+      cart.push({ ...item, quantity: Number(item.quantity) || 1 });
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(cart));
+      } catch (retryError) {
+        cart.pop();
+        throw retryError;
+      }
+    }
     serverCart = false;
     render();
   }

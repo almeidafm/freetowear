@@ -23,11 +23,11 @@ public class OrderItem extends BaseEntity {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "variation_id", nullable = false)
+    @JoinColumn(name = "variation_id", nullable = true)
     private ProductVariation productVariation;
 
     @Column
@@ -35,6 +35,21 @@ public class OrderItem extends BaseEntity {
 
     @Column
     private String customerCustomizationId;
+
+    @Column(nullable = false)
+    private Boolean customShirt = false;
+
+    @Column(length = 30)
+    private String customColor;
+
+    @Column(length = 10)
+    private String customSize;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String customizationData;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String customizationImage;
 
     @Column(nullable = false)
     private Integer quantity;

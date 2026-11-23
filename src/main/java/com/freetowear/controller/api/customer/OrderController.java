@@ -52,6 +52,15 @@ public class OrderController {
         return ResponseEntity.ok(Map.of("message", "Item added to cart successfully"));
     }
 
+    @PostMapping("/custom-shirt")
+    public ResponseEntity<?> addCustomShirt(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            @Valid @org.springframework.web.bind.annotation.RequestBody AddCustomShirtToCartRequest request
+    ) throws IOException {
+        orderService.addCustomShirt(customerDetails.getId(), request);
+        return ResponseEntity.ok(Map.of("message", "Custom shirt added to cart successfully"));
+    }
+
     @PostMapping("/current/finish")
     public ResponseEntity<?> finishCurrentOrder(
             @AuthenticationPrincipal CustomerDetails customerDetails,
