@@ -87,6 +87,9 @@ document.getElementById('checkout-form')?.addEventListener('submit', async funct
     event.preventDefault();
 
     try {
+        // Aguarda a validação automática antes de enviar o pedido.
+        await couponValidationPromise;
+
         const response = await fetch(this.action, {
             method: 'POST',
             body: new FormData(this)
@@ -147,7 +150,63 @@ document.getElementById('state')?.addEventListener('change', event => updateShip
 document.querySelectorAll('input[name="shippingMethod"]').forEach(input => {
     input.addEventListener('change', renderCheckoutSummary);
 });
-document.getElementById('coupon')?.addEventListener('input', renderCheckoutSummary);
+
+let couponValidationTimer = null;
+let couponValidationRequest = 0;
+let couponValidationPromise = Promise.resolve();
+
+function setCouponFeedback(message, isError = false) {
+    const feedback = document.getElementById('coupon-feedback');
+    if (!feedback) return;
+    feedback.textContent = message;
+    feedback.classList.toggle('form-error', isError);
+}
+
+async function validateCouponAutomatically(value) {
+    const requestId = ++couponValidationRequest;
+    const couponInput = document.getElementById('coupon');
+    const couponIdInput = document.getElementById('idCoupon');
+    const code = value.trim();
+
+    appliedCoupon = null;
+    if (couponIdInput) couponIdInput.value = '';
+    setCouponFeedback('');
+    renderCheckoutSummary();
+
+    if (code.length < 5) return;
+
+    setCouponFeedback('Validando cupom...');
+    try {
+        const response = await fetch(`/order/coupon?code=${encodeURIComponent(code)}`, {
+            headers: { Accept: 'application/json' }
+        });
+        const data = await response.json().catch(() => ({}));
+        if (requestId !== couponValidationRequest || couponInput?.value.trim() !== code) return;
+        if (!response.ok) throw new Error(data.message || 'Cupom inválido.');
+
+        appliedCoupon = data;
+        // O backend aceita o código e assim evita depender do ID retornado pela API.
+        if (couponIdInput) couponIdInput.value = data.code || code;
+        setCouponFeedback('Cupom aplicado.');
+        renderCheckoutSummary();
+    } catch (error) {
+        if (requestId !== couponValidationRequest) return;
+        setCouponFeedback(error.message || 'Cupom inválido.', true);
+        renderCheckoutSummary();
+    }
+}
+
+document.getElementById('coupon')?.addEventListener('input', event => {
+    clearTimeout(couponValidationTimer);
+    const value = event.target.value;
+    couponValidationPromise = new Promise(resolve => {
+        couponValidationTimer = setTimeout(async () => {
+            await validateCouponAutomatically(value);
+            resolve();
+        }, 350);
+    });
+    renderCheckoutSummary();
+});
 renderCheckoutSummary();
 const initialAddress = document.querySelector('input[name="idAddress"]:checked');
 if (initialAddress) {

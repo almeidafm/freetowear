@@ -319,6 +319,17 @@ document.addEventListener('DOMContentLoaded', () => {
     image.onerror = () => callback(dataUrl);
     image.src = dataUrl;
   };
+  const loadArtworkAsDataUrl = async (url) => {
+    const response = await fetch(url, { credentials: 'same-origin' });
+    if (!response.ok) throw new Error(`Could not load artwork (${response.status})`);
+    const blob = await response.blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error('Could not read artwork'));
+      reader.readAsDataURL(blob);
+    });
+  };
   const studio = new ShirtStudio(container, state, {
     status: (kind, message) => {
       overlay.hidden = kind === 'ready' || kind === 'demo';
@@ -381,11 +392,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectedArtFile = artworkFiles[selectedArt];
   if (selectedArtFile) {
     const dataUrl = `/img/${selectedArtFile}`;
-    state.front.dataUrl = dataUrl;
     state.side = 'front';
     document.getElementById('art-name').textContent = selectedArtFile;
     document.querySelectorAll('[data-range], #reset-art').forEach(control => control.disabled = false);
-    studio.setArtwork('front', dataUrl);
+    loadArtworkAsDataUrl(dataUrl)
+      .then(loadedDataUrl => {
+        state.front.dataUrl = loadedDataUrl;
+        studio.setArtwork('front', loadedDataUrl);
+      })
+      .catch(() => {
+        state.front.dataUrl = dataUrl;
+        studio.setArtwork('front', dataUrl);
+        notice('Não foi possível preparar a arte para o carrinho.');
+      });
   }
   document.querySelectorAll('[data-range]').forEach(input => input.addEventListener('input', () => {
     const side = state[state.side];

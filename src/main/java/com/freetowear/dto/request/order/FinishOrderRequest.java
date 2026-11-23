@@ -21,6 +21,9 @@ public class FinishOrderRequest {
 
     private String idCoupon;
 
+    // Código digitado no checkout; mantido para garantir o binding do formulário.
+    private String cupom;
+
     private String shippingMethod;
 
     @Enumerated(EnumType.STRING)

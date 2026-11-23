@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClient;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.math.BigDecimal;
 
 @Service
 public class MercadoPagoService {
@@ -48,15 +49,18 @@ public class MercadoPagoService {
         Payment payment = paymentRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new BusinessException("Pagamento do pedido nao encontrado"));
 
-        List<Map<String, Object>> items = orderItemRepository.findAllByOrderId(orderId).stream().map(item -> {
-            Map<String, Object> value = new LinkedHashMap<>();
-            value.put("id", item.getId());
-            value.put("title", item.getProduct() != null ? item.getProduct().getName() : "Camiseta personalizada");
-            value.put("quantity", item.getQuantity());
-            value.put("unit_price", item.getUnitPrice());
-            value.put("currency_id", "BRL");
-            return value;
-        }).toList();
+        // O Mercado Pago recebe o valor líquido dos produtos; o desconto não pode
+        // ser enviado como item negativo, então consolidamos os produtos em um item.
+        BigDecimal productsValue = order.getProductsValue() != null ? order.getProductsValue() : BigDecimal.ZERO;
+        BigDecimal discount = order.getDiscountValue() != null ? order.getDiscountValue() : BigDecimal.ZERO;
+        BigDecimal discountedProducts = productsValue.subtract(discount).max(BigDecimal.ZERO);
+        Map<String, Object> products = new LinkedHashMap<>();
+        products.put("id", "products-" + orderId);
+        products.put("title", discount.signum() > 0 ? "Produtos com desconto" : "Produtos");
+        products.put("quantity", 1);
+        products.put("unit_price", discountedProducts);
+        products.put("currency_id", "BRL");
+        List<Map<String, Object>> items = new java.util.ArrayList<>(List.of(products));
         if (order.getShippingPrice() != null && order.getShippingPrice().signum() > 0) {
             Map<String, Object> shipping = new LinkedHashMap<>();
             shipping.put("id", "shipping-" + orderId);

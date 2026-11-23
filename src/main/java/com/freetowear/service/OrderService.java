@@ -271,8 +271,12 @@ public class OrderService {
         order.setDeliveryAddress(address);
         order.setShippingPrice(calculateShippingPrice(address.getState(), request.getShippingMethod()));
 
-        if (request.getIdCoupon() != null && !request.getIdCoupon().isBlank()) {
-            Coupon coupon = getValidCoupon(customerId, request.getIdCoupon());
+        String couponCode = request.getIdCoupon();
+        if (couponCode == null || couponCode.isBlank()) {
+            couponCode = request.getCupom();
+        }
+        if (couponCode != null && !couponCode.isBlank()) {
+            Coupon coupon = getValidCoupon(customerId, couponCode);
             order.setCoupon(coupon);
         } else {
             order.setCoupon(null);
