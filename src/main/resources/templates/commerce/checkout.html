@@ -75,8 +75,8 @@
                         <label class="form-field">
                             CEP
                             <input id="cep" name="cep" th:value="${form?.cep}" autocomplete="postal-code"
-                                   maxlength="9" inputmode="numeric" pattern="[0-9]{5}-?[0-9]{3}"
-                                   placeholder="00000-000" required>
+                                   maxlength="8" inputmode="numeric" pattern="[0-9]{8}"
+                                   placeholder="00000000" required>
                         </label>
 
                         <label class="form-field span-two">
