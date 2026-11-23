@@ -287,6 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const toast = document.getElementById('toast');
   const state = {
     color: '#ffffff',
+    colorName: 'WHITE',
+    size: 'M',
     side: 'front',
     orientation: [0, 0, 0],
     front: { dataUrl: null, x: 0, y: 0, width: 42, rotation: 0, aspect: 1 },
@@ -310,6 +312,30 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     notice
   });
+
+  const colorValues = {
+    WHITE: '#ffffff', BLACK: '#18191d', RED: '#d64545', BLUE: '#3b82c4',
+    GREEN: '#4f8a5b', YELLOW: '#e5b93f', ORANGE: '#e9823b', PINK: '#df7fa1',
+    PURPLE: '#8664ad', GRAY: '#858585', BROWN: '#8b5e3c', BEIGE: '#d7c3a5'
+  };
+  document.querySelectorAll('[data-color]').forEach(button => button.addEventListener('click', () => {
+    state.colorName = button.dataset.color;
+    state.color = colorValues[state.colorName];
+    document.querySelectorAll('[data-color]').forEach(item => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', active);
+    });
+    studio.setColor(state.color);
+  }));
+  document.querySelectorAll('[data-size]').forEach(button => button.addEventListener('click', () => {
+    state.size = button.dataset.size;
+    document.querySelectorAll('[data-size]').forEach(item => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', active);
+    });
+  }));
 
   document.querySelectorAll('[data-side]').forEach(button => button.addEventListener('click', () => {
     state.side = button.dataset.side;

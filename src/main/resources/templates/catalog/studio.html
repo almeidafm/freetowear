@@ -73,12 +73,29 @@
             </div>
 
             <div class="control-section">
-                <label class="title" for="custom-color">Cor do tecido</label>
-                <div class="swatches">
-                    <button data-size="P" class="" aria-pressed="false">P</button>
-                    <button data-size="M" class="active" aria-pressed="true">M</button>
-                    <button data-size="G" class="" aria-pressed="false">G</button>
-                    <button data-size="GG" class="" aria-pressed="false">GG</button>
+                <span class="control-title">Cor do tecido</span>
+                <div class="color-swatches" role="group" aria-label="Cor do tecido">
+                    <button type="button" class="color-swatch active" data-color="WHITE" style="--swatch-color:#ffffff" aria-label="Branco" aria-pressed="true"></button>
+                    <button type="button" class="color-swatch" data-color="BLACK" style="--swatch-color:#18191d" aria-label="Preto" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="RED" style="--swatch-color:#d64545" aria-label="Vermelho" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="BLUE" style="--swatch-color:#3b82c4" aria-label="Azul" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="GREEN" style="--swatch-color:#4f8a5b" aria-label="Verde" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="YELLOW" style="--swatch-color:#e5b93f" aria-label="Amarelo" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="ORANGE" style="--swatch-color:#e9823b" aria-label="Laranja" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="PINK" style="--swatch-color:#df7fa1" aria-label="Rosa" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="PURPLE" style="--swatch-color:#8664ad" aria-label="Roxo" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="GRAY" style="--swatch-color:#858585" aria-label="Cinza" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="BROWN" style="--swatch-color:#8b5e3c" aria-label="Marrom" aria-pressed="false"></button>
+                    <button type="button" class="color-swatch" data-color="BEIGE" style="--swatch-color:#d7c3a5" aria-label="Bege" aria-pressed="false"></button>
+                </div>
+                <span class="control-title size-title">Tamanho</span>
+                <div class="size-options" role="group" aria-label="Tamanho">
+                    <button type="button" data-size="PP" aria-pressed="false">PP</button>
+                    <button type="button" data-size="P" aria-pressed="false">P</button>
+                    <button type="button" data-size="M" class="active" aria-pressed="true">M</button>
+                    <button type="button" data-size="G" aria-pressed="false">G</button>
+                    <button type="button" data-size="GG" aria-pressed="false">GG</button>
+                    <button type="button" data-size="XG" aria-pressed="false">XG</button>
                 </div>
                 <p class="small muted" style="margin:8px 0 0">O tamanho selecionado é registrado no pedido.</p>
             </div>
