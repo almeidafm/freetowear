@@ -99,6 +99,10 @@ public class OrderResponse {
         private final String idVariation;
         private final String productName;
         private final String imageUrl;
+        private final String customizationImageUrl;
+        private final String description;
+        private final String color;
+        private final String size;
         private final String variation;
         private final Integer quantity;
         private final BigDecimal unitPrice;
@@ -116,7 +120,13 @@ public class OrderResponse {
                     || item.getProductVariation().getImages().isEmpty()
                     ? null
                     : imageUrlBuilder.apply(item.getProductVariation().getImages().get(0).getImagePublicId());
-            this.variation = item.getProductVariation().getColor() + " / " + item.getProductVariation().getSize().name();
+            this.customizationImageUrl = item.getCustomerCustomizationId() == null
+                    ? null
+                    : imageUrlBuilder.apply(item.getCustomerCustomizationId());
+            this.description = item.getDescription();
+            this.color = item.getProductVariation().getColor();
+            this.size = item.getProductVariation().getSize().name();
+            this.variation = this.color + " / " + this.size;
             this.quantity = item.getQuantity();
             this.unitPrice = item.getUnitPrice();
             this.subtotal = item.getSubtotal();
