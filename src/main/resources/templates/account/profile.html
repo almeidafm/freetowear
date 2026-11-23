@@ -11,11 +11,13 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
     <th:block th:replace="~{layout/header :: header-assets}"></th:block>
+    <th:block th:replace="~{layout/cart-drawer :: cart-drawer-assets}"></th:block>
     <th:block th:replace="~{layout/footer :: footer-assets}"></th:block>
     <script defer th:src="@{/js/profile.js}"></script>
 </head>
 <body>
 <div th:replace="~{layout/header :: header}"></div>
+<div th:replace="~{layout/cart-drawer :: cart-drawer}"></div>
 <main class="profile-page">
     <div class="profile-shell">
         <section class="profile-hero">
