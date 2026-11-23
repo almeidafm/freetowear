@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -48,12 +49,13 @@ public class AccountService {
 
     public void register(RegisterRequest request) {
         validateRegistration(request);
-        if (customerRepository.existsByEmail(request.getEmail().trim())) {
+        String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
+        if (customerRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email already in use");
         }
         Customer customer = new Customer();
         customer.setName(request.getName());
-        customer.setEmail(request.getEmail().trim());
+        customer.setEmail(email);
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
         customer.setTermsAndConditionsAcceptedAt(LocalDateTime.now());
         customer.setActive(true);
