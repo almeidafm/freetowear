@@ -39,6 +39,9 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private com.freetowear.service.MercadoPagoService mercadoPagoService;
+
     @PostMapping("/item")
     public ResponseEntity<?> addItem(
             @AuthenticationPrincipal CustomerDetails customerDetails,
@@ -71,8 +74,11 @@ public class OrderController {
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         orderService.finishOrder(customerDetails.getId(), request);
-        return ResponseEntity.ok(Map.of("message", "Order finished successfully"));
+        String orderId = orderRepository.findByCustomerIdAndStatus(customerDetails.getId(), OrderStatus.PENDING)
+                .orElseThrow(() -> new ResourceNotFoundException("Pending order not found")).getId();
+        return ResponseEntity.ok(Map.of("redirectUrl", mercadoPagoService.createCheckout(orderId, customerDetails.getId())));
     }
+
 
     @GetMapping("/{id}")
     @ResponseBody

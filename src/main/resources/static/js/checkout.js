@@ -97,8 +97,8 @@ document.getElementById('checkout-form')?.addEventListener('submit', async funct
             throw new Error(data.message || 'Could not finish order.');
         }
 
-        alert(data.message || 'Order finished successfully.');
-        window.location.href = '/order-success';
+        if (!data.redirectUrl) throw new Error('Mercado Pago não retornou a URL de pagamento.');
+        window.location.href = data.redirectUrl;
     } catch (error) {
         alert(error.message || 'Could not finish order.');
     }

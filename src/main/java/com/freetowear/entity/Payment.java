@@ -45,6 +45,9 @@ public class Payment extends BaseEntity {
     @Column
     private String transactionCode;
 
+    @Column(length = 100)
+    private String providerReference;
+
     @Column
     private Integer installments;
 }
