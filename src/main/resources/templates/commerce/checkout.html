@@ -372,8 +372,7 @@
     </div>
 </div>
 
-<script th:if="${checkoutAvailable}" th:src="@{/js/checkout-state.js}"></script>
-<script th:if="${checkoutAvailable}" th:src="@{/js/checkout-forms.js}"></script>
+<script th:if="${checkoutAvailable}" th:src="@{/js/checkout.js}"></script>
 <script th:if="${checkoutAvailable}" th:src="@{/js/cep.js}"></script>
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>
