@@ -212,7 +212,14 @@ public class WebController {
     }
 
     @GetMapping("/order-success")
-    public String orderSuccess() {
+    public String orderSuccess(
+            @AuthenticationPrincipal CustomerDetails customerDetails,
+            Model model
+    ) {
+        var order = orderService.getOrders(customerDetails.getId()).stream()
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        model.addAttribute("order", order);
         return "commerce/order-success";
     }
 

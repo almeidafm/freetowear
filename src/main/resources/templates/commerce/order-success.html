@@ -19,10 +19,10 @@
         <div class=receipt-heading>
             <span class=receipt-mark aria-hidden=true>◇</span>
             <span class=eyebrow>Demonstração concluída</span>
-            <h1>Sua simulação está pronta.</h1>
-            <p>Esta simulação foi salva neste navegador. Nenhum pedido foi enviado à loja. Nenhum valor foi cobrado.</p>
-            <strong class=order-number>FTW-LOCAL-ACAE1DE9</strong>
-            <span class="small muted">20/11/2026, 22:47:09</span>
+            <h1>Pedido realizado com sucesso.</h1>
+            <p>Confira abaixo os dados da sua compra.</p>
+            <strong class=order-number th:text="'Pedido #' + ${order.id}">Pedido #000000</strong>
+            <span class="small muted" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy, HH:mm')}">20/11/2026, 22:47</span>
         </div>
 
         <div class=receipt-grid>
@@ -30,53 +30,46 @@
                 <h2>Tudo pronto para testar.</h2>
                 <ol class=order-timeline>
                     <li class=done>
-                        <strong>Simulação salva no navegador</strong>
-                        <p>Peças, tamanhos e personalizações guardados.</p>
+                        <strong>Pedido registrado</strong>
+                        <p>Seu pedido foi registrado com os dados abaixo.</p>
                     <li>
-                        <strong>Pagamento simulado</strong>
-                        <p>Forma escolhida: Boleto. Sem cobrança.</p>
+                        <strong th:text="'Status: ' + ${order.status}">Status do pedido</strong>
+                        <p>O pagamento foi processado conforme a opção escolhida.</p>
                     <li>
                         <strong>Produção e entrega</strong>
                         <p>Não são iniciadas no modo demonstração.</p>
                 </ol>
-                <button id=delete-local-order class=text-button>Apagar esta simulação do navegador</button>
-                <button id=refresh-order class="button wide">Atualizar situação do pedido</button>
-                <button id=download-order class=inline-link>Baixar comprovante do pedido ↓</button>
-                <p class="small muted">Guarde o comprovante e mantenha esta aba para acompanhar o pedido. Nenhum e-mail é enviado automaticamente nesta versão.</p>
+                <a class="button wide" th:href="@{'/orders/' + ${order.id}}">Acompanhar pedido</a>
             </div>
 
             <div class=receipt-card>
                 <h2>Seu pedido</h2>
-                <div class=receipt-item>
+                <div class=receipt-item th:each="item : ${order.items}">
                     <div>
-                        <strong>Streetwear Cyber</strong>
-                        <span>1 peça(s) · M · #18191d</span>
+                        <strong th:text="${item.productName}">Produto</strong>
+                        <span th:text="${item.quantity + ' peça(s) · ' + item.variation}">1 peça(s) · Variação</span>
                     </div>
-                    <strong>R$&nbsp;119,90</strong>
+                    <strong th:text="${'R$ ' + #numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</strong>
                 </div>
                 <div class=summary-line>
                     <span>Produtos</span>
-                    <strong>R$&nbsp;119,90</strong>
+                    <strong th:text="${'R$ ' + #numbers.formatDecimal(order.productsValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</strong>
                 </div>
                 <div class=summary-line>
                     <span>Entrega expressa</span>
-                    <strong>R$&nbsp;29,90</strong>
+                    <strong th:text="${'R$ ' + #numbers.formatDecimal(order.shippingPrice, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</strong>
                 </div>
                 <div class="summary-line grand-total">
                     <span>Total</span>
-                    <strong>R$&nbsp;149,80</strong>
+                    <strong th:text="${'R$ ' + #numbers.formatDecimal(order.totalValue, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</strong>
                 </div>
                 <p class="small muted">
                     Produção: até 7 dias úteis.<br>
                     Entrega: 2 a 5 dias úteis após a produção.
                 <p class="small demo-text">Valores e prazos de demonstração.
                 <div class=receipt-address>
-                    <h3>Entrega para ndkak mndakm</h3>
-                    <p>
-                        avkamkmkmkmkfmak, 23 adada<br>
-                        madkamkd · makdmakm / AC<br>
-                        CEP 55555333
-                    </p>
+                    <h3>Endereço de entrega</h3>
+                    <p th:text="${order.deliveryAddress}">Endereço</p>
                 </div>
             </div>
         </div>

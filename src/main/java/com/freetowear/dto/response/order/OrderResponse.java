@@ -50,7 +50,7 @@ public class OrderResponse {
                          Function<String, String> imageUrlBuilder) {
         this.id = order.getId();
         this.customerName = order.getCustomer().getName();
-        this.deliveryAddress = order.getDeliveryAddress() != null ? order.getDeliveryAddress().getStreet() : null;
+        this.deliveryAddress = formatAddress(order);
         this.productsValue = order.getProductsValue();
         this.shippingPrice = order.getShippingPrice();
         this.discountValue = order.getDiscountValue();
@@ -67,6 +67,14 @@ public class OrderResponse {
                 : this.trackingEvents.get(this.trackingEvents.size() - 1);
         this.isPaid = order.getStatus() == OrderStatus.PAID;
         this.canCancel = computeCanCancel(order.getStatus(), tracking);
+    }
+
+    private static String formatAddress(Order order) {
+        if (order.getDeliveryAddress() == null) return null;
+        var address = order.getDeliveryAddress();
+        return address.getStreet() + ", " + address.getNumber() + " - "
+                + address.getNeighborhood() + " - " + address.getCity() + "/"
+                + address.getState() + " - CEP " + address.getCep();
     }
 
     private static final List<OrderTrackingStatus> NON_CANCELLABLE_TRACKING_STATUSES = List.of(
