@@ -1,0 +1,94 @@
+:root  {
+  color-scheme:light;
+}
+
+body  {
+  background:var(--cream)!important;
+  color:var(--text)!important;
+}
+
+body > div:not([class])  {
+  max-width:1180px;
+  margin:0 auto;
+  padding:48px 24px 0;
+}
+
+.header-copy  {
+  padding:0!important;
+}
+
+.header-copy h1  {
+  color:var(--text);
+  font-size:clamp(38px,6vw,64px);
+  font-weight:500;
+  letter-spacing:-.065em;
+}
+
+.header-copy .eyebrow, .header-copy .eyebrow a  {
+  color:var(--primary);
+}
+
+.m, .period-wrap label  {
+  color:var(--muted)!important;
+}
+
+.top-actions  {
+  padding:0 24px 24px;
+  max-width:1180px;
+  margin:0 auto;
+}
+
+select  {
+  color:var(--text);
+  background:#fff;
+  border-color:var(--border);
+  border-radius:4px;
+}
+
+main  {
+  max-width:1180px!important;
+  margin:0 auto;
+  padding:24px 24px 72px!important;
+}
+
+.c,.k  {
+  background:#fff;
+  border-color:var(--border);
+  border-radius:8px;
+  box-shadow:0 8px 25px rgba(24,25,29,.06);
+}
+
+.c:hover  {
+  background:#fff;
+  border-color:#c8cfbe;
+}
+
+h3  {
+  color:var(--text);
+}
+
+.tw  {
+  border-color:var(--border);
+  border-radius:8px;
+}
+
+thead  {
+  background:var(--light);
+}
+
+th  {
+  color:var(--muted);
+}
+
+td  {
+  color:var(--text);
+  border-color:var(--border);
+}
+
+tbody tr:hover  {
+  background:#fbfbf7;
+}
+
+.footer-note  {
+  color:var(--muted);
+}

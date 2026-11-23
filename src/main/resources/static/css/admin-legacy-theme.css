@@ -1,0 +1,58 @@
+body  {
+  background:var(--cream);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+header  {
+  background:var(--dark);
+  border-color:var(--dark);
+}
+
+nav  {
+  background:#fff;
+  border-color:var(--border);
+}
+
+nav a  {
+  color:var(--muted);
+}
+
+nav a:hover, nav a[style]  {
+  color:var(--primary)!important;
+}
+
+.section-title  {
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+}
+
+.section-subtitle, .nav-label  {
+  color:var(--muted);
+}
+
+.card  {
+  background:#fff;
+  border-color:var(--border);
+  box-shadow:0 8px 25px rgba(24,25,29,.06);
+}
+
+.card-title, label  {
+  color:var(--text);
+}
+
+input, select, textarea  {
+  color:var(--text);
+  background:#fff;
+  border-color:var(--border);
+}
+
+.btn-primary  {
+  color:var(--dark);
+  background:var(--lime);
+  border-color:var(--lime);
+}
+
+.btn-primary:hover  {
+  background:#b3e448;
+}
